@@ -2,7 +2,7 @@
 
 Lecture notes on one technique for understanding a type system: a type expression is read as the name of a **type set**, a set of untyped λ-terms satisfying three conditions, and a typing rule as a statement about the named sets that is true or false. When every rule is true, every typable term is strongly normalizing and the system is consistent. The notes prove this for System F in a few lines and then follow the same reading to intersection types, dependent types, self types, equality types, inductive types, System Fω, the collections of type sets (Tait's, Girard's, head-closed, test-defined) and the semantics on pairs of terms (parametricity).
 
-**Read it:** https://lukaszlew.github.io/semantics-of-type-theory/
+**Read it:** https://lukaszlew.github.io/type-theory/
 
 - `docs/index.html` — the notes, one page, with a dependency graph of the sections and a goal selector.
 - `docs/sat-or-hc.html` — a side-by-side reading of every definition and lemma that would change if type sets were head-closed instead of Tait's saturated sets.
