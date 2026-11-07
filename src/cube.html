@@ -1,0 +1,74 @@
+<p>System F is one corner of a cube of eight systems, described by Barendregt. The starting corner is the simply typed λ-calculus, whose type expressions are built from arrows alone. Three features can be added to it independently. Each lets one sort of thing depend on another.</p>
+
+<div class="tw"><table class="w40">
+  <thead><tr><th>Feature</th><th>What may depend on what</th><th>What the semantics adds</th><th>On this page</th></tr></thead>
+  <tbody>
+    <tr><td>Polymorphism</td><td>a term on a type expression: <code>∀X.A</code></td><td><code>⋂</code> over all type sets</td><td>{{ops}} to {{rules}}</td></tr>
+    <tr><td>Type operators</td><td>a type expression on a type expression: <code>λX:κ.A</code></td><td>kinds, as plain sets of functions</td><td>{{kinds}} to {{allkinds}}</td></tr>
+    <tr><td>Dependent types</td><td>a type expression on a term: <code>Πx:A.B</code></td><td>families, and the dependent arrow</td><td>{{fam}} to {{dinter}}</td></tr>
+  </tbody>
+</table></div>
+
+<figure class="fig">
+  <svg viewBox="0 0 440 300" role="img" aria-label="The λ-cube. Eight systems at the corners of a cube. The simply typed λ-calculus is at the bottom left of the front face. Going up adds polymorphism, going back adds type operators, going right adds dependent types. The four corners without dependent types are proved on this page, and the other four in the form without annotations.">
+    <g fill="none" stroke="currentColor" stroke-width="1.2">
+      <path d="M120 250H290V130H120Z"/>
+      <path d="M200 185H370V65H200Z"/>
+      <path d="M120 250L200 185M290 250L370 185M120 130L200 65M290 130L370 65"/>
+    </g>
+    <g fill="currentColor" stroke="currentColor" stroke-width="1.5">
+      <circle cx="120" cy="250" r="5"/>
+      <circle cx="120" cy="130" r="5"/>
+      <circle cx="200" cy="185" r="5"/>
+      <circle cx="200" cy="65" r="5"/>
+    </g>
+    <g stroke="currentColor" stroke-width="1.5" style="fill:var(--paper)">
+      <circle cx="290" cy="250" r="5"/>
+      <circle cx="290" cy="130" r="5"/>
+      <circle cx="370" cy="185" r="5"/>
+      <circle cx="370" cy="65" r="5"/>
+    </g>
+    <g class="lb">
+      <text x="120" y="273" text-anchor="middle">λ→</text>
+      <text x="290" y="273" text-anchor="middle">λP</text>
+      <text x="109" y="135" text-anchor="end">λ2, System F</text>
+      <text x="300" y="151">λP2</text>
+      <text x="210" y="206">λ<tspan text-decoration="underline">ω</tspan></text>
+      <text x="381" y="190">λP<tspan text-decoration="underline">ω</tspan></text>
+      <text x="200" y="50" text-anchor="middle">λω, Fω</text>
+      <text x="425" y="50" text-anchor="end">λC, Constructions</text>
+    </g>
+    <g class="ax">
+      <text x="205" y="294" text-anchor="middle">→ dependent types</text>
+      <text x="109" y="200" text-anchor="end">↑ polymorphism</text>
+      <text x="176" y="232">↗ type operators</text>
+    </g>
+  </svg>
+  <figcaption>The eight systems. This page proves strong normalization for terms without annotations: for the filled corners in full, and for the hollow corners in a reduced form, in which a family variable takes one term. The kinds <code>term → κ</code>, which λP<u>ω</u> and λC need, are only sketched in this section. λC is the Calculus of Constructions.</figcaption>
+</figure>
+
+<p>The definition of a type set in {{typeset}} serves all eight corners. What changes from corner to corner is which type sets get names.</p>
+
+<ul class="list">
+  <li><b>Without polymorphism</b> there is no <code>⋂</code> and no impredicative definition. The set for each type expression can be defined by recursion on the type expression, narrow point 5 does not arise, narrow point 6 shrinks to one lemma proved by recursion on the type expression, and what is left is Tait’s proof of 1967.</li>
+  <li><b>Type operators</b> cost what {{kinds}} and {{fomega}} show. Kinds are plain sets, with no conditions to check.</li>
+  <li><b>Dependent types.</b> <code>Πx:A.B</code> names a dependent arrow, which is a type set by the proof of the arrow lemma. There is one new obligation. A type expression can now contain a term, and if that term takes a step, then the type expression must still name the same set, because the rule of term conversion says so. That is why a family is asked to be constant along steps. {{dep}} carries this out.</li>
+</ul>
+
+<p>So in this semantics the three features cost about the same, and they do not interfere. Each adds names, and none changes the collection of type sets. This is a statement about the setting of this page, where terms carry no annotations. The usual presentations of the dependent corners annotate terms with type expressions, which in turn contain terms. Showing that every term is strongly normalizing, annotations included, takes more bookkeeping than {{dep}} does: the erasure lemma of {{erasure}} says exactly what is missing. One known route, due to Geuvers and Nederhof, maps the Calculus of Constructions into F<sub>ω</sub>. That is quoted and not checked here.</p>
+
+<p><b>Where type operators and dependent types meet.</b> The families of {{fam}} form one more kind. Write <code>term → ∗</code> for it, and <code>term → κ</code> for the functions from terms to the members of <code>κ</code> that are constant along steps. A family variable is then a variable of the kind <code>term → ∗</code>. The type expression <code>λx.B</code> names the family <code>w ↦ ⟦B⟧<sub>ρ[x↦w]</sub></code>, and <code>A[P:=x.B]</code> is the ordinary substitution of <code>λx.B</code> for <code>P</code>, followed by steps inside the type expression. With polymorphism, functions on type sets and dependent types together, this is the last corner of the λ-cube, the Calculus of Constructions, in the form without annotations that this page uses. This paragraph is a sketch: the clauses and rules for the kinds <code>term → κ</code> are not written out.</p>
+
+<p><b>How strong a proof has to be.</b> {{strength}} treats System F. The same pattern shows across the systems. The rows are quoted from the literature.</p>
+
+<div class="tw"><table class="w34">
+  <thead><tr><th>System</th><th>What a proof of strong normalization needs</th></tr></thead>
+  <tbody>
+    <tr><td>Simply typed λ-calculus, with no <code>∀</code></td><td>First-order arithmetic is enough.</td></tr>
+    <tr><td>System F</td><td>More than second-order arithmetic. Third-order arithmetic is enough.</td></tr>
+    <tr><td>System F<sub>ω</sub></td><td>More than arithmetic of any finite order.</td></tr>
+    <tr><td>System U⁻</td><td>No proof exists. Some typable term is not in <code>SN</code>, as narrow point 7 reports.</td></tr>
+  </tbody>
+</table></div>
+
+<p><b>Past the cube.</b> The Calculus of Inductive Constructions, the theory behind proof assistants such as Coq and Lean, adds two things to the last corner. Universes are a tower of levels, like the levels of kinds in {{allkinds}}, and each level needs a set that is closed under everything below it. Inductive types add new forms of terms, so limit 4 (new forms of terms) in {{limits}} applies and {{typeset}} has to be redone. Both are much harder than anything here, and this page does not attempt them.</p>

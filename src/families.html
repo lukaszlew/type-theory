@@ -1,0 +1,155 @@
+<p>{{cmpsets}} put Girard’s candidates beside the type sets of {{typeset}}. There is a third collection between the two, and the three stand in a simple relation: they are one structure read three ways, as terms with their evaluation history, as sets of values, and as sets of values closed under running. The main line never needs this section. It says what the choice made in {{typeset}} means, and it makes exact the picture given there, that a type set is roughly a set of values.</p>
+
+<h3 class="sub">Values, and the third collection</h3>
+
+<section class="box def">
+  <p class="tag">Definition · Value, evaluation, head-closed type set</p>
+  <p>A <b>value</b> is a strongly normalizing abstraction.</p>
+  <p>Let <code>t</code> be a strongly normalizing term. Its head steps are steps, so they end, at a term with no head step: an abstraction, or a term <code>x u<sub>1</sub>…u<sub>n</sub></code>. That term is the <b>evaluation</b> of <code>t</code>, written <code>eval(t)</code>. It is a value, or it is in <code>Base</code>; in the second case <code>t</code> is said to <b>get stuck</b>.</p>
+  <p>A type set <code>T</code> is <b>head-closed</b> if the following holds: if <code>s ∈ T</code> and <code>s →<sub>h</sub> s′</code>, then <code>s′ ∈ T</code>.</p>
+  <p class="note">Every head step of a strongly normalizing term is safe, because its argument is a subterm. So a head-closed type set is one that is closed under safe head steps in both directions. The lemma “Head-closed type sets are sets of values” shows that its members are exactly its values together with every term that evaluates to one of them, together with <code>Min</code>. The name “head-closed” is this page’s. From general knowledge, and not checked against sources: sets of this shape, every term that evaluates into a chosen set of values, are what the semantics of programming languages builds from a set of values, as in Harper’s note, and what proofs by tests produce for closed terms; the head-closed type sets are their form for open terms. We found no name for the collection in the literature, and that is the price of working with it.</p>
+</section>
+
+<h3 class="sub">The chain</h3>
+
+<p>Write <code>SAT</code> for the collection of all type sets, <code>HC</code> for the collection of head-closed type sets, and <code>CR</code> for the collection of reducibility candidates. The name <code>HC</code> is for this section; the letters <code>SAT</code> and <code>CR</code> are the usual ones for Tait’s and Girard’s collections.</p>
+
+<section class="box thm">
+  <p class="tag">Lemma · Head steps commute with other steps<span class="st">textbook</span></p>
+  <p>Let <code>t →<sub>h</sub> r</code> be a safe head step, and let <code>t → t′</code> be any step. Then <code>t′ = r</code>, or <code>t′ →<sub>h</sub> r′</code> by a safe head step with <code>r</code> reaching <code>r′</code> by zero or more steps.</p>
+  <p>So if <code>t</code> reaches <code>r</code> by <code>k</code> safe head steps and <code>t</code> reaches <code>t′</code> by any steps, then <code>t′</code> reaches, by at most <code>k</code> safe head steps, a term that <code>r</code> reaches by steps.</p>
+  <p class="note">This is the textbook fact that head steps commute with the other steps, which is the heart of the standardization theorem in Barendregt’s book. The proof is given because the page needs the exact form with safe steps.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>Let <code>t = (λx.u) v v<sub>1</sub>…v<sub>n</sub></code> and <code>r = u[v/x] v<sub>1</sub>…v<sub>n</sub></code>. The step <code>t → t′</code> is the head step itself, and then <code>t′ = r</code>; or it is inside <code>u</code>, inside <code>v</code>, or inside some <code>v<sub>i</sub></code>.</p>
+    <p>Inside <code>u</code>, with <code>u → u′</code>: <code>t′ = (λx.u′) v v⃗ →<sub>h</sub> u′[v/x] v⃗</code>, and <code>u[v/x] v⃗ → u′[v/x] v⃗</code> by one step. Inside <code>v</code>, with <code>v → v′</code>: <code>t′ →<sub>h</sub> u[v′/x] v⃗</code>, and <code>u[v/x] v⃗</code> reaches it by one step for each free occurrence of <code>x</code> in <code>u</code>. Inside <code>v<sub>i</sub></code>: likewise. In each case the new head step is safe, because its argument is <code>v</code> or a reduct of <code>v</code>, and reducts of strongly normalizing terms are strongly normalizing, by R1 (subterms).</p>
+    <p>The second statement is proved by induction on <code>k</code>. If <code>k = 0</code>, then <code>r = t</code>, and <code>t′</code> itself is the term wanted. Otherwise <code>t →<sub>h</sub> t<sub>1</sub></code> and <code>t<sub>1</sub></code> reaches <code>r</code> by <code>k − 1</code> safe head steps. First, <code>t′</code> is a reduct of <code>t<sub>1</sub></code>, or <code>t′ →<sub>h</sub> t<sub>1</sub>′</code> by a safe head step for some reduct <code>t<sub>1</sub>′</code> of <code>t<sub>1</sub></code>. This is shown by induction on the number of steps from <code>t</code> to <code>t′</code>: along the way, either the head step has been taken, after which every term is a reduct of <code>t<sub>1</sub></code>, or the term at hand still has a safe head step to a reduct of <code>t<sub>1</sub></code>, and the first statement carries that through the next step. Then the induction hypothesis, applied to the <code>k − 1</code> head steps from <code>t<sub>1</sub></code> to <code>r</code> and to the reduct of <code>t<sub>1</sub></code> at hand, gives a term that <code>r</code> reaches by steps and that the reduct reaches by at most <code>k − 1</code> safe head steps; with the one head step from <code>t′</code>, if there was one, that is at most <code>k</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box thm">
+  <p class="tag">Lemma · The three collections form a chain<span class="st">here, reviewed</span></p>
+  <dl class="conds">
+    <dt>chain</dt><dd><code>CR ⊆ HC ⊆ SAT</code>.</dd>
+    <dt>same operations</dt><dd>Each collection is closed under the intersection and under the union of a nonempty set of its members, computed as sets. So every nonempty set of members has a largest member below it and a smallest member above it, which is what “complete lattice” means in standard terms; and these are computed in the same way in all three.</dd>
+    <dt>same ends</dt><dd><code>Min</code> and <code>SN</code> belong to all three collections. <code>Min</code> is the smallest member and <code>SN</code> the largest, in each.</dd>
+  </dl>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>Chain.</b> A candidate is closed under all steps, by the lemma in {{cmpsets}}, so under head steps.</p>
+    <p><b>Same operations.</b> For <code>SAT</code> this is the intersection lemma and the union lemma of {{ops}}. Closure under head steps and closure under all steps are conditions on single members, so they pass to intersections and unions.</p>
+    <p><b>Same ends.</b> <code>SN</code> is closed under every step, by R1 (subterms). For <code>Min</code>: let <code>s ∈ Min</code>, so <code>s</code> reaches a member <code>b</code> of <code>Base</code> by safe head steps, and let <code>s → s′</code>. By the lemma on commuting steps, <code>s′</code> reaches by safe head steps a term <code>b′</code> that <code>b</code> reaches by steps. A reduct of <code>x u<sub>1</sub>…u<sub>n</sub></code> is <code>x u′<sub>1</sub>…u′<sub>n</sub></code>, which is in <code>Base</code>. So <code>s′ ∈ Min</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<h3 class="sub">Going down and coming back</h3>
+
+<section class="box def">
+  <p class="tag">Definition · Four conversions between the collections</p>
+  <p>For a type set <code>T</code>:</p>
+  <p><code>hc(T) = cl(T<sub>h</sub>)</code>, where <code>T<sub>h</sub></code> is <code>T</code> together with every term that a member of <code>T</code> reaches by head steps.</p>
+  <p><code>cr(T) = cl(T<sub>→</sub>)</code>, where <code>T<sub>→</sub></code> is <code>T</code> together with every term that a member of <code>T</code> reaches by steps.</p>
+  <p><code>k<sub>h</sub>(T)</code> is the set of the members <code>t</code> of <code>T</code> such that every term that <code>t</code> reaches by head steps is in <code>T</code>.</p>
+  <p><code>k(T)</code> is the set of the members <code>t</code> of <code>T</code> such that every term that <code>t</code> reaches by steps is in <code>T</code>.</p>
+  <p class="note"><code>cl</code> is the closure of {{typeset}}: add every term that reaches a member by safe head steps. The first two conversions enlarge a type set, the last two shrink it.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · Each conversion is the nearest member<span class="st">here, reviewed</span></p>
+  <dl class="conds">
+    <dt>smallest above</dt><dd><code>hc(T)</code> is the smallest head-closed type set that contains <code>T</code>, and <code>cr(T)</code> is the smallest candidate that contains <code>T</code>.</dd>
+    <dt>largest below</dt><dd><code>k<sub>h</sub>(T)</code> is the largest head-closed type set inside <code>T</code>, and <code>k(T)</code> is the largest candidate inside <code>T</code>.</dd>
+    <dt>nothing lost going up</dt><dd>If <code>T</code> is head-closed, then <code>hc(T) = k<sub>h</sub>(T) = T</code>; if <code>T</code> is a candidate, then <code>cr(T) = k(T) = T</code>.</dd>
+  </dl>
+  <p>So a conversion from a smaller collection to a larger one is the identity, and the two conversions back are a closure and a kernel: the nearest member of the smaller collection above, and the nearest below.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>cr(T) is a candidate containing T.</b> It contains <code>T</code>, so it contains <code>Base</code>, and it is inside <code>SN</code> by R1 (subterms) and R3 (safe head step). It is closed under safe head expansion, being a closure. For closure under steps: let <code>t ∈ cl(T<sub>→</sub>)</code>, so <code>t</code> reaches some <code>r ∈ T<sub>→</sub></code> by safe head steps, and let <code>t → t′</code>. By the lemma on commuting steps, <code>t′</code> reaches by safe head steps a term <code>r′</code> that <code>r</code> reaches by steps, and <code>r′ ∈ T<sub>→</sub></code>, because <code>T<sub>→</sub></code> is closed under steps. So <code>t′ ∈ cl(T<sub>→</sub>)</code>.</p>
+    <p><b>cr(T) is the smallest.</b> A candidate that contains <code>T</code> contains <code>T<sub>→</sub></code>, by closure under steps, and then <code>cl(T<sub>→</sub>)</code>, by the closure condition.</p>
+    <p><b>k(T) is a candidate inside T.</b> <code>Base ⊆ k(T)</code>, because a reduct of a member of <code>Base</code> is in <code>Base ⊆ T</code>. <code>k(T)</code> is closed under steps, because a reduct of a reduct is a reduct. For the closure condition: let <code>s →<sub>h</sub> s′</code> be safe with <code>s′ ∈ k(T)</code>, and let <code>s″</code> be any term that <code>s</code> reaches by steps. By the lemma on commuting steps, <code>s″</code> reaches, by at most one safe head step, a term that <code>s′</code> reaches by steps; that term is in <code>T</code>, because <code>s′ ∈ k(T)</code>; so <code>s″ ∈ T</code>, by the closure condition of <code>T</code> or because <code>s″</code> is that term. Hence <code>s ∈ k(T)</code>.</p>
+    <p><b>k(T) is the largest.</b> A candidate inside <code>T</code> has all reducts of its members inside itself, so inside <code>T</code>.</p>
+    <p><b>Nothing lost going up</b> is immediate from the definitions. The statements for <code>hc</code> and <code>k<sub>h</sub></code> have the same proofs, with head steps in the place of steps; the commuting lemma is not even needed, because a head step from <code>t</code> stays on the head reduction of <code>t</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · What the conversions do to Gen({I I})</p>
+  <p><code>hc(Gen({I I})) = cr(Gen({I I})) = Gen({I})</code>: going up adds <code>I</code>, and <code>I I</code> was already in <code>Gen({I})</code>. Coming back the other way, <code>k<sub>h</sub>(Gen({I I})) = k(Gen({I I})) = Min</code>: the only members of <code>Gen({I I})</code> whose head reducts stay inside are the members of <code>Min</code>. The conversions lose the one thing <code>Gen({I I})</code> records: that <code>I I</code> is in and its reduct is not.</p>
+</section>
+
+<h3 class="sub">The three readings</h3>
+
+<section class="box thm">
+  <p class="tag">Lemma · Head-closed type sets are sets of values<span class="st">here, reviewed</span></p>
+  <p>Send a head-closed type set <code>T</code> to the set of values it contains, and send a set <code>W</code> of values to</p>
+  <p class="eq"><code>T<sub>W</sub> = { t ∈ SN : eval(t) ∈ W, or t gets stuck }</code></p>
+  <dl class="conds">
+    <dt>bijection</dt><dd>The two maps are inverse to each other, between <code>HC</code> and the sets of values.</dd>
+    <dt>operations</dt><dd>Intersection and union of head-closed type sets are intersection and union of their sets of values. For a value <code>v</code>, <code>Gen({v})</code> is head-closed and its set of values is <code>{v}</code>.</dd>
+    <dt>candidates</dt><dd>A head-closed type set is a candidate if and only if its set of values is closed under steps.</dd>
+    <dt>tell apart</dt><dd>Two strongly normalizing terms belong to the same head-closed type sets if and only if they have the same evaluation, or both get stuck. Compare the lemma in {{structure}}: all type sets together tell apart every two terms outside <code>Min</code>.</dd>
+    <dt>not so for SAT</dt><dd>A type set is not determined by its values: <code>Gen({I I})</code> and <code>Min</code> contain no value at all, and differ.</dd>
+  </dl>
+  <p>So <code>HC</code> is, up to the bijection, the collection of all sets of values: a type set in <code>HC</code> is just a choice of which values belong. <code>CR</code> is the sets of values that are closed under steps. And <code>SAT</code> keeps, besides the values, the history: which terms on the way to a value are in and which are out.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>T<sub>W</sub> is a head-closed type set with values W.</b> It is inside <code>SN</code> by definition, and it contains <code>Base</code>, whose members are stuck. If <code>s →<sub>h</sub> s′</code> is safe and <code>s′ ∈ T<sub>W</sub></code>, then <code>s ∈ SN</code> by R3 (safe head step), and <code>eval(s) = eval(s′)</code>, so <code>s ∈ T<sub>W</sub></code>. If <code>s ∈ T<sub>W</sub></code> and <code>s →<sub>h</sub> s′</code>, then <code>eval(s′) = eval(s)</code>, so <code>s′ ∈ T<sub>W</sub></code>. A value has no head step, so the values in <code>T<sub>W</sub></code> are the values <code>v</code> with <code>eval(v) = v ∈ W</code>, which is <code>W</code>.</p>
+    <p><b>A head-closed T is T<sub>W</sub> for its set of values W.</b> Let <code>t ∈ T</code>. Then <code>eval(t) ∈ T</code>, because <code>T</code> is closed under head steps. If <code>eval(t)</code> is a value, it is in <code>W</code>; otherwise <code>t</code> gets stuck. So <code>T ⊆ T<sub>W</sub></code>. Conversely, let <code>t ∈ T<sub>W</sub></code>. If <code>eval(t) ∈ W ⊆ T</code>, then <code>t ∈ T</code> by the closure condition, applied along the head steps from <code>t</code> to <code>eval(t)</code>, which are safe. If <code>t</code> gets stuck, then <code>t ∈ Min ⊆ T</code>.</p>
+    <p><b>Operations.</b> The values of an intersection or a union are the intersection or the union of the values. <code>Gen({v}) = cl(Base ∪ {v})</code> is <code>T<sub>{v}</sub></code>: a term is in it if and only if it reaches <code>v</code> or a member of <code>Base</code> by safe head steps.</p>
+    <p><b>Candidates.</b> If <code>T</code> is a candidate, then a step inside a value of <code>T</code> gives a value of <code>T</code>, by closure under steps. Conversely, let <code>W</code> be closed under steps, let <code>t ∈ T<sub>W</sub></code> and <code>t → t′</code>. If <code>t</code> gets stuck, then <code>t ∈ Min</code>, and <code>t′ ∈ Min</code> by the lemma on the chain. Otherwise <code>t</code> reaches <code>eval(t) ∈ W</code> by safe head steps, and by the lemma on commuting steps <code>t′</code> reaches by safe head steps a term <code>w′</code> that <code>eval(t)</code> reaches by steps. A reduct of an abstraction is an abstraction, so <code>w′</code> is a value, and <code>w′ ∈ W</code>. So <code>eval(t′) = w′ ∈ W</code>, and <code>t′ ∈ T<sub>W</sub></code>.</p>
+    <p><b>Tell apart.</b> The head-closed type sets that contain a term <code>t</code> are the <code>T<sub>W</sub></code> with <code>eval(t) ∈ W</code>, or all of them if <code>t</code> gets stuck. So two terms are in the same ones if and only if their evaluations are the same value, or both get stuck.</p>
+    <p><b>Not so for SAT.</b> <code>Min</code> contains no abstraction, because every member reaches a member of <code>Base</code> by head steps and an abstraction has none. <code>Gen({I I})</code> adds the terms that reach <code>I I</code> by safe head steps, none of which is an abstraction. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box thm">
+  <p class="tag">Lemma · Only the head-closed type sets have complements<span class="st">here, reviewed</span></p>
+  <p>In <code>HC</code> every type set <code>T</code> has a complement: <code>T′ = (SN ∖ T) ∪ Min</code> is head-closed, <code>T ∩ T′ = Min</code> and <code>T ∪ T′ = SN</code>. In <code>SAT</code> and in <code>CR</code> some type sets have no such complement: <code>Gen({I I})</code> in <code>SAT</code>, and <code>T<sub>I</sub></code> in <code>CR</code>.</p>
+  <p class="note">So in <code>HC</code> a choice of values can be negated, and in the other two collections it cannot. In standard terms, <code>HC</code> is a power set up to <code>Min</code>, and so a complete Boolean algebra, and the other two are not. No result on this page uses this; it is listed because it is the sharpest way to say what the head-closed type sets are.</p>
+  <p class="note"><b>What a complement is not.</b> The negation of System F is <code>A → ∀X.X</code>, which names <code>⟦A⟧ ⇒ Min</code>: a type set in every collection, and not the complement of <code>⟦A⟧</code>. The two differ as intuitionistic and classical negation differ, as the example “The arrow into Min is negation” in {{ops}} shows: <code>T ∩ (T ⇒ Min)</code> has no closed member but is not empty, and <code>T ∪ (T ⇒ Min)</code> need not be <code>SN</code>. So the page never needs a complement, and working in the largest collection costs nothing here. Nor would a complement give a rule even in <code>HC</code>: a member of the complement of <code>⟦A⟧</code> is a term that evaluates to a value outside <code>⟦A⟧</code>, and no term witnesses that of another, so no typing rule could conclude it; it is one more set that no type expression names, as most are by {{allsets}}. Classical reasoning enters the semantics by another door, the tests of {{tests}}, where a continuation is the witness.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><code>T′</code> is <code>T<sub>W′</sub></code> for the set <code>W′</code> of values not in <code>T</code>: a strongly normalizing term is in <code>T′</code> if and only if it gets stuck or evaluates to a value outside <code>T</code>. So <code>T′</code> is head-closed, and the two equations hold by the items <i>bijection</i> and <i>operations</i>. In <code>SAT</code>, a type set <code>T′</code> with <code>Gen({I I}) ∪ T′ = SN</code> contains <code>I</code>, which is not in <code>Gen({I I})</code>, and then <code>I I</code> by the closure condition; but <code>I I</code> is in <code>Gen({I I})</code> and not in <code>Min</code>, so the intersection is not <code>Min</code>. In <code>CR</code>, a candidate <code>T′</code> with <code>T<sub>I</sub> ∪ T′ = SN</code> contains <code>λx.I x</code>, which is not in <code>T<sub>I</sub></code>, and then <code>I</code> by closure under steps; but <code>I ∈ T<sub>I</sub></code> and <code>I ∉ Min</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · Three type sets, one from each collection</p>
+  <ul>
+    <li><code>Gen({I I})</code> is a type set and not head-closed: it contains <code>I I</code>, and <code>I I →<sub>h</sub> I</code>, and <code>I ∉ Gen({I I})</code>.</li>
+    <li><code>Gen({λx.I x})</code> is head-closed, by the item <i>operations</i>: its only value is <code>λx.I x</code>. It is not a candidate: <code>λx.I x → I</code> by a step inside the abstraction, and <code>I ∉ Gen({λx.I x})</code>.</li>
+    <li><code>T<sub>I</sub> = Gen({I})</code> is a candidate, by the item <i>candidates</i>: its only value is <code>I</code>, which has no step.</li>
+  </ul>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · Each collection carries the theorem<span class="st">here, reviewed</span></p>
+  <dl class="conds">
+    <dt>preservation</dt><dd>If <code>T</code> and <code>U</code> are head-closed, then so is <code>T ⇒ U</code>; if they are candidates, then so is <code>T ⇒ U</code>. The intersection of a nonempty set of head-closed type sets, or of candidates, is one again.</dd>
+    <dt>theorem</dt><dd>Let <code>∀X.A</code> name the intersection over all members of <code>HC</code>, or over all members of <code>CR</code>, instead of over all type sets, and let assignments take their values in that collection. Then Lemma N, the four facts, the soundness theorem and both corollaries hold.</dd>
+  </dl>
+  <p class="note">Each step down the chain gives up some type sets, and with them some values of <code>X</code>, in return for an invariance of membership: under head steps, then under all steps. The set that a type expression names may change with the collection, because <code>∀</code> ranges over fewer sets; for <code>∀X.X</code> it does not, and for other type expressions this page does not know, as {{cmpsets}} says. The theorem does not change.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>Preservation.</b> Let <code>t ∈ T ⇒ U</code> and <code>t →<sub>h</sub> t′</code>. For every <code>u ∈ T</code>, <code>t u →<sub>h</sub> t′ u</code>, because a head step survives one more argument, and <code>t u ∈ U</code>, so <code>t′ u ∈ U</code> by closure of <code>U</code> under head steps. So <code>t′ ∈ T ⇒ U</code>. For a step <code>t → t′</code> that is not a head step, <code>t u → t′ u</code> is a step, and closure of <code>U</code> under steps gives the same conclusion. Intersections were treated in the lemma on the chain.</p>
+    <p><b>Theorem.</b> By the remark in {{rules}} on what the proof asked of the collection that <code>∀</code> ranges over, it is enough that the collection consists of type sets, is closed under <code>⇒</code> and under nonempty intersections, and has a smallest member with no closed member. The first holds by definition, the second and third are <i>preservation</i>, and the fourth is the item <i>same ends</i> of the lemma on the chain, since <code>Min</code> has no closed member by M3 (smallest). <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="aside">
+  <p class="tag">Remark · What the choice in {{typeset}} means</p>
+  <p>The definition in {{typeset}} picks the largest of the three collections, the one that asks least of a set. The other two are what remains when a further invariance is asked: that a term and its evaluation share their type sets, or that a term and all its reducts do. Limit 3 of {{limits}}, that a member can leave a type set by running, is the price of the largest collection; the head-closed type sets remove it for head steps and keep it for steps inside abstractions, as <code>Gen({λx.I x})</code> shows, and the candidates remove it altogether.</p>
+  <p>The case for each is short. For <code>SAT</code>: it is the largest, every closure proof is one line, and it is the one with a name and a literature. For <code>HC</code>: it is exactly the sets of values, with complements, which is the object that the semantics of programming languages works with; its price is that it has no name in the literature. For <code>CR</code>: a term keeps its type sets while it runs, which is what typing usually promises, and it is Girard’s. The theorem does not care, by the lemma “Each collection carries the theorem”, and nothing in the main line depends on the choice; the main line asks only what the remark in {{rules}} lists. {{pairs}} runs the same theory on pairs of terms, so that a type expression names a relation; for head-closed type sets that is a relation between values. {{tests}} adds a fourth collection below the candidates, the sets defined by tests.</p>
+</section>

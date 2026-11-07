@@ -1,0 +1,43 @@
+<p>The plan is to show that terms built in approved ways are strongly normalizing. The obvious method is to check that each way of building a term keeps the property “strongly normalizing”. Application already breaks this.</p>
+
+<section class="box np" id="np1">
+  <p class="tag">Narrow point 1 · One set is not enough</p>
+  <dl class="rows">
+    <dt>Goal</dt><dd>Show that terms built in approved ways are strongly normalizing.</dd>
+    <dt>Try</dt><dd>Prove “strongly normalizing” directly, by showing that it passes from the subterms of a term to the term itself.</dd>
+    <dt>Breaks</dt><dd><code>δ ∈ SN</code>. <code>δ δ = Ω</code> does not. Applying one strongly normalizing term to another can loop.</dd>
+    <dt>Hence</dt><dd>Use a stronger property that says what a term does when it is applied. One such property cannot fit all terms: <code>I</code> may be applied to any strongly normalizing term, and <code>δ</code> may not. So there have to be many properties, that is, many sets of terms, and a way to say that applying a member of one set to a member of another lands in a third.</dd>
+  </dl>
+</section>
+
+<p>The way to say it is the arrow.</p>
+
+<section class="box def">
+  <p class="tag">Definition · The arrow</p>
+  <p>For sets <code>T</code> and <code>U</code> of terms, the <b>arrow</b> <code>T ⇒ U</code> is the set of terms that send every member of <code>T</code> into <code>U</code>:</p>
+  <p class="eq"><code>T ⇒ U = { t : t u ∈ U for every u ∈ T }</code></p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · SN ⇒ SN</p>
+  <p><code>SN ⇒ SN</code> is the set of terms that send every strongly normalizing term to a strongly normalizing term. <code>I</code> is in it: if <code>u ∈ SN</code>, then <code>I u ∈ SN</code>, by R3 (safe head step). <code>δ</code> is not in it, because <code>δ ∈ SN</code> and <code>δ δ ∉ SN</code>. It is inside <code>SN</code>: if <code>t</code> is in it, then <code>t y ∈ SN</code> for a variable <code>y</code>, so <code>t ∈ SN</code>, as a subterm. So <code>SN ⇒ SN</code> is strictly inside <code>SN</code>, and it is a property of the stronger sort that narrow point 1 asks for.</p>
+</section>
+
+<p>The sets that the proof works with will be called type sets. {{typeset}} defines them. Here first is how the proof will go, and what it needs from them.</p>
+
+<p>A term is built from variables by application and by abstraction, and the proof follows that. It shows that each typable term belongs to a type set. For an application it uses the definition of the arrow: if <code>t ∈ T ⇒ U</code> and <code>u ∈ T</code>, then <code>t u ∈ U</code>. That costs nothing. For an abstraction it needs a way into <code>T ⇒ U</code> (W3). For <code>∀</code> it intersects type sets, and the result has to be a type set again (W4), as the arrow of two type sets has to be (W2). At the end, membership has to give strong normalization (W1). A term with free variables, such as <code>x y</code>, is handled by replacing <code>x</code> and <code>y</code> by members of type sets. To get a statement about <code>x y</code> itself, they are replaced by themselves (W5).</p>
+
+<p>The soundness theorem of {{rules}} and its first corollary, that every typable term is strongly normalizing, need nothing else from type sets. The second corollary, consistency, also needs that the smallest type set has no closed member.</p>
+
+<section class="aside">
+  <p class="tag">Requirements</p>
+  <dl class="conds">
+    <dt>W1</dt><dd><b>Inside SN.</b> Every member of a type set is strongly normalizing.</dd>
+    <dt>W2</dt><dd><b>Arrow.</b> If <code>T</code> and <code>U</code> are type sets, then so is <code>T ⇒ U</code>.</dd>
+    <dt>W3</dt><dd><b>Abstraction.</b> If <code>T</code> and <code>U</code> are type sets and <code>t[u/x] ∈ U</code> for every <code>u ∈ T</code>, then <code>λx.t ∈ T ⇒ U</code>. This is how abstractions get into <code>T ⇒ U</code>.</dd>
+    <dt>W4</dt><dd><b>Intersection.</b> The intersection of any nonempty collection of type sets is a type set. {{ops}} needs this for <code>∀</code>.</dd>
+    <dt>W5</dt><dd><b>Variables.</b> Every type set contains every variable. The proof ends by replacing each variable by itself, in {{rules}}, and for that they have to be members.</dd>
+  </dl>
+</section>
+
+<p>{{typeset}} gives a definition that meets all five. {{simpler}} shows that the simpler definitions it tries do not.</p>

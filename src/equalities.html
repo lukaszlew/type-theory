@@ -1,0 +1,50 @@
+<p>The lemma “Type sets tell terms apart” in {{structure}} says that two strongly normalizing terms belong to the same type sets only if they are the same term, or both are in <code>Min</code>. So the semantics identifies no two different terms: not convertible ones, such as <code>I I</code> and <code>I</code>, and not even a term and its head reduct. An equality between terms is therefore never built in. It has to be added as a type set, and this page has done that in two ways: <code>EQ(u, v)</code> in {{darrow}}, built from <code>⋂</code> and <code>⇒</code>, and <code>E(u, v)</code> in {{equality}}, which is <code>SN</code> or <code>Min</code>. This section says which relations between terms can be added in the second way, puts the two side by side, and says what an equality between type expressions is.</p>
+
+<h3 class="sub">Equality as a type set</h3>
+
+<section class="box def">
+  <p class="tag">Definition · The equality type set of a relation</p>
+  <p>Let <code>R</code> be a relation between terms with two properties, called <b>constant along steps</b> and <b>survives substitution</b>: if <code>u → u′</code>, then <code>u R v</code> if and only if <code>u′ R v</code>, and the same on the right; and if <code>u R v</code>, then <code>u[s/x] R v[s/x]</code> for every term <code>s</code> and variable <code>x</code>.</p>
+  <p>For terms <code>u</code> and <code>v</code>, <code>E<sub>R</sub>(u, v)</code> is <code>SN</code> if <code>u R v</code>, and <code>Min</code> otherwise.</p>
+  <p class="note">Convertibility has both properties, and it is the only relation on this page that does. Being the same term survives substitution and is not constant along steps: <code>I I → I</code>, and <code>I</code> is the same term as <code>I</code> while <code>I I</code> is not. Reaching the same term by head steps is not constant along steps either: <code>λx.K x → K</code>, and <code>K</code> reaches <code>K</code>, while <code>λx.K x</code>, an abstraction, has no head step and is not <code>K</code>.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · Every such relation can be added<span class="st">here, reviewed</span></p>
+  <p>Let <code>R</code> be as in the definition, and add the type expression <code>{t ≃<sub>R</sub> t′}</code> with the clause <code>⟦{t ≃<sub>R</sub> t′}⟧<sub>ρ</sub> = E<sub>R</sub>(t[ρ], t′[ρ])</code>. Then:</p>
+  <dl class="conds">
+    <dt>type set</dt><dd><code>E<sub>R</sub>(u, v)</code> is a type set, constant along steps of <code>u</code> and of <code>v</code>, so Lemma N holds with the new form by the addition lemma of {{price}} as extended in {{dep}}. This uses that <code>R</code> is constant along steps.</dd>
+    <dt>closed member</dt><dd><code>E<sub>R</sub>(u, v)</code> has a closed member if and only if <code>u R v</code>.</dd>
+    <dt>true rules</dt><dd>The rule β<sub>R</sub>, which concludes <code>Γ ⊢ I : {t ≃<sub>R</sub> t′}</code> from nothing if <code>t R t′</code>, is true; this uses that <code>R</code> survives substitution. The rule ς is true if <code>R</code> is symmetric. The rule δ is true if <code>K</code> and <code>K′</code> are not related by <code>R</code>.</dd>
+    <dt>false rules</dt><dd>The rules ρ and φ are false, for every <code>R</code>.</dd>
+  </dl>
+  <p>The rules are those of {{equality}}, with <code>R</code> in the place of convertibility. {{equality}} is the case in which <code>R</code> is convertibility.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>The proofs of {{equality}} go through with <code>R</code> in the place of convertibility. Two places use the two properties of <code>R</code>: that <code>R</code> is constant along steps makes <code>E<sub>R</sub></code> constant along steps, which the addition lemma needs, and that <code>R</code> survives substitution makes β<sub>R</sub> true, because <code>t R t′</code> has to give <code>t[ρ] R t′[ρ]</code>. The counterexamples to ρ and φ in {{equality}} use only that the variable <code>y</code> is an instance of <code>e</code>, and <code>y ∈ Min ⊆ E<sub>R</sub>(K, I)</code> whatever <code>R</code> relates; the failures come from <code>I ∉ V<sub>I</sub>(K)</code> and from <code>K ∉ ID</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · The two equality type sets of this page</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Type set</th><th>Where</th><th>What it is</th><th>How a proof is used</th></tr></thead>
+    <tbody>
+      <tr><td><code>EQ(u, v) = ⋂<sub>V</sub> (V(u) ⇒ V(v))</code></td><td>{{darrow}}</td><td>Leibniz equality: a proof turns what holds of <code>u</code> into what holds of <code>v</code></td><td>by applying it: <code>e s ∈ V(v)</code></td></tr>
+      <tr><td><code>E(u, v)</code>, which is <code>E<sub>R</sub></code> for convertibility</td><td>{{equality}}</td><td>Cedille’s equality</td><td>not run: the rules ρ and φ, which are false here</td></tr>
+    </tbody>
+  </table></div>
+  <p>Both have a closed member if and only if <code>u</code> and <code>v</code> are convertible. <code>EQ</code> is not of the form <code>E<sub>R</sub></code>: <code>EQ(I, I)</code> contains <code>I</code> and does not contain <code>K</code>, because <code>K ∉ T<sub>I</sub> ⇒ T<sub>I</sub></code>, as <code>K I</code> runs to <code>λy.I</code>; and <code>E(I, I) = SN</code> contains both. A relation coarser than convertibility that has the two properties would give another equality type set by the lemma; this page does not use one.</p>
+</section>
+
+<h3 class="sub">When two type expressions name one set</h3>
+
+<p>The third kind of equality is between names. Two type expressions are <b>equal as names</b> if they name the same type set under every assignment. This is a statement about the semantics, not a judgment of the system: no rule concludes that two type expressions are equal as names, and no rule needs to. Three sufficient conditions are already on the page, in Lemma N: N2 (substitution), on which “∀ out” rests; N4 (term steps) in {{dep}}, on which term conversion rests; and N3 (type steps) in {{fomega}}, on which conversion rests. None of them is necessary. <code>∀X.X</code> and <code>∀X.∀Y.X</code> name <code>Min</code> under every assignment, and neither is reached from the other by steps; the rules can carry a variable from each to the other, by “∀ out” and “∀ in”, but no rule states that the two are equal as names. Whether two type expressions name the same set is, in general, a question of the metatheory, and the page makes no claim about deciding it.</p>
+
+<section class="aside">
+  <p class="tag">Remark · What this section does not cover</p>
+  <p>Function extensionality, quotient types and observational equality are statements about when two terms, or two functions, should count as equal. In a semantics where a type expression names a set of terms they have no home: the lemma of {{structure}} says that the semantics tells terms apart, and the rules that would use such an equality meet limit 1 of {{limits}}. They belong to a semantics where a type expression names a relation between terms, which {{pairs}} sets up; working them out there is not done on this page.</p>
+  <p><b>Propositions, and using a proof.</b> Proof assistants keep propositions apart from data. From general knowledge, not checked against sources for this page: in Coq a proof of a proposition may be used to build data only under a restriction on the proposition, and in the strict propositions of Gilbert, Cockx, Sozeau and Tabareau any two proofs of a proposition are convertible, with a restriction of the same kind. The two values of <code>E</code> show the shape of such a restriction in this semantics. From <code>E(K, I) = Min</code>, the false equation, the rule δ builds anything, and it is true. From <code>E(I, I) = SN</code>, the true equation, the rules ρ and φ build data, and they are false. What this semantics cannot express at all is that two proofs are the same proof: it tells every two terms apart. So in a semantics of sets, the only proof-irrelevant propositions are the two type sets <code>SN</code> and <code>Min</code>, true and false, in which a proof carries no information beyond its existence; every other type set has members that some type set tells apart. The semantics of {{pairs}}, where a type expression names a relation, has a natural notion: a proposition is proof-irrelevant if its relation relates any two of its members. A function from such a relation into another must then send any two proofs to related results, which is the restriction on eliminating a proposition into data, stated as a fact about the model. This is not worked out on this page.</p>
+</section>

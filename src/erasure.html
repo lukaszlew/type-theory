@@ -1,0 +1,38 @@
+<p>Every term on this page is untyped, and every rule leaves the term as it is or builds it from the terms of the premises. The usual presentations write type expressions inside terms: <code>λx:A.t</code>, <code>ΛX.t</code>, <code>t [B]</code>, and more for the larger systems. The remark on Church style in {{rules}} said how the theorem reaches such terms for System F. This section states the argument once, as a lemma with one hypothesis, and lists what each annotated form on this page erases to. It is the one place where the page meets the terms that proof assistants check.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Erasure, loud and silent steps</p>
+  <p>An <b>annotated calculus</b> is a set of <b>annotated terms</b>, together with steps of its own between them and with an erasure.</p>
+  <p>The <b>erasure</b> of an annotated term <code>t</code>, written <code>|t|</code>, is a term of {{terms}}.</p>
+  <p>A step of the annotated calculus from <code>t</code> to <code>t′</code> is <b>loud</b> if <code>|t| → |t′|</code> is a step, and <b>silent</b> if <code>|t| = |t′|</code>.</p>
+  <p>The calculus is <b>erasable</b> if every one of its steps is loud or silent, and no annotated term has an infinite run of silent steps.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Erasure lemma · No infinite run passes from erasures to annotated terms<span class="st">here, reviewed</span></p>
+  <p>Let the annotated calculus be erasable, and let <code>t</code> be an annotated term with <code>|t| ∈ SN</code>. Then <code>t</code> has no infinite run.</p>
+  <p>So if, for every derivable judgment about an annotated term <code>t</code>, the erased judgment about <code>|t|</code> is derivable in a system whose rules this page has shown true, then no typable annotated term has an infinite run.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>Suppose <code>t</code> has an infinite run. If only finitely many of its steps are loud, then from some point on every step is silent, and that is an infinite run of silent steps, which the calculus does not have. So infinitely many steps are loud, and each loud step is a step of the erasure, while a silent step leaves the erasure unchanged. Erasing the whole run gives an infinite run of <code>|t|</code>, against <code>|t| ∈ SN</code>.</p>
+    <p>For the second statement, C1 (strong normalization) of the erased system gives <code>|t| ∈ SN</code>, and the first statement gives the claim. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>Two things have to be checked for each annotated calculus, and they are the whole content of the lemma: that every step is loud or silent, and that silent runs end. The table lists the annotated forms that the rules of this page correspond to, what each erases to, and where the silent steps come from.</p>
+
+<div class="tw"><table class="w40">
+  <thead><tr><th>System</th><th>Annotated form</th><th>Erases to</th><th>Silent steps, and why their runs end</th></tr></thead>
+  <tbody>
+    <tr><td>System F in Church style, {{rules}}</td><td><code>λx:A.t</code>, <code>ΛX.t</code>, <code>t [B]</code></td><td><code>λx.|t|</code>, <code>|t|</code>, <code>|t|</code></td><td><code>(ΛX.t) [B] ⇒ t[B/X]</code>, which removes one <code>Λ</code> and creates none; type expressions have no steps. So a silent run has at most as many steps as the term has <code>Λ</code>s.</td></tr>
+    <tr><td>System F<sub>ω</sub>, {{fomega}}</td><td>the same, with kinds on the <code>Λ</code></td><td>the same</td><td>as for System F, and steps inside a type expression that occurs in an annotation. Type expressions are strongly normalizing under their own steps, as the remark in {{fomega}} says; a silent run removes a <code>Λ</code> or runs a type expression, and between two removals only finitely many type steps fit. This is quoted and not carried out here.</td></tr>
+    <tr><td>Dependent types, {{dep}}</td><td><code>λx:A.t</code>, where <code>A</code> contains terms; an abstraction over a family variable and its application to <code>x.B</code>, for the two rules “∀ in” and “∀ out, for families”</td><td><code>λx.|t|</code>; <code>|t|</code>; <code>|t|</code></td><td>the step that removes an abstraction over a family variable, as for <code>Λ</code>; and steps inside the terms in <code>A</code>. That these runs end needs strong normalization for the terms inside annotations, which are typable terms again. This is the bookkeeping that {{dep}} and {{cube}} leave out; Geuvers and Nederhof carry it out for the Calculus of Constructions.</td></tr>
+    <tr><td>Cedille’s implicit product, {{implicit}}</td><td><code>Λx.t</code>, <code>t -u</code></td><td><code>|t|</code>, <code>|t|</code></td><td rowspan="3">none. Cedille Core defines no steps on annotated terms: it compares erased terms, under convertibility with η, where this page has β only. So the question of silent steps does not arise there, and this page’s terms are its erased terms.</td></tr>
+    <tr><td>Cedille’s dependent intersection, {{dinter}}</td><td><code>[t, u]</code>, <code>t.1</code>, <code>t.2</code></td><td><code>|t|</code>, <code>|t|</code>, <code>|t|</code>; the two parts must have the same erasure</td></tr>
+    <tr><td>Cedille’s equality, {{equality}}</td><td><code>β{s}</code>, <code>ς e</code>, <code>δ e</code>, <code>ρ e − t</code>, <code>φ e − t {t′}</code></td><td><code>|s|</code>, <code>|e|</code>, <code>|e|</code>, <code>|t|</code>, <code>|t′|</code>; this page takes <code>I</code> for <code>β</code></td></tr>
+  </tbody>
+</table></div>
+
+<p>The table is the inventory of what this page’s terms leave out. For the first row the argument is complete. For the second it rests on a quoted fact. For the third it is not done. For the last three rows there is nothing to do, and that is the reason Cedille can take the Kleene trick: a rule that retypes a term, such as φ, costs nothing in a calculus whose steps never see the annotation, and {{equality}} shows what it costs in the semantics instead. The erasures in the table are quoted from the paper on Cedille Core; the rest of the table is from Barendregt’s description of the λ-cube and from general knowledge of Church-style System F, not checked against sources.</p>

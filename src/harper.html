@@ -1,0 +1,27 @@
+<p>Robert Harper’s note <i>How to (Re)Invent Tait’s Method</i> proves a smaller theorem by the same method. It is also written the same way: try the obvious induction, watch it fail, strengthen. Reading the two side by side shows which of the demands of {{lookback}} make the definition here more delicate than his.</p>
+
+<div class="tw"><table class="w40">
+  <thead><tr><th></th><th>Harper’s note</th><th>This page</th></tr></thead>
+  <tbody>
+    <tr><td>Language</td><td>Typed terms. The type expressions are unit, pairs, arrows and one with two answers. No <code>∀</code>.</td><td>Untyped terms. <code>⇒</code> and <code>⋂</code> over all type sets.</td></tr>
+    <tr><td>Steps</td><td>One fixed order: the head step, on closed terms, never under a <code>λ</code>.</td><td>Any step, anywhere.</td></tr>
+    <tr><td>Theorem</td><td>A closed program that returns an answer evaluates to yes or to no. His word “terminating” means that this one order of evaluation ends. It does not mean strongly normalizing.</td><td>Every typable term has no infinite run.</td></tr>
+    <tr><td>Key notion</td><td>“Hereditarily terminating at <code>A</code>”, one predicate per type expression, defined by recursion on <code>A</code>.</td><td>A type set is any set with the three conditions.</td></tr>
+    <tr><td>Arrows</td><td>Evaluates to an abstraction whose body is hereditarily terminating for every hereditarily terminating argument. The other form, “sends hereditarily terminating terms to hereditarily terminating terms”, is one of his exercises.</td><td>Sends members of <code>T</code> into <code>U</code>: <code>⇒</code>.</td></tr>
+    <tr><td>Undoing a head step</td><td>A lemma whose proof is one word, immediate, since the predicate is defined through evaluation.</td><td>The closure condition, imposed by hand, for safe head steps only.</td></tr>
+    <tr><td>Variables</td><td>Never in the predicate. Open terms have their variables replaced by hereditarily terminating terms.</td><td>In every type set, by the Base condition.</td></tr>
+    <tr><td>Main lemma</td><td>A typed term, with its variables replaced by hereditarily terminating terms, is hereditarily terminating.</td><td>The same statement, and then each variable is replaced by itself.</td></tr>
+  </tbody>
+</table></div>
+
+<p><b>The same skeleton.</b> Both proofs strengthen the claim three times. From a property of whole terms to a property at every type expression (his hereditary termination, narrow point 1 here). Then closure under undoing a head step (his head expansion lemma, the closure condition here). Then a statement about open terms under substitution (his final theorem about open terms, the definition of a true judgment here).</p>
+
+<p><b>Why his proof needs less.</b> His note makes none of the three demands of {{lookback}}.</p>
+
+<ul class="list">
+  <li><b>Steps in any order.</b> Under head steps alone, <code>(λx.y) Ω</code> runs to <code>y</code> and stops. A discarded argument is never run. So undoing a head step never brings in a term whose evaluation runs forever, and narrow point 3 does not arise.</li>
+  <li><b>Open terms and steps under <code>λ</code>.</b> His theorem is about closed programs that return an answer, and he remarks that the form “sends hereditarily terminating terms to hereditarily terminating terms” suits exactly that case. Getting a term’s own strong normalization out of that form is what the variable <code>x</code> as argument is for. Narrow point 2 is the price.</li>
+  <li><b><code>∀</code>.</b> His predicate is indexed by type expressions and defined by recursion on them, which is the definition that fails in narrow point 5. Replacing “one predicate per type expression” by “any set that satisfies three conditions” turns his one-word lemma into a condition that must be chosen and must survive <code>⇒</code>. That is narrow points 4 and 6.</li>
+</ul>
+
+<p>His exercises point the same way as {{more}} and {{limits}}. Sums need the form “evaluates to a value of this form”, and he asks what goes wrong with the other form. Numbers are defined as the strongest property closed under zero and successor, which is the least fixed point of {{more}}.</p>

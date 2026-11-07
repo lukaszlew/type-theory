@@ -1,0 +1,36 @@
+<section class="aside">
+  <p class="tag">Addition · New kinds</p>
+  <p>At the level of kinds an addition costs even less. A kind has no conditions to satisfy. It only has to be a nonempty set, and then intersection over it is a type set, by the intersection lemma of {{ops}}. Any nonempty set of members of a kind is a kind, for instance the type sets below a given one, which gives bounded quantification, or the monotone functions on type sets. Two new kinds matter for what follows.</p>
+  <dl class="rows">
+    <dt>Terms</dt><dd>The families of {{fam}}: functions from terms to type sets that do not change along steps. With this kind a type set may depend on a term. This is what the Calculus of Constructions adds to F<sub>ω</sub>, and {{cube}} sketches it.</dd>
+    <dt>Levels</dt><dd>The kinds built so far form a set, so that set can be a kind of the next level. It gives quantifying over kinds, one level down.</dd>
+  </dl>
+  <p>The one collection that is not a set is that of all kinds of every level. Narrow point 7 is about it.</p>
+</section>
+
+<section class="box np" id="np7">
+  <p class="tag">Narrow point 7 · A kind of all kinds</p>
+  <dl class="rows">
+    <dt>Goal</dt><dd>Give kinds the power that <code>∀</code> gives type expressions.</dd>
+    <dt>Try</dt><dd>Let kinds quantify over kinds, the way <code>∀</code> quantifies over type sets: allow the kind “for every kind <code>k</code>, <code>H(k)</code>”, where <code>H</code> turns kinds into kinds. As syntax, this is a kind <code>∀k.κ</code> with a variable <code>k</code> for kinds inside <code>κ</code>, and it is the rule that System U⁻ adds to F<sub>ω</sub>. In the semantics it needs the collection <code>Kinds</code> of all kinds to be a set that is closed under function sets and contains every product <code>∏<sub>k∈Kinds</sub> H(k)</code>. A member of that product picks a member of <code>H(k)</code> for each kind <code>k</code>.</dd>
+    <dt>Breaks</dt><dd>No such set exists. Let <code>P = ∏<sub>k∈Kinds</sub> (k → Ty)</code>. It is a kind, so it is one of the indices, and its own factor at that index is <code>P → Ty</code>. Reading off that factor maps <code>P</code> onto <code>P → Ty</code>, since every other factor is nonempty. And <code>P → Ty</code> maps onto the power set of <code>P</code>, the set of all its subsets: send a function to the set of members that it sends to <code>SN</code>. So <code>P</code> would map onto its own power set, which Cantor’s theorem forbids.</dd>
+    <dt>Hence</dt><dd>Levels. The kinds of {{kinds}} are level 0, and they form a set. A kind of level <code>n+1</code> may quantify over the kinds of level <code>n</code>. A type expression may quantify over the kinds of any one level, because that is an intersection of a nonempty collection of type sets.</dd>
+    <dt>Contrast</dt><dd>The same circle did no harm one level down, in narrow point 5. Every type set is a subset of one fixed set, the set of all terms. So the collection of all type sets is a set from the start, and an intersection cannot leave it. Kinds are built by function sets, each larger than the last, and no fixed set holds them all.</dd>
+    <dt>Status</dt><dd>This shows that the method breaks. By itself it does not show that U⁻ is inconsistent. System F is the warning: by a theorem of Reynolds it has no model in which <code>→</code> is the set of all functions, and it is consistent all the same, as this page shows with a model of another sort. For U⁻ the stronger fact is also true, for a different reason. Girard wrote down a closed term <code>t</code> with <code>⊢ t : ∀X.X</code> in the larger System U, and Coquand and then Hurkens did the same in U⁻. That is quoted here and not proved. Erase the annotations from such a term and an untyped term is left that is not in <code>SN</code>. The paradox is that the rules of U⁻ accept it.</dd>
+  </dl>
+</section>
+
+<section class="aside">
+  <p class="tag">Remark · Two readings of kinds</p>
+  <p>{{kinds}} reads a kind as a plain set. One can instead repeat {{typeset}} one level up. Put type expressions in the place of terms, and steps inside type expressions in the place of steps. A kind is then a set of type expressions with the three conditions. The two readings answer different questions.</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th></th><th>Kinds as plain sets</th><th>Kinds as sets of type expressions with the three conditions</th></tr></thead>
+    <tbody>
+      <tr><td>A member of <code>∗</code></td><td>a type set</td><td>a strongly normalizing type expression</td></tr>
+      <tr><td>What it proves</td><td>terms are strongly normalizing</td><td>type expressions are strongly normalizing</td></tr>
+      <tr><td><code>∀X:κ</code> in the type expression of a term</td><td>an intersection over the members of <code>κ</code></td><td>would range over type expressions, which is narrow point 5 again</td></tr>
+      <tr><td>Kinds that quantify over kinds</td><td>impossible, by narrow point 7</td><td>allowed: it is the intersection of {{ops}}, one level up</td></tr>
+    </tbody>
+  </table></div>
+  <p>For F<sub>ω</sub> both readings can be used, each for its own question. A system with kinds that quantify over kinds, and with terms that quantify over the members of such kinds, needs kinds as sets of type expressions for its kinds, and kinds as plain sets for its terms. That system is U⁻, and no reading gives both.</p>
+</section>

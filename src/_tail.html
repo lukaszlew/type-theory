@@ -1,0 +1,27 @@
+</div>
+
+<script>
+(function(){
+  var btn=document.getElementById('toggle-proofs');
+  var proofs=[].slice.call(document.querySelectorAll('details.proof'));
+  function allOpen(){return proofs.every(function(d){return d.open;});}
+  function sync(){btn.textContent=allOpen()?'Fold all proofs':'Open all proofs';}
+  btn.addEventListener('click',function(){var o=!allOpen();proofs.forEach(function(d){d.open=o;});sync();});
+  proofs.forEach(function(d){d.addEventListener('toggle',sync);});
+  var GOALS=[["The whole page", null], ["Why System F is strongly normalizing, and consistent", [1, 2, 4, 5, 8, 9, 10, 12, 13]], ["Why the definition of a type set cannot be simpler", [1, 2, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14]], ["What the proof used, and how strong it is", [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]], ["Intersection types reach every strongly normalizing term", [1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21]], ["Adding rules, and where that stops", [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 22, 23, 24, 25]], ["Dependent types", [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 19, 22, 24, 25, 26, 27, 28]], ["Cedille’s three constructions", [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30]], ["Equality, in all its forms", [1, 2, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 18, 22, 23, 24, 26, 27, 30, 31, 32, 35]], ["The three families of type sets", [1, 2, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 18, 22, 23, 24, 26, 27, 30, 31, 32, 35, 36, 37]], ["System Fω and the kind of all kinds", [1, 2, 4, 5, 8, 9, 10, 12, 13, 31, 32, 33]], ["The λ-cube", [1, 2, 4, 5, 8, 9, 10, 12, 13, 24, 26, 27, 31, 32, 33, 34]], ["Compared with other proofs", [1, 2, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 36, 38, 39]]];
+  var ANC={"1": [1], "2": [1, 2], "3": [1, 2, 3], "4": [1, 2, 4], "5": [1, 2, 4, 5], "6": [1, 2, 4, 5, 6], "7": [1, 2, 4, 5, 7], "8": [1, 2, 4, 5, 8], "9": [1, 2, 4, 5, 8, 9], "10": [1, 2, 4, 5, 8, 10], "11": [1, 2, 4, 5, 8, 10, 11], "12": [1, 2, 4, 5, 8, 9, 10, 12], "13": [1, 2, 4, 5, 8, 9, 10, 12, 13], "14": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14], "15": [1, 2, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15], "16": [1, 2, 3, 4, 5, 8, 9, 10, 12, 13, 16], "17": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 17], "18": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18], "19": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 19], "20": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20], "21": [1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 19, 21], "22": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 22], "23": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 22, 23], "24": [1, 2, 4, 5, 8, 24], "25": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 22, 24, 25], "26": [1, 2, 4, 5, 8, 9, 24, 26], "27": [1, 2, 4, 5, 8, 9, 10, 12, 13, 24, 26, 27], "28": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 19, 22, 24, 25, 26, 27, 28], "29": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 19, 22, 24, 25, 26, 27, 28, 29], "30": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 18, 22, 23, 24, 26, 27, 30], "31": [1, 2, 4, 5, 8, 9, 31], "32": [1, 2, 4, 5, 8, 9, 10, 12, 13, 31, 32], "33": [1, 2, 4, 5, 8, 9, 10, 12, 13, 31, 32, 33], "34": [1, 2, 4, 5, 8, 9, 10, 12, 13, 24, 26, 27, 31, 32, 33, 34], "35": [1, 2, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 18, 22, 23, 24, 26, 27, 30, 31, 32, 35], "36": [1, 2, 4, 5, 8, 9, 10, 12, 13, 36], "37": [1, 2, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 18, 22, 23, 24, 26, 27, 30, 31, 32, 35, 36, 37], "38": [1, 2, 4, 5, 8, 9, 10, 11, 12, 13, 14, 36, 38], "39": [1, 2, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 39]};
+  var sel=document.getElementById('goal'),list=document.getElementById('goal-list');
+  function has(set,n){return !set||set.indexOf(n)>=0;}
+  function applyGoal(){var set=GOALS[sel.value][1];
+    [].forEach.call(document.querySelectorAll('.dep [data-n],.toc [data-n]'),function(el){el.classList.toggle('dim',!has(set,+el.getAttribute('data-n')));});
+    [].forEach.call(document.querySelectorAll('.dep [data-t]'),function(el){el.classList.toggle('dim',!(has(set,+el.getAttribute('data-t'))&&has(set,+el.getAttribute('data-h'))));});
+    list.textContent=set?set.length+' sections, in order: §'+set.join(', §')+'.':'';
+    try{localStorage.setItem('narrow-path-goal',sel.value);}catch(e){}}
+  try{var g=localStorage.getItem('narrow-path-goal');if(g!==null&&GOALS[g]){sel.value=g;}}catch(e){}
+  sel.addEventListener('change',applyGoal);applyGoal();
+  function mark(n,on){var a=ANC[n]||[];[].forEach.call(document.querySelectorAll('.dep a[data-n]'),function(el){el.classList.toggle('anc',on&&a.indexOf(+el.getAttribute('data-n'))>=0);});}
+  [].forEach.call(document.querySelectorAll('.dep a[data-n]'),function(el){var n=+el.getAttribute('data-n');
+    el.addEventListener('mouseenter',function(){mark(n,true);});el.addEventListener('mouseleave',function(){mark(n,false);});
+    el.addEventListener('focus',function(){mark(n,true);});el.addEventListener('blur',function(){mark(n,false);});});
+})();
+</script>

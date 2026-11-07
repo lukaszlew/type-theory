@@ -1,0 +1,44 @@
+<p>The proof is done. This section collects what it used and where its difficulty came from. The five requirements of {{obstacle}} were met by the three conditions and the two lemmas of {{ops}}: W1 (inside SN) by the SN condition, W5 (variables) by the Base condition, W3 (abstraction) by the closure condition through the fact <i>abstract</i>, and W2 (arrow) and W4 (intersection) by the arrow lemma and the intersection lemma.</p>
+
+<h3 class="sub">What each condition was for</h3>
+
+<p>None of the three conditions is spare.</p>
+
+<div class="tw"><table class="w34">
+  <thead><tr><th>Condition</th><th>Where it is used</th></tr></thead>
+  <tbody>
+    <tr><td>SN condition</td><td>The arrow keeps the SN condition and the Base condition. <i>Abstract</i>: the argument is in <code>SN</code>, as the closure condition requires. C1 (strong normalization): a member of <code>⟦A⟧<sub>ρ</sub></code> is in <code>SN</code>.</td></tr>
+    <tr><td>Base condition</td><td>The arrow keeps the SN condition: a variable is the argument used. The arrow keeps the Base condition: <code>Base ⊆ U</code>. C1 (strong normalization): each variable may be replaced by itself.</td></tr>
+    <tr><td>Closure condition</td><td>The arrow keeps the closure condition: one more trailing argument. <i>Abstract</i>: abstractions enter <code>T ⇒ U</code>.</td></tr>
+  </tbody>
+</table></div>
+
+<h3 class="sub">The narrow points</h3>
+
+<p id="recap">Each row is a natural move, the counterexample to it, and what the counterexample forced.</p>
+
+<div class="tw"><table class="w40">
+  <thead><tr><th>No.</th><th>The natural move</th><th>Counterexample</th><th>What it forced</th></tr></thead>
+  <tbody>
+    <tr><td><a href="#np1">1</a></td><td>Show that “strongly normalizing” passes through application</td><td><code>δ</code> and <code>δ δ</code></td><td>Many sets, and <code>⇒</code></td></tr>
+    <tr><td><a href="#np2">2</a></td><td>Ask for less than the Base condition</td><td><code>∅ ⇒ SN</code> contains <code>Ω</code>; <code>{I} ∩ {K}</code> is empty; <code>SN ⇒ (SN ⇒ U)</code> has no variable</td><td>The Base condition, for every <code>n</code></td></tr>
+    <tr><td><a href="#np3">3</a></td><td>Close type sets under undoing any step</td><td><code>(λx.y) Ω</code></td><td>Head step only, argument in SN: the closure condition</td></tr>
+    <tr><td><a href="#np4">4</a></td><td>State the closure condition for a bare <code>(λx.t) u</code></td><td><code>(λz.I) y v</code></td><td>Trailing arguments in the closure condition</td></tr>
+    <tr><td><a href="#np5">5</a></td><td><code>∀</code> ranges over type expressions</td><td><code>X→X</code> at <code>∀X.X→X</code></td><td><code>∀</code> ranges over all sets with the three conditions</td></tr>
+    <tr><td><a href="#np6">6</a></td><td>Trust every name</td><td>A name for <code>∅</code> makes <code>λx.Ω</code> typable</td><td>Lemma N</td></tr>
+  </tbody>
+</table></div>
+
+<p>Narrow point 7 belongs to System F<sub>ω</sub>. It is in {{allkinds}}.</p>
+
+<h3 class="sub">Where the difficulty comes from</h3>
+
+<p>Each narrow point goes back to one of three demands that the theorem makes.</p>
+
+<ul class="list">
+  <li><b>Steps in any order, anywhere.</b> If only the head step were allowed, a discarded argument would never be run, and undoing a head step would never bring in a term that is not in <code>SN</code>. Because any redex may be reduced, the closure condition asks for a safe head step and for nothing more general. This is narrow point 3.</li>
+  <li><b>Open terms.</b> The theorem covers terms with free variables and steps under <code>λ</code>. That is what puts the variables into every type set, and with them all of the Base condition. There is a second reason for open terms. The empty set cannot be a type set, by narrow point 2, so even the type set that <code>∀X.X</code> names has members, and C2 (consistency) asks that none of them is closed. This is narrow point 2.</li>
+  <li><b><code>∀</code> over all type sets.</b> Without <code>∀</code> one can define a set for each type expression directly, by recursion on the type expression, and closure under undoing head steps is then a lemma about those sets. With <code>∀</code> that recursion is circular. So the type sets have to be defined beforehand, as all sets that satisfy certain conditions. The conditions then have to be chosen so that they survive <code>⇒</code> and <code>⋂</code>, and every type expression has to be shown to name such a set. These are narrow points 5, 4 and 6.</li>
+</ul>
+
+<p>{{harper}} looks at a proof that makes none of the three demands and meets none of the narrow points 2 to 6.</p>

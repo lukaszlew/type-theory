@@ -1,0 +1,171 @@
+<title>The Narrow Path</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,600;1,6..96,500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=Noto+Sans+Math&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap">
+<style>
+:root{
+  /* Layout: one textbook column. Only four kinds of block are framed in colour. Everything else is set plain under a labelled rule, and proofs fold under their statements. */
+  --paper:#f7f8fa; --ink:#1a2030; --muted:#56607a; --rule:#cdd3de;
+  --def:#1d5bb8;  --def-bg:#e9f0fb;
+  --thm:#6336ad;  --thm-bg:#f0eafa;
+  --np:#b62f1b;   --np-bg:#fbeae6;
+  --ex:#19704a;   --ex-bg:#e6f3ec;
+  --font-display:"Bodoni Moda",Didot,"Bodoni MT",Georgia,serif;
+  --font-body:"STIX Two Text","STIX Two Math","Noto Sans Math","Cambria Math",Cambria,Georgia,"Times New Roman",serif;
+  --font-label:"IBM Plex Sans Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#11141b; --ink:#e3e7ef; --muted:#9ba5b8; --rule:#2d3544;
+    --def:#8ab6ff;  --def-bg:#16223a;
+    --thm:#bda6f3;  --thm-bg:#221b38;
+    --np:#ff9684;   --np-bg:#341a18; --ex:#74d0a0; --ex-bg:#12251c;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#11141b; --ink:#e3e7ef; --muted:#9ba5b8; --rule:#2d3544;
+  --def:#8ab6ff;  --def-bg:#16223a;
+  --thm:#bda6f3;  --thm-bg:#221b38;
+  --np:#ff9684;   --np-bg:#341a18; --ex:#74d0a0; --ex-bg:#12251c;
+  color-scheme:dark;
+}
+
+body{background:var(--paper);color:var(--ink);font:400 1.125rem/1.6 var(--font-body);-webkit-text-size-adjust:100%}
+p,ul,ol,dl,dd,h1,h2,h3{margin:0}
+.page{max-width:41rem;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:2.75rem 4.5rem;display:flex;flex-direction:column;gap:1.35rem}
+.page>*{min-width:0}
+
+a{color:inherit;text-decoration-color:var(--muted);text-underline-offset:.16em}
+a:hover{text-decoration-color:currentColor}
+a:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:2px}
+b,strong{font-weight:600}
+code{font-family:var(--font-body);font-size:1em;white-space:nowrap}
+sub{font-size:.72em;line-height:0}
+
+/* opener */
+.head{display:flex;flex-direction:column;gap:.85rem;padding-bottom:1.5rem;border-bottom:3px double var(--ink)}
+.eyebrow,.lab{font:600 .8rem/1.3 var(--font-label);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font:600 clamp(2.6rem,10vw,4rem)/1 var(--font-display);letter-spacing:-.012em;text-wrap:balance}
+.lede{font-size:1.22rem;line-height:1.5;max-width:35rem}
+
+h2{font:600 1.8rem/1.15 var(--font-display);text-wrap:balance;margin-top:2rem;padding-top:1.2rem;border-top:3px double var(--rule);display:flex;gap:.65rem;align-items:baseline}
+h2 .sec{font:600 .95rem/1 var(--font-label);letter-spacing:.06em;color:var(--muted);flex:none}
+.sub{font:600 1.3rem/1.25 var(--font-display);margin-top:1.1rem;text-wrap:balance}
+
+/* coloured frames: definition, lemma or theorem, narrow point */
+.box{--c:var(--ink);--b:transparent;border:1.5px solid var(--c);background:var(--b);border-radius:3px;padding:1.15rem 1.1rem 1.05rem;display:flex;flex-direction:column;gap:.7rem;margin-top:.55rem}
+.box>*,.aside>*{min-width:0}
+.box>.tag{align-self:flex-start;margin:-1.87rem 0 -.1rem -.35rem;background:var(--paper);color:var(--c);border:1.5px solid var(--c);border-radius:2px;padding:.14rem .5rem .1rem;font:600 .78rem/1.25 var(--font-label);letter-spacing:.09em;text-transform:uppercase;display:inline-flex;gap:.4rem;align-items:center}
+.tag svg{width:.95em;height:.95em;flex:none}
+.tag .st{font-weight:500;letter-spacing:.06em;opacity:.78;border-left:1px solid currentColor;padding-left:.45rem;white-space:nowrap}
+.def{--c:var(--def);--b:var(--def-bg)}
+.thm{--c:var(--thm);--b:var(--thm-bg)}
+.np{--c:var(--np);--b:var(--np-bg)}
+.ex{--c:var(--ex);--b:var(--ex-bg)}
+
+/* plain material: a hairline with a label on it, no fill */
+.aside{--c:var(--muted);border-top:1px solid var(--rule);padding:.95rem 0 0 1.1rem;display:flex;flex-direction:column;gap:.65rem;margin-top:.5rem}
+.aside>.tag{align-self:flex-start;margin:-1.45rem 0 -.05rem -.5rem;background:var(--paper);color:var(--muted);padding:0 .5rem;font:600 .78rem/1.25 var(--font-label);letter-spacing:.09em;text-transform:uppercase}
+
+.box ul,.box ol,.aside ul,.aside ol,.pf ul,.list{padding-left:1.25rem;display:flex;flex-direction:column;gap:.45rem}
+.note{color:var(--muted);font-size:.94em}
+
+/* proofs: folded, uncoloured, attached to the statement above */
+details.proof{margin:-.8rem 0 0 1.1rem}
+details.proof>summary{display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;list-style:none;font:600 .78rem/1.25 var(--font-label);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding:.3rem .15rem;border-radius:2px}
+details.proof>summary::-webkit-details-marker{display:none}
+details.proof>summary::before{content:"+";display:inline-flex;align-items:center;justify-content:center;width:1.05rem;height:1.05rem;border:1.5px solid currentColor;border-radius:2px;font:600 .85rem/1 var(--font-label);letter-spacing:0}
+details.proof[open]>summary::before{content:"−"}
+details.proof>summary:hover{color:var(--ink)}
+details.proof>summary:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.pf{display:flex;flex-direction:column;gap:.55rem;padding:.4rem 0 .2rem}
+.qed{float:right}
+.cp{background:color-mix(in srgb,var(--ink) 14%,transparent);border-radius:2px;padding:0 .14em}
+
+/* anatomy rows inside narrow points, additions, limits */
+.rows{display:grid;grid-template-columns:5.6rem minmax(0,1fr);gap:.6rem .9rem}
+.rows dt{font:600 .78rem/1.5 var(--font-label);letter-spacing:.08em;text-transform:uppercase;color:var(--c);padding-top:.28rem}
+@media (max-width:32rem){
+  .rows{grid-template-columns:minmax(0,1fr);gap:.1rem}
+  .rows dd{margin-bottom:.55rem}
+}
+
+/* labelled lists of conditions */
+.conds{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.55rem .8rem}
+.conds dt{font-weight:600;color:var(--c)}
+.conds dd span{display:block;color:var(--muted);font-size:.94em}
+
+/* displayed formulas */
+.eq{padding-left:1.3rem;overflow-x:auto;white-space:nowrap;line-height:1.95}
+
+/* tables */
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.95em}
+th{font:600 .76rem/1.3 var(--font-label);letter-spacing:.09em;text-transform:uppercase;text-align:left;color:var(--muted);border-bottom:1.5px solid var(--ink);padding:.4rem .8rem .4rem 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--rule);padding:.5rem .8rem .5rem 0;vertical-align:top}
+tr>:last-child{padding-right:0}
+td:first-child{font-weight:600}
+.w34{min-width:34rem}
+.w40{min-width:40rem}
+.terms td:first-child{white-space:nowrap}
+
+/* legend, contents, controls */
+.legend{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.4rem 1.7rem;font-size:.95em}
+.legend li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.45rem;align-items:baseline}
+.legend li::before{content:"";width:.85rem;height:.85rem;border:1.5px solid var(--c);background:var(--b);border-radius:2px;transform:translateY(.1rem)}
+.btn{font:600 .8rem/1 var(--font-label);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:transparent;border:1.5px solid var(--ink);border-radius:2px;padding:.55rem .75rem;cursor:pointer}
+.btn:hover{background:color-mix(in srgb,var(--ink) 9%,transparent)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.toc{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:.3rem 1.4rem}
+.toc li{display:flex;gap:.55rem;align-items:baseline}
+.toc .n{font:600 .82rem/1 var(--font-label);letter-spacing:.05em;color:var(--muted);flex:none;width:2.1rem}
+.pin{display:inline-flex;align-items:center;justify-content:center;width:1.3rem;height:1.3rem;border:1.5px solid var(--np);color:var(--np);border-radius:50%;font:600 .72rem/1 var(--font-label);text-decoration:none;margin-left:.2rem;vertical-align:.08em}
+.fig{margin:0;display:flex;flex-direction:column;gap:.5rem;align-items:center}
+.fig svg{display:block;width:100%;max-width:27.5rem;height:auto}
+.fig text{font:400 15px var(--font-body);fill:currentColor;stroke:none}
+.fig .ax text{font:600 12px var(--font-label);letter-spacing:.04em;fill:var(--muted)}
+.fig .nm text{font-weight:600}
+.fig figcaption{color:var(--muted);font-size:.94em;max-width:34rem}
+.src{padding-left:1.2rem;display:flex;flex-direction:column;gap:.35rem;font-size:.95em}
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:.8rem 1.5rem;align-items:center}
+
+/* sections: a part label, a line that says what the section uses, and links between sections */
+.part{font:600 .8rem/1.3 var(--font-label);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-top:2.6rem;padding-top:.75rem;border-top:3px double var(--ink)}
+.part+h2{margin-top:0;padding-top:0;border-top:0}
+.uses{font:500 .9rem/1.45 var(--font-label);letter-spacing:.01em;color:var(--muted);margin-top:-.75rem}
+a.xr{white-space:nowrap;text-decoration-style:dotted}
+.tocp{font:600 .78rem/1.3 var(--font-label);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:-.9rem}
+.toc+.tocp{margin-top:.2rem}
+
+/* the dependency graph */
+.dep{align-items:stretch;width:min(100vw - 2rem,60rem);align-self:center}
+.lc{text-transform:none}
+.dep .tw{overflow-x:auto}
+.dep svg{max-width:none;width:100%;min-width:46rem}
+.dep .de{opacity:.55}
+.dep .de .m{stroke-width:2;opacity:1}
+.dep .dh{opacity:.75}
+.dep rect{fill:var(--paper);stroke:currentColor;stroke-width:1}
+.dep .m rect{stroke-width:2.2}
+.dep text{font:500 10px var(--font-label);letter-spacing:0;text-anchor:middle;fill:currentColor}
+.dep .num{font-weight:600}
+.dep a{text-decoration:none}
+.dep a:hover rect,.dep a:focus-visible rect{fill:color-mix(in srgb,var(--ink) 10%,var(--paper))}
+.dep figcaption{max-width:39rem;align-self:center}
+.dep .dim rect{opacity:.22}
+.dep .dim text{opacity:.28}
+.dep path.dim,.dep polygon.dim{opacity:.1}
+.dep a.anc rect{fill:color-mix(in srgb,var(--def) 18%,var(--paper))}
+.toc li.dim{opacity:.38}
+.goal{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center}
+.goal label{font:600 .95rem/1.2 var(--font-label);letter-spacing:.02em}
+.goal select{font:500 .95rem/1.2 var(--font-label);color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:2px;padding:.45rem .5rem;max-width:100%}
+.goal select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.goal .note{flex-basis:100%}
+.goal .note:empty{display:none}
+</style>
+
+<div class="page">
+

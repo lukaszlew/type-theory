@@ -1,0 +1,31 @@
+<section class="box def">
+  <p class="tag">Definition · Judgment</p>
+  <p>A <b>context</b> <code>Γ</code> is a list <code>x<sub>1</sub>:A<sub>1</sub>, …, x<sub>n</sub>:A<sub>n</sub></code> of distinct term variables, each with a type expression.</p>
+  <p>A <b>judgment</b> consists of a context <code>Γ</code>, a term <code>t</code> and a type expression <code>A</code>.</p>
+  <p>The judgment is <b>true</b>, written <code>Γ ⊨ t : A</code>, if the following holds: for every <code>ρ</code>, and for all terms <code>u<sub>1</sub> ∈ ⟦A<sub>1</sub>⟧<sub>ρ</sub></code>, …, <code>u<sub>n</sub> ∈ ⟦A<sub>n</sub>⟧<sub>ρ</sub></code>, the term <code>t[u<sub>1</sub>/x<sub>1</sub>,…,u<sub>n</sub>/x<sub>n</sub>]</code> is in <code>⟦A⟧<sub>ρ</sub></code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A true judgment with no context</p>
+  <p><code>⊨ I : ∀X.X→X</code>, since <code>I ∈ C ⇒ C</code> for every type set <code>C</code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Self-application as a true judgment</p>
+  <p><code>x : ∀X.X→X ⊨ x x : ∀X.X→X</code>. This is the self-application example of {{facts}}, up to its <i>apply</i> line.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A true judgment with a context</p>
+  <p><code>x : X, f : X → Y ⊨ f x : Y</code>. Take any assignment, any <code>u ∈ ρ(X)</code> and any <code>g ∈ ρ(X) ⇒ ρ(Y)</code>. Then <code>g u ∈ ρ(Y)</code>, by the definition of the arrow. One instance: <code>ρ(X) = T<sub>K</sub></code>, <code>ρ(Y) = T<sub>I</sub></code>, <code>u = K</code> and <code>g = λx.x I y</code>, a member of <code>T<sub>K</sub> ⇒ T<sub>I</sub></code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A true judgment about an abstraction</p>
+  <p><code>x : X ⊨ λy.x : Y → X</code>. Take any <code>u ∈ ρ(X)</code> and <code>v ∈ ρ(Y)</code>. Then <code>(λy.u) v →<sub>h</sub> u</code> is a safe head step, because <code>v ∈ SN</code>. So <code>(λy.u) v ∈ ρ(X)</code> by the closure condition, and that says <code>λy.u ∈ ρ(Y) ⇒ ρ(X)</code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A false judgment</p>
+  <p><code>x : X ⊨ x : Y</code> is false. Send <code>X</code> to <code>SN</code> and <code>Y</code> to <code>Min</code>, and replace <code>x</code> by <code>I</code>. Then <code>I ∈ SN</code>, and <code>I</code> is not in <code>Min</code>. One assignment and one replacement are enough to refute a judgment.</p>
+</section>

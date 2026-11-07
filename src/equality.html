@@ -1,0 +1,106 @@
+<p>Cedille’s third construction is an equality between untyped terms, written <code>{t ≃ t′}</code>, with rules that use a proof of an equation without running it. {{darrow}} had equality as a defined type expression, <code>u ≡ v</code>, whose proofs are used by applying them. That difference decides which of Cedille’s rules fit.</p>
+
+<section class="box def">
+  <p class="tag">Definition · The equality type set</p>
+  <p>For terms <code>u</code> and <code>v</code>, <code>E(u, v)</code> is <code>SN</code> if <code>u</code> and <code>v</code> are convertible, and <code>Min</code> otherwise.</p>
+  <p>There is one more form of type expression: <code>{t ≃ t′}</code>, for any terms <code>t</code> and <code>t′</code>.</p>
+  <p>One clause is added:</p>
+  <p class="eq"><code>⟦{t ≃ t′}⟧<sub>ρ</sub> = E(t[ρ], t′[ρ])</code></p>
+  <p class="note">The two values are forced by the rules below. A true equation needs a closed member, for the rule β, and <code>SN</code> is the type set that asks least of one. A false equation should prove anything, for the rule δ, so it has to name the smallest type set, which is <code>Min</code> by M3 (smallest).</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · The equality type set<span class="st">here, reviewed</span></p>
+  <dl class="conds">
+    <dt>type set</dt><dd><code>E(u, v)</code> is a type set, and it is constant along steps of <code>u</code> and of <code>v</code>.</dd>
+    <dt>true equation</dt><dd>If <code>u</code> and <code>v</code> are convertible, then <code>I ∈ E(u, v)</code>.</dd>
+    <dt>closed member</dt><dd><code>E(u, v)</code> has a closed member if and only if <code>u</code> and <code>v</code> are convertible.</dd>
+  </dl>
+  <p>So, by the addition lemma of {{price}} as extended in {{dep}}, Lemma N holds with the new form of type expression: the clause computes the set from its two term inputs, and <code>E</code> is constant along their steps. On closed members, <code>E(u, v)</code> agrees with the <code>EQ(u, v)</code> of {{darrow}}.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><code>SN</code> and <code>Min</code> are type sets, and a step does not change which terms a term is convertible with. <code>I ∈ SN</code>. <code>SN</code> has closed members and <code>Min</code> has none, by M3 (smallest). <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>Cedille has five rules for the equality. They are quoted here from the paper on Cedille Core, with the terms erased, and with two changes: in Cedille, the proof <code>β</code> of a true equation may erase to any term at all, written <code>β{s}</code>, and here it erases to <code>I</code>; and Cedille’s convertibility includes the rule η, which {{terms}} left out, so “convertible” here is the convertibility of {{fam}}, by β alone. The name “Kleene trick” is Stump’s, after Kleene’s realizability, which accepts any number as a realizer of a true equation. <code>K′</code> stands for <code>λx.λy.y</code>.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Cedille’s rules for the equality</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Rule</th><th>From</th><th>Conclude</th></tr></thead>
+    <tbody>
+      <tr><td>β</td><td>nothing, if <code>t</code> and <code>t′</code> are convertible</td><td><code>Γ ⊢ I : {t ≃ t′}</code></td></tr>
+      <tr><td>ς</td><td><code>Γ ⊢ e : {t ≃ t′}</code></td><td><code>Γ ⊢ e : {t′ ≃ t}</code></td></tr>
+      <tr><td>δ</td><td><code>Γ ⊢ e : {K ≃ K′}</code></td><td><code>Γ ⊢ e : B</code></td></tr>
+      <tr><td>ρ</td><td><code>Γ ⊢ e : {t ≃ t′}</code> and <code>Γ ⊢ s : B[t′/x]</code></td><td><code>Γ ⊢ s : B[t/x]</code></td></tr>
+      <tr><td>φ</td><td><code>Γ ⊢ e : {t ≃ t′}</code> and <code>Γ ⊢ t : B</code></td><td><code>Γ ⊢ t′ : B</code></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">ς is symmetry. δ says that a false equation proves anything: <code>B</code> is any type expression. ρ is rewriting. φ is the Kleene trick. In ρ and φ the proof <code>e</code> does not appear in the conclusion. In δ, ρ and φ the conclusion is about a term that the premises say nothing about, except through the equation.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · Three of the five rules are true, and two are not<span class="st">here, reviewed</span></p>
+  <p>The rules β, ς and δ are true. The rules ρ and φ are not.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>β</b> is the fact <i>true equation</i>. <b>ς</b> holds because <code>E(u, v) = E(v, u)</code>.</p>
+    <p><b>δ.</b> <code>K</code> and <code>K′</code> are distinct normal forms, so they are not convertible, by the Church–Rosser theorem, quoted. So <code>⟦{K ≃ K′}⟧<sub>ρ</sub> = Min</code>, and <code>Min</code> is inside every type set, by M3 (smallest). So if <code>e[ρ] ∈ Min</code>, then <code>e[ρ] ∈ ⟦B⟧<sub>ρ</sub></code>.</p>
+    <p><b>ρ.</b> Let <code>Γ</code> be <code>e : {K ≃ I}, z : P I</code>. The judgment <code>Γ ⊢ z : P I</code> is derivable by the variable rule, so it is true. The rule ρ, with <code>B = P x</code>, concludes <code>Γ ⊢ z : P K</code>. That judgment is false. Take <code>ρ(e) = y</code>, which is in <code>Min = E(K, I)</code>; <code>ρ(P) = V<sub>I</sub></code>, the family of {{fam}} that is <code>SN</code> at the terms convertible with <code>I</code> and <code>Min</code> elsewhere; and <code>ρ(z) = I</code>, which is in <code>V<sub>I</sub>(I) = SN</code>. Then <code>z[ρ] = I</code>, and <code>I ∉ V<sub>I</sub>(K) = Min</code>.</p>
+    <p><b>φ.</b> Let <code>Γ</code> be <code>e : {I ≃ K}</code>. The judgment <code>Γ ⊢ I : ∀X.X→X</code> is derivable, so it is true. The rule φ concludes <code>Γ ⊢ K : ∀X.X→X</code>. That judgment is false: take <code>ρ(e) = y ∈ Min = E(I, K)</code>, and <code>K ∉ ID</code>, because <code>K I →<sub>h</sub> λb.I</code>, which is not in <code>T<sub>I</sub></code>, so <code>K ∉ T<sub>I</sub> ⇒ T<sub>I</sub></code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>Why ρ and φ fail is limit 1 of {{limits}} again. Each draws a conclusion from the existence of a member of <code>{t ≃ t′}</code>. In this semantics that existence says nothing, because the variables are members of every type set, and in particular of <code>E(K, I) = Min</code>. The rule δ draws its conclusion from <code>Min</code> itself, which is inside every type set, and that is why it is true. And a proof <code>e</code> of <code>u ≡ v</code> in {{darrow}} is used by applying it, <code>e s ∈ P v</code>, which is true even for <code>e = y</code>, because <code>y s ∈ Base</code>.</p>
+
+<p>The rule φ fails for a second reason, which holds even for a true equation with a closed proof. It asks that if <code>u ∈ T</code>, and <code>u</code> and <code>v</code> are convertible, then <code>v ∈ T</code>: every type set would have to be closed under conversion. Not even <code>SN</code> is: <code>(λz.I) Ω</code> is convertible with <code>I</code>, by one step, and it is not in <code>SN</code>. Inside <code>SN</code> the same thing happens, as limit 3 of {{limits}} shows: <code>Gen({I I})</code> contains <code>I I</code> and not <code>I</code>.</p>
+
+<section class="box thm">
+  <p class="tag">Lemma · With β and φ, a closed term that is not in SN is typable<span class="st">here, reviewed</span></p>
+  <p>With the rules β and φ added to those of {{dep}}, the judgment <code>⊢ (λz.I) Ω : ∀X.X→X</code> is derivable. The term <code>(λz.I) Ω</code> is closed, and it is not in <code>SN</code>, because <code>Ω</code> can be run inside it forever. So C1 (strong normalization) is false for these rules, and no semantics that proves C1 can make both β and φ true.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <div class="tw"><table class="w34">
+      <thead><tr><th>Line</th><th>Judgment</th><th>Rule</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>⊢ I : {I ≃ (λz.I) Ω}</code></td><td>β, since <code>(λz.I) Ω → I</code></td></tr>
+        <tr><td>2</td><td><code>⊢ I : ∀X.X→X</code></td><td>variable, → in, ∀ in</td></tr>
+        <tr><td>3</td><td><code>⊢ (λz.I) Ω : ∀X.X→X</code></td><td>φ, from 1 and 2</td></tr>
+      </tbody>
+    </table></div>
+    <p>Line 3 is the false one: <code>(λz.I) Ω ∉ ID</code>, because <code>ID ⊆ SN</code>. Stump’s own example uses δ in the place of β, under a hypothesis. From <code>e : {K ≃ K′}</code>, δ gives <code>e : {I ≃ Ω}</code>, then φ gives <code>e : {K ≃ K′} ⊢ Ω : ∀X.X→X</code>, and “→ in” gives <code>⊢ λe.Ω : {K ≃ K′} → ∀X.X→X</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>Stump says the same of Cedille, quoted: “There are typable terms t which fail to normalize”, and “failure of normalization does not impinge on” the consistency theorem. So the failure is not a defect of this semantics. It is in what the rules ask for.</p>
+
+<section class="aside">
+  <p class="tag">Remark · What Stump’s semantics for Cedille does instead</p>
+  <p><b>Quoted.</b> A type names a set of closed terms that is closed under conversion, and every closed term is allowed, “even non-normalizing ones”. The equality type <code>{t ≃ t′}</code> names the set of all closed terms if the two terms are convertible and the empty set otherwise. What is proved is consistency: no closed term has the type expression <code>∀X.X</code>.</p>
+  <p><b>Measured against this page.</b> Three differences, each of which answers one failure above.</p>
+  <ul class="list">
+    <li>No variables, so no Base condition and no limit 1. A context with a false equation has no instance, and a judgment under it is true for lack of instances. That is what makes ρ and φ true there.</li>
+    <li>Closed under conversion, so no limit 3. This is also why the terms cannot be restricted to <code>SN</code>: the arrow of two sets that are closed under conversion need not be closed under conversion inside <code>SN</code>. For example, <code>λx.y</code> and <code>λx.(λz.y) (x x)</code> are convertible, and <code>λx.y ∈ SN ⇒ SN</code>, but <code>(λx.(λz.y) (x x)) δ</code> runs to <code>(λz.y) Ω</code>, which is not in <code>SN</code>.</li>
+    <li>The empty set is allowed as the set that a type expression names. Narrow point 2 in {{simpler}} showed what that costs: <code>∅ ⇒ SN</code> is the set of all terms, so membership says nothing about strong normalization. Stump’s semantics pays that price and gets consistency for it.</li>
+  </ul>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · The three constructions, side by side</p>
+  <div class="tw"><table class="w40">
+    <thead><tr><th>Construction</th><th>Set</th><th>In this semantics</th></tr></thead>
+    <tbody>
+      <tr><td>Dependent intersection <code>ιx:A.B</code></td><td><code>{ t : t ∈ T and t ∈ V(t) }</code></td><td>fits: {{dinter}}</td></tr>
+      <tr><td>Implicit product <code>∀x:A.B</code></td><td><code>⋂<sub>u∈T</sub> V(u)</code></td><td>fits: {{implicit}}</td></tr>
+      <tr><td>Equality <code>{t ≃ t′}</code></td><td><code>E(u, v)</code></td><td>the set fits, and β, ς and δ are true; ρ and φ are not, and β and φ cannot both be true in any semantics that proves strong normalization</td></tr>
+    </tbody>
+  </table></div>
+</section>
+

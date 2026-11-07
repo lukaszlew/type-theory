@@ -1,0 +1,93 @@
+<p>The natural numbers have appeared three times: as the Church numerals <code>cNat</code> with induction in {{implicit}}, as the least fixed point of {{more}} whose members carry their predecessor, and as the <code>Nat</code> of {{self}}, which is the Church numerals again under a self type. This section puts the ways of building an inductive type side by side, adds a third in its general form, which is Mendler’s, and says what each costs in this semantics. The general form was chosen because Cedille uses it with good results, and the question was whether those results survive the move from Cedille’s rules to sets.</p>
+
+<h3 class="sub">The Mendler-style fixed point</h3>
+
+<section class="box def">
+  <p class="tag">Definition · Mendler algebra, and the fixed point</p>
+  <p>Let <code>F</code> be any function from type sets to type sets. For a type set <code>D</code>, the <b>Mendler algebras</b> into <code>D</code> are</p>
+  <p class="eq"><code>Alg(F, D) = ⋂<sub>C</sub> ((C ⇒ D) ⇒ (F(C) ⇒ D))</code></p>
+  <p>with <code>C</code> over all type sets, and the <b>Mendler fixed point</b> of <code>F</code> is</p>
+  <p class="eq"><code>Fix(F) = ⋂<sub>D</sub> (Alg(F, D) ⇒ D)</code></p>
+  <p>The constructor is the term <code>in = λu.λa. a (λr. r a) u</code>.</p>
+  <p class="note">A member of <code>Alg(F, D)</code> is one layer of a recursion: given a way <code>c</code> to handle a smaller thing of any type set <code>C</code>, it handles a thing of <code>F(C)</code>. A member of <code>Fix(F)</code> runs any such layer. The name is Mendler’s, and the form is the one Firsov, Blair and Stump use in Cedille. Nothing is asked of <code>F</code>: not that it is monotone, and not that <code>Fix(F)</code> is a fixed point of it in any sense. The name “fixed point” is kept because it is the usual one.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · The Mendler fixed point, for any F<span class="st">here, reviewed</span></p>
+  <p>Let <code>F</code> be any function from type sets to type sets.</p>
+  <dl class="conds">
+    <dt>type set</dt><dd><code>Fix(F)</code> is a type set, and so is <code>Alg(F, D)</code> for every type set <code>D</code>.</dd>
+    <dt>in</dt><dd><code>in ∈ F(Fix(F)) ⇒ Fix(F)</code>.</dd>
+    <dt>fold</dt><dd>If <code>a ∈ Alg(F, D)</code>, then <code>λz. z a ∈ Fix(F) ⇒ D</code>, and <code>(λz. z a) (in y)</code> reaches <code>a (λr. r a) y</code> by three head steps: the layer <code>a</code> is run on <code>y</code>, with <code>λr. r a</code> as the way to handle a smaller thing.</dd>
+  </dl>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>Type set.</b> Both are built from type sets by <code>⇒</code>, by <code>F</code>, and by intersections indexed by the collection of all type sets. The arrow lemma and the intersection lemma of {{ops}} apply.</p>
+    <p><b>in.</b> Take <code>u ∈ F(Fix(F))</code>. It is to be shown that <code>in u ∈ Fix(F)</code>: that for every type set <code>D</code> and every <code>a ∈ Alg(F, D)</code>, <code>in u a ∈ D</code>. The term <code>in u a</code> reaches <code>a (λr. r a) u</code> by two head steps, both safe, because <code>u</code> and <code>a</code> are in <code>SN</code>. <i>Instantiate</i> <code>a</code> at <code>C = Fix(F)</code>: <code>a ∈ (Fix(F) ⇒ D) ⇒ (F(Fix(F)) ⇒ D)</code>. And <code>λr. r a ∈ Fix(F) ⇒ D</code>, by <i>abstract</i>: if <code>r ∈ Fix(F)</code>, then <i>instantiate</i> <code>r</code> at <code>D</code> and <i>apply</i> to <code>a</code>, so <code>r a ∈ D</code>. So <code>a (λr. r a) ∈ F(Fix(F)) ⇒ D</code>, and <code>a (λr. r a) u ∈ D</code>. The closure condition, twice, gives <code>in u a ∈ D</code>.</p>
+    <p><b>Fold.</b> If <code>z ∈ Fix(F)</code>, then <code>z a ∈ D</code> by <i>instantiate</i> and <i>apply</i>, so <code>λz. z a ∈ Fix(F) ⇒ D</code> by <i>abstract</i>. The head steps are <code>(λz. z a) (in y) →<sub>h</sub> in y a</code>, then <code>in y a →<sub>h</sub> (λa. a (λr. r a) y) a</code>, then one step to <code>a (λr. r a) y</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<h3 class="sub">The inductive part, for monotone F</h3>
+
+<p>Induction says more than <i>fold</i>: the result may mention the member itself, as in {{self}} and {{implicit}}. For that the recursion layer must be allowed to assume the induction hypothesis for the smaller things, and “smaller” now has to mean “inside the inductive type”, not “of any type set”. The index set of the intersection shrinks accordingly.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Proof algebras, and the inductive part</p>
+  <p>Let <code>F</code> be a monotone function from type sets to type sets, in the sense of {{more}}. For a type set <code>C</code> and a family <code>Q</code>, the <b>proof algebras</b> are</p>
+  <p class="eq"><code>PrfAlg(C, Q) = ⋂<sub>D ⊆ C</sub> ( Π<sub>r∈D</sub> Q(r) ⇒ Π<sub>y∈F(D)</sub> Q(in y) )</code></p>
+  <p>an intersection indexed by the type sets <code>D</code> inside <code>C</code>, in the sense of {{ops}}; the index set contains <code>Min</code>, so it is not empty. Let</p>
+  <p class="eq"><code>G(C) = { t : t ∈ Fix(F) and t ∈ ⋂<sub>Q</sub> (PrfAlg(C, Q) ⇒ Q(t)) }</code></p>
+  <p>with <code>Q</code> over all families, and let the <b>inductive part</b> <code>Ind(F)</code> be the least fixed point <code>μG</code> of {{more}}.</p>
+  <p class="note">A member of <code>PrfAlg(C, Q)</code> turns a proof of <code>Q</code> for every member of a type set <code>D</code> inside <code>C</code> into a proof of <code>Q(in y)</code> for every <code>y ∈ F(D)</code>. <code>G(C)</code> is a dependent intersection of {{dinter}}, whose second part is a family because each <code>Q</code> is.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · The inductive part, for monotone F<span class="st">here, reviewed</span></p>
+  <p>Let <code>F</code> be monotone.</p>
+  <dl class="conds">
+    <dt>type set</dt><dd><code>G</code> is monotone, so <code>Ind(F) = μG</code> exists, is a type set, and equals <code>G(Ind(F))</code>. It is inside <code>Fix(F)</code>.</dd>
+    <dt>in</dt><dd><code>in ∈ F(Ind(F)) ⇒ Ind(F)</code>.</dd>
+    <dt>induction</dt><dd>For every family <code>Q</code> and every <code>p ∈ PrfAlg(Ind(F), Q)</code>: if <code>e ∈ Ind(F)</code>, then <code>e p ∈ Q(e)</code>. So <code>λe. e p ∈ Π<sub>e∈Ind(F)</sub> Q(e)</code>.</dd>
+    <dt>out</dt><dd>Let <code>out = λe. e (λf.λy.y)</code>. Then <code>out ∈ Ind(F) ⇒ F(Ind(F))</code>, and <code>out (in u)</code> reaches <code>u</code> by five head steps, however large <code>u</code> is.</dd>
+  </dl>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>Type set.</b> If <code>C ⊆ C′</code>, then every <code>D</code> inside <code>C</code> is inside <code>C′</code>, so <code>PrfAlg(C′, Q) ⊆ PrfAlg(C, Q)</code>, so <code>PrfAlg(C, Q) ⇒ Q(t) ⊆ PrfAlg(C′, Q) ⇒ Q(t)</code>, because a smaller input set gives a larger arrow, and so <code>G(C) ⊆ G(C′)</code>. Each <code>G(C)</code> is a type set by the lemmas of {{ops}}, {{darrow}} and {{dinter}}. So <code>μG</code> exists and <code>G(μG) = μG</code>, by {{more}}. It is inside <code>Fix(F)</code> by the definition of <code>G</code>.</p>
+    <p>Write <code>V(t)</code> for <code>⋂<sub>Q</sub> (PrfAlg(Ind(F), Q) ⇒ Q(t))</code>, so that <code>Ind(F) = { t : t ∈ Fix(F) and t ∈ V(t) }</code>.</p>
+    <p><b>in.</b> Take <code>u ∈ F(Ind(F))</code>. Since <code>Ind(F) ⊆ Fix(F)</code> and <code>F</code> is monotone, <code>u ∈ F(Fix(F))</code>, and <code>in u ∈ Fix(F)</code> by the lemma on the Mendler fixed point. For <code>in u ∈ V(in u)</code>, take any family <code>Q</code> and <code>p ∈ PrfAlg(Ind(F), Q)</code>. As before, <code>in u p</code> reaches <code>p (λr. r p) u</code> by two safe head steps. <i>Instantiate</i> <code>p</code> at <code>D = Ind(F)</code>, which is inside itself: <code>p ∈ Π<sub>r∈Ind(F)</sub> Q(r) ⇒ Π<sub>y∈F(Ind(F))</sub> Q(in y)</code>. And <code>λr. r p ∈ Π<sub>r∈Ind(F)</sub> Q(r)</code>, by <i>abstract</i>: if <code>r ∈ Ind(F)</code>, then <code>r ∈ V(r)</code>, so <i>instantiate</i> at <code>Q</code> and <i>apply</i> to <code>p</code> give <code>r p ∈ Q(r)</code>. So <code>p (λr. r p) u ∈ Q(in u)</code>, and the closure condition, twice, gives <code>in u p ∈ Q(in u)</code>.</p>
+    <p><b>Induction.</b> If <code>e ∈ Ind(F)</code>, then <code>e ∈ V(e)</code>, so <code>e p ∈ Q(e)</code> by <i>instantiate</i> and <i>apply</i>. Then <i>abstract</i> for the dependent arrow.</p>
+    <p><b>Out.</b> Let <code>Q</code> be the constant family with value <code>F(Ind(F))</code>. Then <code>λf.λy.y ∈ PrfAlg(Ind(F), Q)</code>: for any <code>D</code> inside <code>Ind(F)</code>, any <code>f ∈ Π<sub>r∈D</sub> F(Ind(F))</code> and any <code>y ∈ F(D)</code>, the term <code>(λf.λy.y) f y</code> reaches <code>y</code> by two head steps, safe because <code>f</code> and <code>y</code> are in <code>SN</code>, and <code>y ∈ F(D) ⊆ F(Ind(F))</code> because <code>F</code> is monotone. So by <i>induction</i>, <code>e (λf.λy.y) ∈ F(Ind(F))</code> for every <code>e ∈ Ind(F)</code>, and <i>abstract</i> gives <code>out ∈ Ind(F) ⇒ F(Ind(F))</code>. The head steps: <code>out (in u) →<sub>h</sub> in u (λf.λy.y)</code>, then two steps to <code>(λf.λy.y) (λr. r (λf.λy.y)) u</code>, then two steps to <code>u</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · Mendler-style natural numbers</p>
+  <p>Let <code>F(C) = ⋂<sub>D</sub> (D ⇒ ((C ⇒ D) ⇒ D))</code>, the function of the example “Least fixed points” in {{more}}: <code>F(C)</code> contains the zero <code>λz.λs.z</code> and, for each <code>n ∈ C</code>, the successor <code>λz.λs.s n</code>, which carries its predecessor. It is monotone. Then</p>
+  <p class="eq"><code>0 = in (λz.λs.z)</code> &nbsp; <code>S = λn. in (λz.λs.s n)</code> &nbsp; <code>pred = λe. out e 0 (λm.m)</code></p>
+  <p>By the two lemmas, <code>0 ∈ Ind(F)</code>, <code>S ∈ Ind(F) ⇒ Ind(F)</code>, and <code>pred ∈ Ind(F) ⇒ Ind(F)</code>: <code>out e</code> is in <code>F(Ind(F))</code>, <i>instantiate</i> it at <code>D = Ind(F)</code>, and <i>apply</i> to <code>0</code> and to <code>λm.m ∈ Ind(F) ⇒ Ind(F)</code>. And <code>pred (S n)</code> reaches <code>n</code> by ten head steps, whatever <code>n</code> is: one for <code>pred</code>, one for <code>out</code>, one that takes <code>S n</code> to <code>in (λz.λs.s n)</code>, four for <code>in</code> and <code>λf.λy.y</code>, two that apply <code>λz.λs.s n</code> to <code>0</code> and to <code>λm.m</code>, and one for <code>(λm.m) n</code>. Induction holds with <code>PrfAlg(Ind(F), Q)</code> as the induction step: a member must give <code>Q(in y)</code> for every <code>y ∈ F(D)</code>, among them the zero and the successors of members <code>r ∈ D</code>, from a proof of <code>Q(r)</code> for every <code>r ∈ D</code>.</p>
+  <p class="note">The Church numerals of {{implicit}} have no such predecessor: there, as Firsov, Blair and Stump report, citing Parigot, computing the predecessor takes a number of steps that grows with the number. That is the reason Cedille uses this encoding. The claims about the Church numerals are quoted and not proved here.</p>
+</section>
+
+<h3 class="sub">Three ways, side by side</h3>
+
+<div class="tw"><table class="w40">
+  <thead><tr><th></th><th>Church, {{implicit}} and {{self}}</th><th>Recursive type <code>μF</code>, {{more}}</th><th>Mendler, this section</th></tr></thead>
+  <tbody>
+    <tr><td>The type set</td><td><code>cNat = ⋂<sub>X</sub> ((X ⇒ X) ⇒ (X ⇒ X))</code>, from <code>⋂</code> and <code>⇒</code> alone</td><td><code>μF</code>; <code>F</code> must be monotone, which the usual presentations ensure by the syntactic condition that the variable occurs positively</td><td><code>Fix(F)</code>, from <code>⋂</code> and <code>⇒</code> alone, for any <code>F</code></td></tr>
+    <tr><td>Iteration</td><td>built in: a numeral is its own iterator</td><td>not built in: a member runs no loop by itself, and whether a loop over all members can be typed was not checked for this page</td><td>built in, as <i>fold</i></td></tr>
+    <tr><td>Predecessor</td><td>a number of steps that grows with the number, quoted</td><td>a fixed number of steps</td><td>a fixed number of steps, as <i>out</i></td></tr>
+    <tr><td>Induction</td><td>two ways: the dependent intersection and the implicit product, with no fixed point, as <code>Nat′</code> of {{implicit}}; or the self type with a fixed point, as the <code>Nat</code> of {{self}}</td><td>not worked out on this page</td><td>the dependent intersection, with the fixed point <code>Ind(F)</code>, and <code>F</code> monotone</td></tr>
+    <tr><td>Price</td><td>the implicit product, or the fixed point</td><td>the least fixed point, so positivity</td><td>the least fixed point, so positivity, for the inductive part only</td></tr>
+  </tbody>
+</table></div>
+
+<section class="aside">
+  <p class="tag">Remark · What Cedille’s casts do, and what replaces them here</p>
+  <p><b>Quoted.</b> In Cedille the inductive part is built without a fixed point. Its proof algebras quantify over every type <code>R</code> together with a <i>cast</i> from <code>R</code> to the fixed point, a function that is provably equal to the identity; so its inductive part is, in the terms of this section, <code>G(Fix(F))</code>. Its induction principle for proof algebras over the inductive part itself is then derived by using the induction hypothesis for the members of <code>R</code> to build a cast from <code>R</code> into the inductive part. A cast is applied by introducing a dependent intersection <code>[x, y {p}]</code> whose two parts are joined by a proof <code>p</code> that the cast is the identity, and projecting; Cedille Core, from which {{equality}} takes its rules, replaced that annotation by the rule φ, which does the same retyping. Firsov, Blair and Stump also replace functoriality of <code>F</code> by an <i>identity mapping</i>, which lifts casts to casts.</p>
+  <p><b>Worked out for this page.</b> Here a cast between type sets is an inclusion <code>D ⊆ C</code>, and it appears as a condition on the index set of the intersection, not as a hypothesis, because {{equality}} showed that φ is false in this semantics and limit 1 of {{limits}} says why a hypothesis cannot carry it. An identity mapping becomes the condition that <code>F</code> is monotone, which is what <i>in</i>, <i>induction</i> and <i>out</i> use. <code>G(Fix(F))</code>, Cedille’s inductive part, has <i>in</i> and <i>induction</i> for proof algebras over <code>Fix(F)</code> by the same proof, with no fixed point. What it lacks is the passage to proof algebras over the inductive part itself, which is the step Cedille makes by building a cast from the induction hypothesis; and it is that passage that <i>out</i> needs, since <code>λf.λy.y</code> is a proof algebra over <code>Ind(F)</code> and not over <code>Fix(F)</code>. The least fixed point is what replaces the cast. <code>Ind(F)</code> is inside <code>G(Fix(F))</code>, because <code>G</code> is monotone and <code>Ind(F) = G(Ind(F))</code> with <code>Ind(F) ⊆ Fix(F)</code>; whether the two are the same type set was not settled for this page. The obstacle is the one of {{hyp}}: the induction principle of <code>G(Fix(F))</code> quantifies over proof algebras <code>p</code>, and a <code>p</code> with a free variable at its head passes every requirement, so nothing about a member of <code>G(Fix(F))</code> can be read off from the principle alone. The Mendler fixed point <code>Fix(F)</code> itself, its constructor and <i>fold</i> cost nothing and ask nothing of <code>F</code>, which is one of the points Firsov, Blair and Stump make, and it survives the move from rules to sets.</p>
+</section>

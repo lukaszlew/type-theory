@@ -1,0 +1,41 @@
+<section class="box def">
+  <p class="tag">Definition · Dependent intersection</p>
+  <p>For a type set <code>T</code> and a family <code>V</code>, the <b>dependent intersection</b> is the set <code>{ t : t ∈ T and t ∈ V(t) }</code>.</p>
+  <p>There is one more form of type expression: <code>ιx:A.B</code>, where the term variable <code>x</code> may be free in <code>B</code>.</p>
+  <p>One clause is added:</p>
+  <p class="eq"><code>⟦ιx:A.B⟧<sub>ρ</sub> = { t : t ∈ ⟦A⟧<sub>ρ</sub> and t ∈ ⟦B⟧<sub>ρ[x↦t]</sub> }</code></p>
+  <p>Two rules are added:</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Rule</th><th>From</th><th>Conclude</th></tr></thead>
+    <tbody>
+      <tr><td>ι in</td><td><code>Γ ⊢ t : A</code> and <code>Γ ⊢ t : B[t/x]</code></td><td><code>Γ ⊢ t : ιx:A.B</code></td></tr>
+      <tr><td>ι out</td><td><code>Γ ⊢ t : ιx:A.B</code></td><td><code>Γ ⊢ t : A</code>, and also <code>Γ ⊢ t : B[t/x]</code></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">The second part may mention the term itself. <code>A ∧ B</code> is the case in which <code>x</code> is not free in <code>B</code>. The form and its rules are Kopylov’s.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · The dependent intersection is a type set<span class="st">here, reviewed</span></p>
+  <p>If <code>T</code> is a type set and <code>V</code> is a family, then <code>{ t : t ∈ T and t ∈ V(t) }</code> is a type set. Of <code>V</code> the proof uses only that it is constant along safe head steps.</p>
+  <p>So, by the addition lemma of {{price}} as extended in {{dep}}, Lemma N holds with the new form of type expression, and with the two new rules the soundness theorem and both corollaries hold.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>SN condition.</b> The set is inside <code>T</code>.</p>
+    <p><b>Base condition.</b> A member <code>s</code> of <code>Base</code> is in <code>T</code> and in <code>V(s)</code>, because both are type sets.</p>
+    <p><b>Closure condition.</b> Let <code>s →<sub>h</sub> s′</code> be safe, with <code>s′ ∈ T</code> and <code>s′ ∈ V(s′)</code>. Then <code>s ∈ T</code>, by the closure condition for <code>T</code>. Also <code>s ∈ V(s′)</code>, by the closure condition for <code>V(s′)</code>. And <code>V(s′) = V(s)</code>, because <code>V</code> is constant along the safe head step. So <code>s ∈ V(s)</code>.</p>
+    <p><b>The addition lemma.</b> The clause computes the set from the type set that <code>A</code> names and the family <code>w ↦ ⟦B⟧<sub>ρ[x↦w]</sub></code>, by the dependent intersection, which gives a type set by the first part and has no term input. So the extended addition lemma gives Lemma N. The two rules are true: by N2 (substitution), <code>⟦B[t/x]⟧<sub>ρ</sub> = ⟦B⟧<sub>ρ[x↦t[ρ]]</sub></code>, so <code>t[ρ]</code> is in <code>⟦A⟧<sub>ρ</sub></code> and in <code>⟦B[t/x]⟧<sub>ρ</sub></code> if and only if it is in <code>⟦ιx:A.B⟧<sub>ρ</sub></code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · Two cases of the dependent intersection</p>
+  <ul>
+    <li>If <code>V</code> is the constant family <code>V(u) = U</code>, then the dependent intersection is <code>T ∩ U</code>.</li>
+    <li>If <code>T</code> is <code>SN</code>, then it is <code>{ t : t ∈ V(t) }</code>, because every <code>V(t)</code> is inside <code>SN</code>. That is the self type of {{self}}.</li>
+  </ul>
+  <p>So the dependent intersection contains both <code>∧</code> and the self type as cases. Stump’s Calculus of Dependent Lambda Eliminations has <code>ιx:A.B</code> in the place of self types, as the remark in {{self}} reports.</p>
+</section>

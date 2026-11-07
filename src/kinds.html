@@ -1,0 +1,32 @@
+<p>System F<sub>ω</sub> has type expressions that name functions on type sets, such as <code>λX:∗. X → X</code>. Its semantics needs one more notion, and it is a light one.</p>
+
+<section class="box def" id="kinds">
+  <p class="tag">Definition · Kind</p>
+  <p>Write <code>Ty</code> for the collection of all type sets of {{typeset}}.</p>
+  <p>The <b>kinds</b> are these sets:</p>
+  <dl class="conds">
+    <dt>∗</dt><dd>the set <code>Ty</code> itself;</dd>
+    <dt>κ → κ′</dt><dd>the set of all functions from the kind <code>κ</code> to the kind <code>κ′</code>.</dd>
+  </dl>
+  <p>Every kind is a nonempty set. For a kind <code>κ</code> and a function <code>H</code> from <code>κ</code> to <code>Ty</code>, <code>⋂<sub>c∈κ</sub> H(c)</code> is the intersection indexed by <code>κ</code>, in the sense of {{ops}}: the terms that are in <code>H(c)</code> for every <code>c ∈ κ</code>.</p>
+  <p class="note">This is a modeling choice: a kind is a plain set, with nothing like the three conditions of {{typeset}}. Those conditions exist because terms are run. The members of kinds are sets and functions on sets, and nothing at this level is run. The price is paid in the metatheory, and {{fomega}} names it. {{allkinds}} gives the other reading of kinds, as sets of type expressions with the three conditions, and says which question each reading answers.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Members of the kind ∗ → ∗</p>
+  <p>Every function from type sets to type sets is a member, however it is given:</p>
+  <ul>
+    <li><code>C ↦ C ⇒ (T<sub>K</sub> ⇒ C)</code>, which uses a hand-built type set as a fixed ingredient;</li>
+    <li><code>C ↦ C ⇒ C</code>, and the constant function <code>C ↦ SN</code>;</li>
+    <li>the function that gives <code>SN</code> if <code>I ∈ C</code> and <code>Min</code> otherwise.</li>
+  </ul>
+  <p>The page has used members of this kind since the definition of <code>⋂<sub>C</sub> F(C)</code>, where <code>F</code> was any function from type sets to type sets. As with type sets, there are far more members than type expressions to name them.</p>
+  <p>One kind further up, the function <code>F ↦ ⋂<sub>C</sub> F(C)</code> is a member of <code>(∗ → ∗) → ∗</code>. So intersection over all type sets is itself a member of a kind.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · An intersection over a kind</p>
+  <p><code>⋂<sub>F∈∗→∗</sub> ⋂<sub>C</sub> (F(C) ⇒ F(C))</code> is a type set. It contains <code>I</code>, because <code>I ∈ T ⇒ T</code> for every type set <code>T</code>, and each <code>F(C)</code> is a type set. The function that gives <code>SN</code> if <code>I ∈ C</code> and <code>Min</code> otherwise is one of the <code>F</code> it is tested against.</p>
+</section>
+
+<p>No new lemma is needed. <code>⋂<sub>c∈κ</sub> H(c)</code> is an intersection indexed by a nonempty set, so it is a type set by the intersection lemma of {{ops}}, and <i>generalize</i> and <i>instantiate</i> of {{facts}} hold for it.</p>

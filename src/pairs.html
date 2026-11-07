@@ -1,0 +1,46 @@
+<p>On this page a type expression names a set of terms. Reynolds’s parametricity reads a type expression as a relation between terms, and draws from the rules alone conclusions about what a term of a given type expression can do. This section shows that the relational reading costs one definition and no new proof: the main line of the page, {{typeset}} to {{rules}}, is the same theory run on pairs of terms. The abstraction theorem falls out, and two of its consequences are worked out.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Pairs, and type sets of pairs</p>
+  <p>A <b>pair</b> is two terms <code>(t, t′)</code>, in order. Everything is done to both sides at once.</p>
+  <p>The variable <code>x</code>, as a pair, is <code>(x, x)</code>.</p>
+  <p>The application <code>(t, t′) (u, u′)</code> is <code>(t u, t′ u′)</code>.</p>
+  <p>The abstraction <code>λx.(t, t′)</code> is <code>(λx.t, λx.t′)</code>.</p>
+  <p>The substitution <code>(t, t′)[(u, u′)/x]</code> is <code>(t[u/x], t′[u′/x])</code>.</p>
+  <p>A pair is in <code>SN</code> if both of its terms are.</p>
+  <p><code>Base</code> is the set of pairs <code>(x u<sub>1</sub>…u<sub>n</sub>, x v<sub>1</sub>…v<sub>n</sub>)</code> with the same variable <code>x</code> and the same <code>n</code> on both sides, and all of <code>u<sub>1</sub>,…,u<sub>n</sub>, v<sub>1</sub>,…,v<sub>n</sub></code> in <code>SN</code>.</p>
+  <p>A pair takes a <b>head step</b> if both of its terms take one at once, and the step is <b>safe</b> if both arguments are in <code>SN</code>.</p>
+  <p>A <b>relation</b> is a set of pairs that satisfies the three conditions of {{typeset}}, read for pairs: inside <code>SN</code>, containing <code>Base</code>, closed under undoing safe head steps. The arrow <code>R ⇒ S</code>, the intersection over all relations, <code>cl</code> and <code>Gen</code> are defined by the same words as for terms, with “pair” for “term”.</p>
+  <p class="note">A relation relates two terms if the pair is a member. <code>R ⇒ S</code> relates two functions if they send related arguments to related results. A pair with a variable at the head on one side only, or with different variables at the head of its two sides, is in no <code>Base</code>; and if only one side has a head step, the pair takes none. Such pairs are simply never produced by the constructions.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · The main line runs on pairs<span class="st">here, reviewed</span></p>
+  <p>The definitions and proofs of {{typeset}}, {{ops}}, {{facts}}, {{names}}, {{judg}} and {{rules}} hold with pairs in the place of terms and relations in the place of type sets, word for word. In particular, with <code>X</code> ranging over all relations: every type expression names a relation; and if <code>Γ ⊢ t : A</code>, then for every assignment <code>ρ</code> of relations to variables and every choice of pairs <code>(u<sub>i</sub>, u<sub>i</sub>′) ∈ ⟦A<sub>i</sub>⟧<sub>ρ</sub></code>, the pair <code>(t[u⃗/x⃗], t[u⃗′/x⃗])</code> is in <code>⟦A⟧<sub>ρ</sub></code>.</p>
+  <dl class="conds">
+    <dt>abstraction theorem</dt><dd>If <code>⊢ t : A</code>, then <code>(t, t) ∈ ⟦A⟧<sub>ρ</sub></code> for every assignment <code>ρ</code> of relations.</dd>
+  </dl>
+  <p class="note">The abstraction theorem is Reynolds’s, and the route through saturated relations is standard; the claim of this lemma is only that the proofs on this page need no change.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>The remark in {{rules}} on what the proof asked of terms lists what the proofs of the sections named use about terms, and nothing else: R1 (subterms), R2 (variable applied) and R3 (safe head step) of Lemma R; that a head step survives one more argument, with the same argument; that <code>(λx.t) u</code> takes a head step to <code>t[u/x]</code> with argument <code>u</code>; that a variable is in <code>Base</code>, and a member of <code>Base</code> applied to a member of <code>SN</code> is in <code>Base</code>; that a member of <code>Base</code> has a free variable; and, for M2 (generated), that a member of <code>cl(S)</code> reaches <code>S</code> by safe head steps. Each holds for pairs, because each is checked on the two sides separately, and the two sides take their head steps together. The abstraction theorem is the soundness theorem read for pairs, in the case of an empty context, where there is nothing to replace. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · Two free theorems</p>
+  <p>Let <code>u</code>, <code>v</code>, <code>u′</code>, <code>v′</code> be closed strongly normalizing terms, and let no one of <code>u</code>, <code>v</code> reach the other by zero or more head steps, so in particular <code>u</code> and <code>v</code> differ, and likewise for <code>u′</code>, <code>v′</code>. The hypothesis is there so that “reaches <code>u</code>” and “reaches <code>v</code>” exclude each other.</p>
+  <ul>
+    <li><b>Identity.</b> If <code>⊢ t : ∀X.X→X</code>, then <code>t u</code> reaches <code>u</code> by head steps. This needs no pairs: <code>t ∈ ⋂<sub>C</sub> (C ⇒ C)</code> by the soundness theorem of {{rules}}, so <code>t u ∈ Gen({u})</code>, so <code>t u</code> reaches <code>u</code> or a member of <code>Base</code> by head steps, by M2 (generated), and a closed term reaches no member of <code>Base</code>.</li>
+    <li><b>Choice.</b> If <code>⊢ t : ∀X.X→X→X</code>, then either <code>t u v</code> reaches <code>u</code> by head steps for all such <code>u</code>, <code>v</code>, or it reaches <code>v</code> for all of them. Without pairs one gets only that <code>t u v</code> reaches <code>u</code> or <code>v</code>, with the choice possibly depending on <code>u</code> and <code>v</code>. With pairs: <code>(t, t) ∈ ⋂<sub>R</sub> (R ⇒ (R ⇒ R))</code>. Take <code>R = Gen({(u, u′), (v, v′)})</code>. Then <code>(t u v, t u′ v′) ∈ R</code>, so by M2 (generated) for pairs the two terms reach, by head steps taken together, the pair <code>(u, u′)</code> or the pair <code>(v, v′)</code>; a member of <code>Base</code> is excluded because both terms are closed. If <code>t u v</code> reaches <code>u</code>, then it does not reach <code>v</code>: a term has at most one head step, so if it reached both, one of <code>u</code>, <code>v</code> would reach the other. So the pair reached is <code>(u, u′)</code>, and <code>t u′ v′</code> reaches <code>u′</code>. So the choice is the same for every pair of inputs.</li>
+  </ul>
+  <p class="note">These are the simplest cases of what Reynolds and Wadler draw from parametricity. The second is the one that shows the gain: the relation <code>R</code> ties the behaviour of <code>t</code> on one pair of inputs to its behaviour on another, which no set of terms can do.</p>
+</section>
+
+<section class="aside">
+  <p class="tag">Remark · What changes, and what does not</p>
+  <p>Everything built on the main line by the same words runs on pairs too: the additions of {{and}} and {{more}}, the families of {{fam}}, which become functions from pairs to relations, and the three collections of {{families}}, where a head-closed relation is determined, by the same correspondence, by its pairs with no joint head step; among those are the pairs of values, and restricted to them it is a relation between values, which is the form in which parametricity is usually stated, but mixed pairs such as <code>(I, y)</code> are among them too. This was checked for this page by reading the proofs and is not written out.</p>
+  <p>What changes is what equality can mean. Under the relational reading, two functions are related at <code>R ⇒ S</code> exactly when they send related arguments to related results, so an equality read as a relation is extensional from the start, and function extensionality, quotient types and observational equality, which {{equalities}} had to turn away, have their home here. Working any of them out is not done on this page. Homotopy type theory and cubical type theory, where a proof of an equality carries structure of its own, are further away still, and this page names no home for them. The lemma “Type sets tell terms apart” of {{structure}} still holds for relations, read for pairs; what the relational reading adds is not that the semantics identifies more terms, but that a type expression can now relate two different terms.</p>
+</section>

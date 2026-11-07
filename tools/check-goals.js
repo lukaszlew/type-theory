@@ -1,0 +1,24 @@
+const { chromium } = require('playwright');
+const fs = require('fs');
+(async () => {
+  const body = fs.readFileSync(require('path').join(__dirname, '..', 'out', 'narrow-path.html'), 'utf8');
+  const html = `<!doctype html><html data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{margin:0;font:14px system-ui}</style></head><body>${body}</body></html>`;
+  const browser = await chromium.launch();
+  const page = await browser.newPage({ viewport: { width: 1000, height: 1300 }, deviceScaleFactor: 1 });
+  page.on('pageerror', e => console.log('PAGEERROR', e.message));
+  await page.setContent(html, { waitUntil: 'load' });
+  await page.selectOption('#goal', '1');
+  await page.waitForTimeout(200);
+  console.log('list:', await page.evaluate(() => document.getElementById('goal-list').textContent));
+  console.log('dim nodes:', await page.evaluate(() => document.querySelectorAll('.dep a.dim').length), 'dim toc:', await page.evaluate(() => document.querySelectorAll('.toc li.dim').length));
+  await page.evaluate(() => scrollTo(0, document.querySelector('.goal').getBoundingClientRect().top + scrollY - 20));
+  await page.hover('.dep a[data-n="21"]');
+  await page.waitForTimeout(200);
+  await page.screenshot({ path: require('path').join(__dirname, '..', 'out') + '/goal1.png' });
+  await page.selectOption('#goal', '7');
+  await page.waitForTimeout(200);
+  console.log('list:', await page.evaluate(() => document.getElementById('goal-list').textContent));
+  await page.mouse.move(5, 5);
+  await page.screenshot({ path: require('path').join(__dirname, '..', 'out') + '/goal7.png' });
+  await browser.close();
+})();

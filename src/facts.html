@@ -1,0 +1,49 @@
+<p>There are still no type expressions and no typing rules. There are sets of terms, and four facts about them.</p>
+
+<section class="box thm">
+  <p class="tag">Lemma · Four facts<span class="st">textbook</span></p>
+  <p>Let <code>T</code>, <code>U</code> and <code>D</code> be type sets, and let <code>F</code> give a type set <code>F(C)</code> for each type set <code>C</code>.</p>
+  <dl class="conds">
+    <dt>apply</dt><dd>If <code>t ∈ T ⇒ U</code> and <code>u ∈ T</code>, then <code>t u ∈ U</code>.</dd>
+    <dt>abstract</dt><dd>If <code>t[u/x] ∈ U</code> for every <code>u ∈ T</code>, then <code>λx.t ∈ T ⇒ U</code>. <span>This is W3 (abstraction).</span></dd>
+    <dt>generalize</dt><dd>If <code>t ∈ F(C)</code> for every type set <code>C</code>, then <code>t ∈ ⋂<sub>C</sub> F(C)</code>.</dd>
+    <dt>instantiate</dt><dd>If <code>t ∈ ⋂<sub>C</sub> F(C)</code> and <code>D</code> is a type set, then <code>t ∈ F(D)</code>.</dd>
+  </dl>
+  <p class="note"><i>Generalize</i> and <i>instantiate</i> hold in the same words for an intersection indexed by any nonempty set <code>I</code>, with “every <code>i ∈ I</code>” in the place of “every type set <code>C</code>”: if <code>t ∈ F(i)</code> for every <code>i ∈ I</code>, then <code>t ∈ ⋂<sub>i∈I</sub> F(i)</code>; and if <code>t ∈ ⋂<sub>i∈I</sub> F(i)</code> and <code>j ∈ I</code>, then <code>t ∈ F(j)</code>. Both are the definition of the intersection read in the two directions.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><i>Apply</i>, <i>generalize</i> and <i>instantiate</i> are the definitions of <code>⇒</code> and <code>⋂</code>, read in the other direction.</p>
+    <p><i>Abstract.</i> Take <code>u ∈ T</code>. It is in <code>SN</code> by the SN condition, so <code>(λx.t) u →<sub>h</sub> t[u/x]</code> is a safe head step. Since <code>t[u/x] ∈ U</code>, the closure condition gives <code>(λx.t) u ∈ U</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>Three of the four are definitions read backwards. Only <i>abstract</i> uses the conditions, and it uses the SN condition and the closure condition once each. The work was done in {{typeset}} and {{ops}}, in making sure that <code>⇒</code> and <code>⋂</code> never leave the collection of type sets.</p>
+
+<section class="box ex">
+  <p class="tag">Example · The four facts at work</p>
+  <p>Claim: <code>λf.λx.f (f x)</code> is in <code>⋂<sub>C</sub> ((C ⇒ C) ⇒ (C ⇒ C))</code>. The term applies its first argument twice.</p>
+  <ol>
+    <li>Fix any type set <code>C</code>. Take <code>g ∈ C ⇒ C</code> and <code>u ∈ C</code>.</li>
+    <li><i>Apply</i>: <code>g u ∈ C</code>. <i>Apply</i> again: <code>g (g u) ∈ C</code>.</li>
+    <li><i>Abstract</i> over <code>x</code>: <code>λx.g (g x) ∈ C ⇒ C</code>.</li>
+    <li><i>Abstract</i> over <code>f</code>: <code>λf.λx.f (f x) ∈ (C ⇒ C) ⇒ (C ⇒ C)</code>.</li>
+    <li><i>Generalize</i>: <code>C</code> was arbitrary, so the term is in the intersection.</li>
+  </ol>
+  <p>Nothing here looked inside <code>C</code>. It could be <code>SN</code>, <code>T<sub>K</sub></code>, or a type set nobody has described.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Self-application</p>
+  <p>Recall that <code>ID = ⋂<sub>C</sub> (C ⇒ C)</code>. Claim: <code>δ ∈ ID ⇒ ID</code>.</p>
+  <ol>
+    <li>Take any <code>u ∈ ID</code>.</li>
+    <li><i>Instantiate</i> with <code>D = ID</code>: <code>u ∈ ID ⇒ ID</code>.</li>
+    <li><i>Apply</i>: <code>u u ∈ ID</code>.</li>
+    <li><i>Abstract</i>: <code>λx.x x ∈ ID ⇒ ID</code>.</li>
+  </ol>
+  <p>Since <code>I ∈ ID</code>, <i>apply</i> gives <code>δ I ∈ ID</code>, so <code>δ I ∈ SN</code>. The <i>instantiate</i> line uses <code>ID</code> at itself. That is allowed because <code>ID</code> was defined by intersecting over all type sets, and <code>ID</code> is one of them.</p>
+  <p>The sets also discriminate: <code>δ ∉ ID</code>. Otherwise <i>apply</i> would give <code>δ δ = Ω ∈ ID</code>.</p>
+</section>

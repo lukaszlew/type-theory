@@ -1,0 +1,124 @@
+<p>Type sets are combined in two ways, by the arrow and by intersection. Each has to give a type set again, which is what W2 (arrow) and W4 (intersection) asked for. The arrow was defined in {{obstacle}}.</p>
+
+<h3 class="sub">The arrow</h3>
+
+<section class="box ex">
+  <p class="tag">Example · Terms that are in many arrows at once</p>
+  <ul>
+    <li><code>I ∈ T ⇒ T</code> for every type set <code>T</code>. Take <code>u ∈ T</code>. It is in <code>SN</code> by the SN condition, and <code>x[u/x] = u ∈ T</code>, so <code>(λx.x) u ∈ T</code> by the closure condition.</li>
+    <li><code>K ∈ T ⇒ (U ⇒ T)</code> for all type sets <code>T</code> and <code>U</code>. Take <code>u ∈ T</code> and <code>v ∈ U</code>. Both are in <code>SN</code>, by the SN condition. From <code>u ∈ T</code>, the closure condition gives <code>(λy.u) v ∈ T</code>, and the closure condition again gives <code>(λx.λy.x) u v ∈ T</code>.</li>
+  </ul>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · An arrow between two hand-built type sets</p>
+  <p>Take <code>T<sub>K</sub> ⇒ T<sub>I</sub></code>, with <code>T<sub>K</sub> = Gen({K})</code> and <code>T<sub>I</sub> = Gen({I})</code> from {{typeset}}. A member has to send <code>K</code>, every variable applied to arguments, and everything that reaches these by head steps, into <code>T<sub>I</sub></code>. Members:</p>
+  <ul>
+    <li><code>λx.I</code>. Whatever <code>u</code> is, <code>(λx.I) u</code> reaches <code>I</code> in one head step.</li>
+    <li><code>λx.x I y</code>. With <code>K</code> for <code>x</code> it runs <code>K I y → (λb.I) y → I</code>. With a variable applied to arguments for <code>x</code>, the result is again a variable applied to arguments.</li>
+    <li><code>y</code>, a variable. <code>y u</code> is in every type set.</li>
+    <li><code>K I</code>, which is an application and not an abstraction. <code>K I u → (λb.I) u → I</code>.</li>
+  </ul>
+  <p>Not members:</p>
+  <ul>
+    <li><code>I</code>. The term <code>I K</code> is not in <code>T<sub>I</sub></code>: its head step leads to <code>K</code>, which is not <code>I</code> and not in <code>Base</code>.</li>
+    <li><code>K</code> and <code>δ</code>. <code>K K</code> and <code>δ K</code> both reach <code>λb.K</code>, which is not in <code>T<sub>I</sub></code>.</li>
+  </ul>
+  <p>Membership is a test of behaviour on the members of <code>T</code>. It does not ask that the term be an abstraction, and it depends on both sides of the arrow.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Arrow lemma · The arrow of two type sets is a type set<span class="st">textbook</span></p>
+  <p>If <code>T</code> and <code>U</code> are type sets, then <code>T ⇒ U</code> is a type set.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>SN condition.</b> Let <code>t ∈ T ⇒ U</code>. A variable <code>x</code> is in <code>T</code>, because <code>Base ⊆ T</code>. So <code>t x ∈ U</code>, and <code>t x ∈ SN</code> by the SN condition for <code>U</code>. Then <code>t ∈ SN</code> by R1 (subterms).</p>
+    <p><b>Base condition.</b> Let <code>s ∈ Base</code> and take <code>v ∈ T</code>. Then <code>v ∈ SN</code> by the SN condition for <code>T</code>, so <code>s v</code> is again in <code>Base</code>, and <code>Base ⊆ U</code> by the Base condition for <code>U</code>.</p>
+    <p><b>Closure condition.</b> Let <code>s →<sub>h</sub> s′</code> be safe with <code>s′ ∈ T ⇒ U</code>, and take <code>v ∈ T</code>. Then <code>s′ v ∈ U</code>. And <code>s v →<sub>h</sub> s′ v</code> is a safe head step, with the same argument. So <code>s v ∈ U</code> by the closure condition for <code>U</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · The arrow into Min is negation, and it is intuitionistic</p>
+  <p>For a type set <code>T</code>, the type set <code>T ⇒ Min</code> is what the negation of <code>T</code> will be once names exist: {{names}} reads <code>A → ∀X.X</code> as <code>⟦A⟧ ⇒ Min</code>. It is not the complement of <code>T</code> inside <code>SN</code>, and it does not behave like one.</p>
+  <ul>
+    <li><code>T ∩ (T ⇒ Min)</code> is not empty: it contains <code>Base</code>, and for <code>T = SN</code> it contains <code>λy.z</code>, since <code>(λy.z) u →<sub>h</sub> z</code>. But it has no closed member: a closed <code>t</code> in it would give <code>t t ∈ Min</code>, and <code>t t</code> is closed, while <code>Min</code> has no closed member by M3 (smallest).</li>
+    <li><code>T ∪ (T ⇒ Min)</code> is not <code>SN</code>: for <code>T = T<sub>I</sub></code>, the term <code>δ</code> is in neither part, because <code>δ ∉ T<sub>I</sub></code> and <code>δ I → I I ∉ Min</code>.</li>
+  </ul>
+  <p>Read as statements about a proposition <code>A</code>: “<code>A</code> and not <code>A</code>” has no closed proof, and “<code>A</code> or not <code>A</code>” has no proof at all for some <code>A</code>. That is the negation of intuitionistic logic, which is the logic of System F read as a proof system. A complement, which would make the second statement true for every <code>T</code>, exists in one of the collections of {{families}} and names nothing a rule could use.</p>
+</section>
+
+<h3 class="sub">The intersection over all type sets</h3>
+
+<p>The intersection over all type sets is the operation that gives System F its power. A term that is given a “for all X” type expression should work at every type set. As a set of terms, that is an intersection over all type sets.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Intersection over all type sets</p>
+  <p>Let <code>F</code> be any function that gives a type set <code>F(C)</code> for each type set <code>C</code>, for example <code>F(C) = C ⇒ C</code>. Then</p>
+  <p class="eq"><code>⋂<sub>C</sub> F(C) = { t : t ∈ F(C) for every type set C }</code></p>
+  <p>Here <code>C</code> runs over all type sets in the sense of {{typeset}}, the hand-built ones included.</p>
+</section>
+
+<section class="box def">
+  <p class="tag">Definition · ID and BOOL</p>
+  <p><code>ID = ⋂<sub>C</sub> (C ⇒ C)</code>.</p>
+  <p><code>BOOL = ⋂<sub>C</sub> (C ⇒ (C ⇒ C))</code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Members of ID</p>
+  <p><code>ID</code> contains <code>I</code>, since <code>I ∈ C ⇒ C</code> for every <code>C</code>. It also contains <code>I I</code> and <code>λx.I x</code>: applied to <code>u</code>, both reach <code>u</code> by head steps. It does not contain <code>K</code>. Test with <code>C = T<sub>I</sub></code> and the argument <code>I</code>: <code>K I → λb.I</code>, which is not in <code>T<sub>I</sub></code>. No typing rule in {{rules}} mentions <code>T<sub>I</sub></code>, and it keeps <code>K</code> out of <code>ID</code> all the same.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Members of BOOL</p>
+  <p>A member of <code>BOOL</code>, given two arguments from any type set, must land in that type set. Members:</p>
+  <ul>
+    <li><code>K</code> and <code>λx.λy.y</code>, the two ways to pick one of two arguments.</li>
+    <li><code>I K</code> and <code>(λz.K) y</code>, which reach <code>K</code> by a head step.</li>
+    <li><code>y</code> and <code>y δ δ</code>, as in every type set.</li>
+  </ul>
+  <p>Not a member: <code>I</code>. Test it with <code>C = T<sub>K</sub></code> and both arguments <code>K</code>: <code>I K K → K K → λb.K</code>, which is not in <code>T<sub>K</sub></code>. So <code>BOOL</code> has infinitely many members, and not two.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Intersection lemma · An intersection of type sets is a type set<span class="st">textbook</span></p>
+  <p>Let <code>I</code> be a nonempty set, and let <code>F</code> give a type set <code>F(i)</code> for each <code>i ∈ I</code>. The <b>intersection indexed by <code>I</code></b> is</p>
+  <p class="eq"><code>⋂<sub>i∈I</sub> F(i) = { t : t ∈ F(i) for every i ∈ I }</code></p>
+  <p>and it is a type set. In particular <code>⋂<sub>C</sub> F(C)</code> is a type set: it is the case in which <code>I</code> is the collection of all type sets. The intersection of all type sets is <code>Min</code>, by M3 (smallest).</p>
+  <p class="note">The lemma is stated for any index set because later sections intersect over other ones, and each time this lemma is the whole proof: over all families in {{fam}}, over the members of a type set in {{self}} and {{implicit}}, and over a kind in {{kinds}}. The index set has to be nonempty: the intersection of no sets at all is the set of all terms, which is not a type set.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>SN condition.</b> <code>I</code> has a member <code>i</code>, and every member of the intersection lies in <code>F(i)</code>, which is inside <code>SN</code>.</p>
+    <p><b>Base condition and closure condition.</b> Each says that certain terms are members. They hold in every <code>F(i)</code>, so they hold in the intersection. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>The intersection <code>⋂<sub>C</sub> F(C)</code> is a type set, so it is one of the sets that it was intersected over. A definition is called <b>impredicative</b> if it defines a set by quantifying over a collection that contains that set. This one is. Narrow point 5 in {{allsets}} says why the intersection runs over all type sets, and not over type expressions.</p>
+
+<h3 class="sub">The union</h3>
+
+<p>Union is a third operation that gives a type set again. The soundness theorem does not use it. {{andlaws}} and {{more}} do.</p>
+
+<section class="box thm">
+  <p class="tag">Union lemma · A union of type sets is a type set<span class="st">here, reviewed</span></p>
+  <p>The union of a nonempty collection of type sets is a type set.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>Each of the three conditions asks something of single terms. A member of the union is in some type set of the collection, so it is in <code>SN</code>. <code>Base</code> is inside every type set of the collection. If <code>s →<sub>h</sub> s′</code> is safe and <code>s′</code> is in a type set of the collection, then <code>s</code> is in the same one. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · G as a union</p>
+  <p><code>G = Gen({K, I I}) = T<sub>K</sub> ∪ Gen({I I})</code>. This follows from the membership condition in M2 (generated): the head steps of a member lead to <code>K</code>, to <code>I I</code>, or to a member of <code>Base</code>. The members <code>K</code>, <code>(λz.K) y</code> and <code>K K y</code> come from <code>T<sub>K</sub></code>. The members <code>I I</code> and <code>I (I I)</code> come from <code>Gen({I I})</code>. <code>Min</code> is in both.</p>
+</section>

@@ -1,0 +1,27 @@
+<p>Narrow point 5 in {{allsets}} said that the intersection over all type sets is impredicative: it defines a type set by quantifying over a collection that contains that type set. {{strength}} said what that costs, more than second-order arithmetic. The same move is made in several more places on the page, each time with a different index set. This section lists them and shows that the price is paid once, with the kinds of F<sub>ω</sub> as the one exception.</p>
+
+<section class="box thm">
+  <p class="tag">Lemma · Every intersection on this page is over a set<span class="st">here, reviewed</span></p>
+  <p>Every intersection that this page forms is indexed by one of the following sets, or by a subset of one of them: a type set, which is a set of terms; the collection of all type sets; the collection of all families; a kind of {{kinds}}. Each of these is a set in ordinary set theory. The type sets and the families are both subsets of one power set of a set of terms or of pairs of terms; a kind is built from the type sets by one more power set for each arrow in it.</p>
+  <p class="note">So the circle of narrow point 5 is always the same circle: a set is defined by an intersection over a collection, and the collection was fixed, as a set, before the definition. The one collection that is not a set is that of all kinds, and narrow point 7 in {{allkinds}} is what happens when an intersection is taken over it.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>The intersections on the page are: over all type sets, in {{ops}}; over a nonempty set of type sets, for <code>∧</code> in {{and}} and for the fixed point of {{more}}, which intersects the type sets <code>C</code> with <code>F(C) ⊆ C</code>; over all families, in {{fam}}; over the members of a type set, in {{self}} and {{implicit}}, which is a subset of the set of all terms; over the type sets inside a given one, over all type sets and over all families again, in {{induct}}; and over a kind, in {{kinds}}. A type set is a subset of the set of terms, so the type sets form a subset of its power set. A family <code>V</code> is determined by the set of pairs <code>(u, t)</code> with <code>t ∈ V(u)</code>, which is a subset of the set of pairs of terms; so the families form, up to this coding, a subset of the power set of the pairs of terms, one level up from the terms, exactly as the type sets are. A kind is built from the set of type sets by function sets, and a function set is a subset of the power set of a product, one level up each time. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<div class="tw"><table class="w40">
+  <thead><tr><th>Where</th><th>Intersection over</th><th>Is the result among the sets intersected over?</th></tr></thead>
+  <tbody>
+    <tr><td>{{ops}}, <code>∀X</code></td><td>all type sets</td><td>yes: the result is a type set</td></tr>
+    <tr><td>{{more}}, <code>μF</code></td><td>the type sets <code>C</code> with <code>F(C) ⊆ C</code></td><td>yes, for monotone <code>F</code>: <code>μF</code> is then one of them, which is the Knaster–Tarski argument</td></tr>
+    <tr><td>{{fam}}, <code>∀P</code></td><td>all families</td><td>yes, as a constant family</td></tr>
+    <tr><td>{{implicit}}, <code>∀x:A</code></td><td>the members of a type set</td><td>no: the index set is a set of terms, and the result is a set of terms. This intersection is not impredicative</td></tr>
+    <tr><td>{{induct}}, proof algebras</td><td>the type sets inside a given <code>C</code></td><td>no: the result is a type set that need not be inside <code>C</code>. The impredicative steps of {{induct}} are the fixed point and the intersection over all families, the rows for {{more}} and {{fam}}</td></tr>
+    <tr><td>{{fomega}}, <code>∀X:κ</code></td><td>a kind</td><td>only for <code>κ = ∗</code>; for a higher kind the result is a type set and the index set is a set of functions</td></tr>
+  </tbody>
+</table></div>
+
+<p>The strength that {{strength}} measured is the strength of the intersection over all type sets, and the intersections over families, over the members of a type set, over the type sets with <code>F(C) ⊆ C</code> and over the type sets inside a given one add nothing to it: each is an intersection over a set that the metatheory has as soon as it has the type sets. That is what {{limits}} claimed in its closing observation on cost, and this is its proof. The kinds are the exception, and the only one: each arrow in a kind is one more power set, as the remark in {{fomega}} says. That matches what {{cube}} reports, that F<sub>ω</sub> needs more than arithmetic of any finite order; the lower bound is quoted there and does not follow from the shape of this proof.</p>

@@ -1,0 +1,60 @@
+<p>One sort of step gets a name of its own, because the definition of a type set in {{typeset}} is stated with it.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Head step</p>
+  <p>Every term has exactly one of three forms, with <code>n ≥ 0</code>:</p>
+  <dl class="conds">
+    <dt>λx.t</dt><dd>an abstraction, for example <code>λx.x x</code>;</dd>
+    <dt>x u<sub>1</sub>…u<sub>n</sub></dt><dd>a variable applied to arguments, for example <code>y</code> and <code>y δ δ</code>;</dd>
+    <dt>(λx.t) u u<sub>1</sub>…u<sub>n</sub></dt><dd>an abstraction applied to arguments, for example <code>I I</code> and <code>K K y</code>.</dd>
+  </dl>
+  <p>The <b>head step</b> of an abstraction applied to arguments reduces the redex at its front:</p>
+  <p class="eq"><code>(λx.t) u u<sub>1</sub>…u<sub>n</sub> →<sub>h</sub> t[u/x] u<sub>1</sub>…u<sub>n</sub></code></p>
+  <p>The <b>argument</b> of this head step is the term <code>u</code>.</p>
+  <p>A head step is <b>safe</b> if its argument is in <code>SN</code>.</p>
+  <p>An abstraction has no head step, and a variable applied to arguments has no head step.</p>
+  <p>Repeating head steps is called weak head reduction.</p>
+</section>
+
+<p>A head step survives one more argument: if <code>s →<sub>h</sub> s′</code>, then <code>s v →<sub>h</sub> s′ v</code>, with the same argument. {{ops}} uses this.</p>
+
+<section class="box ex">
+  <p class="tag">Example · Head steps</p>
+  <ul>
+    <li><code>K K y →<sub>h</sub> (λb.K) y →<sub>h</sub> K</code>. Both head steps are safe: their arguments are <code>K</code> and <code>y</code>.</li>
+    <li><code>(λx.y) Ω →<sub>h</sub> y</code>. This head step is not safe, because its argument is <code>Ω</code>.</li>
+    <li><code>λx.K x</code> has a step, to <code>λx.λb.x</code>, and no head step. <code>y (I I)</code> also has a step and no head step.</li>
+  </ul>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma R · Three facts about steps<span class="st">textbook</span></p>
+  <dl class="conds">
+    <dt>R1</dt><dd><b>Subterms.</b> If <code>t ∈ SN</code>, then every subterm of <code>t</code> is in <code>SN</code>, and every term that <code>t</code> steps to is in <code>SN</code>.</dd>
+    <dt>R2</dt><dd><b>Variable applied.</b> <code>x u<sub>1</sub>…u<sub>n</sub> ∈ SN</code> if and only if <code>u<sub>1</sub>,…,u<sub>n</sub> ∈ SN</code>.</dd>
+    <dt>R3</dt><dd><b>Safe head step.</b> If <code>s →<sub>h</sub> s′</code> is safe and <code>s′ ∈ SN</code>, then <code>s ∈ SN</code>. <span>Written out: if <code>t[u/x] u<sub>1</sub>…u<sub>n</sub> ∈ SN</code> and <code>u ∈ SN</code>, then <code>(λx.t) u u<sub>1</sub>…u<sub>n</sub> ∈ SN</code>.</span></dd>
+  </dl>
+  <p>R3 (safe head step) says that strong normalization survives undoing a safe head step. The word “safe” matters: if <code>x</code> is not free in <code>t</code>, the head step throws <code>u</code> away, and then nothing is known about <code>u</code>.</p>
+  <p>These three facts are all that the main proof uses about strong normalization.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>R1.</b> A step inside a subterm of <code>t</code> is a step of <code>t</code>. A run from a term that <code>t</code> steps to is the tail of a run from <code>t</code>.</p>
+    <p><b>R2.</b> No step can change the variable that is applied, so the term stays a variable applied to arguments. Every step happens inside one of the arguments.</p>
+    <p><b>R3.</b> Write <code>s</code> for the term before the head step and <code>s′</code> for the term after it. The subterms <code>t</code>, <code>u</code>, <code>u<sub>1</sub>,…,u<sub>n</sub></code> are all in <code>SN</code>: <code>u</code> by assumption, each <code>u<sub>i</sub></code> as a subterm of <code>s′</code>, and <code>t</code> because every step of <code>t</code> is also a step of <code>t[u/x]</code>, which is a subterm of <code>s′</code>.</p>
+    <p>Take any sequence of steps from <code>s</code>. As long as the head step is not taken, each step is inside one of these subterms, and those stop. If the head step is taken, the result is a term that <code>s′</code> can reach by steps, and <code>s′ ∈ SN</code>. Either way the sequence is finite. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · R2 at work</p>
+  <p><code>y δ δ ∈ SN</code> by R2 (variable applied), because each argument is in <code>SN</code>. Nothing ever applies the first <code>δ</code> to the second: the variable <code>y</code> stands in the way.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · R3 at work, and why it asks for a safe head step</p>
+  <p><code>(λx.y) (I I) ∈ SN</code> by R3 (safe head step). Its head step leads to <code>y</code>, which is in <code>SN</code>, and the head step is safe because its argument <code>I I</code> is in <code>SN</code>.</p>
+  <p><code>(λx.y) Ω</code> also has a head step to <code>y</code>. That head step is not safe, because its argument <code>Ω</code> is not in <code>SN</code>. And the whole term is not in <code>SN</code>: <code>Ω</code> can be run inside it forever.</p>
+</section>

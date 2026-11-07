@@ -1,0 +1,72 @@
+<p>The definition of a type set in {{typeset}} is one of several. This section puts it beside Girard’s original definition and beside the plainest idea, which fails.</p>
+
+<h3 class="sub">Saturated sets and reducibility candidates</h3>
+
+<p>The type sets of {{typeset}} are Tait’s saturated sets. Girard’s own proof used a different collection of sets in the same role.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Reducibility candidate</p>
+  <p>A term is <b>neutral</b> if it is not an abstraction.</p>
+  <p>A <b>reducibility candidate</b> is a set <code>T</code> of terms such that:</p>
+  <dl class="conds">
+    <dt>CR1</dt><dd>every member of <code>T</code> is in <code>SN</code>;</dd>
+    <dt>CR2</dt><dd>if <code>t ∈ T</code> and <code>t → t′</code>, then <code>t′ ∈ T</code>; <span>Membership survives every step.</span></dd>
+    <dt>CR3</dt><dd>if <code>t</code> is neutral and every term that <code>t</code> steps to is in <code>T</code>, then <code>t ∈ T</code>. <span>A variable is neutral and has no step, so every candidate contains every variable.</span></dd>
+  </dl>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · Candidates are the type sets that are closed under steps<span class="st">here, reviewed</span></p>
+  <p>Every reducibility candidate is a type set. Every type set satisfies CR1 and CR3. So a type set is a reducibility candidate if and only if it satisfies CR2, and CR2 is the only one of the three that a type set can fail.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>A candidate is a type set.</b> The SN condition is CR1. In the Base condition and the closure condition the term in question is neutral, so by CR3 it is enough that every term it steps to is a member.</p>
+    <p>For the Base condition, every step of <code>x u<sub>1</sub>…u<sub>n</sub></code> is inside an argument and gives a term of the same form. Argue by induction on the total length of the longest runs of the arguments.</p>
+    <p>For the closure condition, write <code>s</code> for <code>(λx.t) u u<sub>1</sub>…u<sub>n</sub></code> and <code>s′</code> for <code>t[u/x] u<sub>1</sub>…u<sub>n</sub></code>, with <code>s′ ∈ T</code> and <code>u ∈ SN</code>. The head step takes <code>s</code> to <code>s′</code>. Any other step is inside <code>t</code>, <code>u</code> or some <code>u<sub>i</sub></code>, and gives a term of the same form as <code>s</code>. The term after the head step of that term is reached from <code>s′</code> by zero or more steps, so it is in <code>T</code> by CR2. Argue by induction on the longest runs of <code>s′</code> and of <code>u</code>.</p>
+    <p><b>Every type set satisfies CR1 and CR3.</b> CR1 is the SN condition. For CR3, let <code>t</code> be neutral with every term it steps to in <code>T</code>. Those terms are in <code>SN</code>, so <code>t ∈ SN</code>. A neutral term is either a variable applied to arguments, and then it is in <code>T</code> by the Base condition, or it has a head step. In that case the term after the head step is in <code>T</code> and the argument is in <code>SN</code>, so <code>t ∈ T</code> by the closure condition. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · A type set that is not a candidate</p>
+  <p><code>Gen({I I})</code> from {{typeset}} contains <code>I I</code> and does not contain <code>I</code>, although <code>I I → I</code>. So it fails CR2. The reverse cannot happen in either collection: a set that contains <code>I</code> contains <code>I I</code>, by the closure condition. <code>SN</code> is both a type set and a candidate, by R1 (subterms).</p>
+</section>
+
+<p>Both collections are closed under <code>⇒</code> and under intersections, so either one proves the theorem, through the same four facts. For candidates the reason is short. If <code>T</code> and <code>U</code> are candidates, then <code>T ⇒ U</code> is a type set by the arrow lemma, and it satisfies CR2: if <code>t ∈ T ⇒ U</code> and <code>t → t′</code>, then for every <code>u ∈ T</code> the term <code>t u</code> is in <code>U</code> and steps to <code>t′ u</code>, so <code>t′ u ∈ U</code> by CR2 for <code>U</code>. CR2 passes to intersections, because it holds in each set. Neither is better throughout. Candidates keep a term while it runs. And CR3 names no form of term except “not an abstraction”, so if new forms of terms are added, as in limit 4 of {{limits}}, then it is enough to say which of them are neutral. Saturated sets are closed under unions by a proof of one line, which the existential types of {{more}} need. For candidates the union is a candidate too: by the lemma “Candidates are the type sets that are closed under steps”, two candidates are two type sets closed under steps, their union is a type set by the union lemma of {{ops}}, and it is closed under steps because each of the two is. The conditions of saturated sets are also direct statements about membership, which keeps each closure proof to a line.</p>
+
+<p>That the union of two candidates is a candidate is a theorem of Riba’s, from 2007. He writes that the property “was hitherto unknown, and even often believed to be false”, and proves it for the Curry-style second-order λ-calculus, which is the setting of this page; there he also shows that the candidates are exactly the saturated sets that are closed under steps, which is the lemma “Candidates are the type sets that are closed under steps”. His theorem is more general: for a rewriting system in which candidates make sense, they are closed under union if and only if they are exactly the nonempty sets of strongly normalizing terms that are closed downward under a certain preorder on terms, which can fail elsewhere. The two-line proof of this paragraph is this page’s, and it uses that lemma in the place of his argument.</p>
+
+<p>With the two collections a type expression names two sets, because <code>∀</code> is an intersection over a different collection in each. For <code>∀X.X</code> both sets are <code>Min</code>, which belongs to both collections and is inside every member of each. For other type expressions this page does not know whether the two sets can differ; both contain every term that the rules give that type expression.</p>
+
+<h3 class="sub">Plain sets</h3>
+
+<p>The plainest idea is to drop the conditions and let every set be a type set. There are two versions.</p>
+
+<p><b>Any set of terms.</b> Keep the terms and keep <code>⇒</code>. Then <code>∅</code> is a type set, and <code>∅ ⇒ U</code> is the set of all terms, as in narrow point 2. So membership says nothing about strong normalization. The rule “→ in” fails as well, because it rests on the closure condition. For example, let <code>T = U = {y}</code>. Then <code>x[u/x] ∈ U</code> for the only <code>u ∈ T</code>, but <code>(λx.x) y</code> is not the term <code>y</code>, so <code>λx.x ∉ T ⇒ U</code>.</p>
+
+<p><b>Any set, with all functions.</b> Leave the terms out. A type expression names a set of values of any sort, and <code>A → B</code> names the set of all functions from the one set to the other. For the simply typed λ-calculus this is the standard model. For System F no such model exists. This is Reynolds’s theorem of 1984, “polymorphism is not set-theoretic”, quoted here and not proved. Its proof is by counting. A model would contain a set <code>P</code> that is as large as the set of all functions from <code>P → B</code> to <code>B</code>, where <code>B</code> has two members, and Cantor’s theorem forbids that. Pitts later showed that the theorem depends on classical logic.</p>
+
+<p>Sets of terms escape because their arrow is small. <code>T ⇒ U</code> contains terms only, and there are countably many terms, however many functions there are from <code>T</code> to <code>U</code>. Every type set is a subset of one countable set. So the collection of all type sets is a set, and an intersection over it is an ordinary operation.</p>
+
+<p>{{kinds}} reads kinds in the plain way: <code>∗</code> is a set, and <code>κ → κ′</code> is the set of all functions. If no kind quantifies over all kinds, then this causes no trouble. Narrow point 7 in {{allkinds}} is what happens when one does, and it ends in the same appeal to Cantor’s theorem.</p>
+
+<h3 class="sub">Side by side</h3>
+
+<div class="tw"><table class="w40">
+  <thead><tr><th></th><th>Saturated set (Tait, this page)</th><th>Reducibility candidate (Girard)</th><th>Plain set, all functions</th></tr></thead>
+  <tbody>
+    <tr><td>Conditions</td><td>SN, Base, closure</td><td>CR1, CR2, CR3</td><td>none</td></tr>
+    <tr><td>Members</td><td>terms</td><td>terms</td><td>values of any sort</td></tr>
+    <tr><td>Arrow</td><td>the terms that send <code>T</code> into <code>U</code></td><td>the same</td><td>all functions from <code>T</code> to <code>U</code></td></tr>
+    <tr><td><code>∀</code></td><td>intersection over all saturated sets</td><td>intersection over all candidates</td><td>no set can serve</td></tr>
+    <tr><td>Every variable is a member</td><td>yes, by the Base condition</td><td>yes, by CR3</td><td>no</td></tr>
+    <tr><td>Closed under steps</td><td>not always</td><td>yes, by CR2</td><td>does not apply</td></tr>
+    <tr><td>Closed under unions</td><td>yes, in one line</td><td>yes, by Riba’s theorem; two lines here</td><td>yes</td></tr>
+    <tr><td>Proves the theorem</td><td>yes</td><td>yes</td><td>no</td></tr>
+  </tbody>
+</table></div>
+
+<p>{{families}} places the candidates in a chain with the type sets and with a third collection between them, and gives the conversions among the three.</p>

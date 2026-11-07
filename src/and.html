@@ -1,0 +1,100 @@
+<p>The first addition is the intersection of two type sets, with the name <code>A ∧ B</code>. It gets this section and the two after it, for three reasons. An argument that is used in two ways can be given a type expression for each use. <code>∧</code> is the finite form of <code>∀</code>. And with <code>∧</code> the rules reach every strongly normalizing term, which the rules of System F do not.</p>
+
+<section class="box def">
+  <p class="tag">Definition · The intersection of two type expressions</p>
+  <p>There is one more form of type expression: <code>A ∧ B</code>. An example is <code>X ∧ (X → Y)</code>.</p>
+  <p>One clause is added:</p>
+  <p class="eq"><code>⟦A ∧ B⟧<sub>ρ</sub> = ⟦A⟧<sub>ρ</sub> ∩ ⟦B⟧<sub>ρ</sub></code></p>
+  <p>Two rules are added:</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Rule</th><th>From</th><th>Conclude</th></tr></thead>
+    <tbody>
+      <tr><td>∧ in</td><td><code>Γ ⊢ t : A</code> and <code>Γ ⊢ t : B</code></td><td><code>Γ ⊢ t : A ∧ B</code></td></tr>
+      <tr><td>∧ out</td><td><code>Γ ⊢ t : A ∧ B</code></td><td><code>Γ ⊢ t : A</code>, and also <code>Γ ⊢ t : B</code></td></tr>
+    </tbody>
+  </table></div>
+  <p><b>System F with ∧</b> has the five rules of System F and these two rules.</p>
+  <p><b>System D</b> has the five rules “variable”, “→ in”, “→ out”, “∧ in” and “∧ out”. Its type expressions are built from variables with <code>→</code> and <code>∧</code>. It has no <code>∀</code>. The name is Krivine’s.</p>
+  <p>For each of the two systems, a derivation uses the rules of that system, and “derivable” and “typable” are defined from derivations as in {{rules}}.</p>
+  <p class="note">The term is the same above and below each of the two rules. A term with the type expression <code>A ∧ B</code> is not a pair of two terms. It is one term, and the rules give it <code>A</code> and also <code>B</code>.</p>
+</section>
+
+<p><code>A ∧ B</code> names the intersection of two type sets, the two that <code>A</code> and <code>B</code> name. <code>∀X.A</code> names an intersection over all type sets. So <code>∧</code> brings no new operation on sets. It is <code>∩</code> again, over two sets and not over all of them.</p>
+
+<section class="box thm">
+  <p class="tag">Lemma · The intersection of two type sets<span class="st">here, reviewed</span></p>
+  <p>Let <code>T</code> and <code>U</code> be type sets.</p>
+  <dl class="conds">
+    <dt>type set</dt><dd><code>T ∩ U</code> is a type set.</dd>
+    <dt>∧ in</dt><dd>If <code>t ∈ T</code> and <code>t ∈ U</code>, then <code>t ∈ T ∩ U</code>.</dd>
+    <dt>∧ out</dt><dd>If <code>t ∈ T ∩ U</code>, then <code>t ∈ T</code> and <code>t ∈ U</code>.</dd>
+  </dl>
+  <p>So, by the addition lemma of {{price}}, Lemma N, the soundness theorem and both corollaries hold for System F with <code>∧</code>.</p>
+  <p>The soundness theorem and C1 (strong normalization) hold for System D, because a derivation of System D is a derivation of System F with <code>∧</code>. System D has no <code>∀</code>, and C2 (consistency) reads there: no closed term <code>t</code> has <code>⊢ t : X</code> for a variable <code>X</code>.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>Type set.</b> This is the intersection lemma of {{ops}}, with the index set <code>{1, 2}</code> and <code>F(1) = T</code>, <code>F(2) = U</code>.</p>
+    <p><b>∧ in</b> and <b>∧ out</b> are the definition of <code>∩</code>.</p>
+    <p><b>The addition lemma.</b> The clause computes <code>⟦A ∧ B⟧<sub>ρ</sub></code> from the two sets that its parts name, by <code>∩</code>, which gives a type set by the first part. So Lemma N holds. The two rules are true: fix <code>ρ</code>, and replace the variables of the context by members of the type sets that their type expressions name. If the term that results is in <code>⟦A⟧<sub>ρ</sub></code> and in <code>⟦B⟧<sub>ρ</sub></code>, then it is in <code>⟦A ∧ B⟧<sub>ρ</sub></code>, which is “∧ in”; if it is in <code>⟦A ∧ B⟧<sub>ρ</sub></code>, then it is in both, which is “∧ out”.</p>
+    <p><b>C2 in System D.</b> Send <code>X</code> to <code>Min</code>. A closed term <code>t</code> with <code>⊢ t : X</code> would be a closed member of <code>Min</code>, and by M3 (smallest) there is none. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · One term, two type expressions</p>
+  <p>A derivation in System D:</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Line</th><th>Judgment</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>x : X ⊢ x : X</code></td><td>variable</td></tr>
+      <tr><td>2</td><td><code>⊢ λx.x : X → X</code></td><td>→ in, from 1</td></tr>
+      <tr><td>3</td><td><code>x : X→Y ⊢ x : X→Y</code></td><td>variable</td></tr>
+      <tr><td>4</td><td><code>⊢ λx.x : (X→Y) → (X→Y)</code></td><td>→ in, from 3</td></tr>
+      <tr><td>5</td><td><code>⊢ λx.x : (X → X) ∧ ((X→Y) → (X→Y))</code></td><td>∧ in, from 2 and 4</td></tr>
+    </tbody>
+  </table></div>
+  <p>As sets: <code>I ∈ (T ⇒ T) ∩ ((T ⇒ U) ⇒ (T ⇒ U))</code> for all type sets <code>T</code> and <code>U</code>. System F says more with the one type expression <code>∀X.X→X</code>. <code>∧</code> lists two of the instances that <code>∀</code> has all of.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Self-application without ∀</p>
+  <p>A derivation in System D:</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Line</th><th>Judgment</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>x : X ∧ (X→Y) ⊢ x : X ∧ (X→Y)</code></td><td>variable</td></tr>
+      <tr><td>2</td><td><code>x : X ∧ (X→Y) ⊢ x : X→Y</code></td><td>∧ out, from 1</td></tr>
+      <tr><td>3</td><td><code>x : X ∧ (X→Y) ⊢ x : X</code></td><td>∧ out, from 1</td></tr>
+      <tr><td>4</td><td><code>x : X ∧ (X→Y) ⊢ x x : Y</code></td><td>→ out, from 2 and 3</td></tr>
+      <tr><td>5</td><td><code>⊢ λx.x x : (X ∧ (X→Y)) → Y</code></td><td>→ in, from 4</td></tr>
+    </tbody>
+  </table></div>
+  <p>In <code>x x</code> the variable is used twice, once as a function and once as its argument. <code>∧</code> gives it a type expression for each use. As sets: <code>δ ∈ (T ∩ (T ⇒ U)) ⇒ U</code> for all type sets <code>T</code> and <code>U</code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A copied argument gets a type expression for each copy</p>
+  <p>Write <code>A</code> for <code>X → X</code>. A derivation in System D:</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Line</th><th>Judgment</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>⊢ δ : (A ∧ (A→A)) → A</code></td><td>the five lines of the example before, with <code>A</code> in the place of <code>X</code> and of <code>Y</code></td></tr>
+      <tr><td>2</td><td><code>⊢ I : A</code></td><td>variable, → in</td></tr>
+      <tr><td>3</td><td><code>⊢ I : A → A</code></td><td>variable, → in</td></tr>
+      <tr><td>4</td><td><code>⊢ I : A ∧ (A → A)</code></td><td>∧ in, from 2 and 3</td></tr>
+      <tr><td>5</td><td><code>⊢ δ I : A</code></td><td>→ out, from 1 and 4</td></tr>
+    </tbody>
+  </table></div>
+  <p>The head step is <code>δ I →<sub>h</sub> <span class="cp">I</span> <span class="cp">I</span></code>. After it there are two copies of <code>I</code>. The first is used as a function from <code>A</code> to <code>A</code>, and the second as a member of <code>A</code>. Before the step there is one <code>I</code>, and it has to serve both uses. Line 4 gives it both type expressions.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · The intersection of no type sets is not a type set</p>
+  <p>Many presentations of intersection types have one more type expression, <code>ω</code>, with the rule that <code>Γ ⊢ t : ω</code> for every <code>Γ</code> and every <code>t</code>. It stands for the intersection of no type expressions.</p>
+  <p>For this rule to be true, <code>ω</code> has to name a set that contains every term. No type set does, because <code>Ω ∉ SN</code>. And with the rule, <code>y : ω → X ⊢ y Ω : X</code> is derivable, although <code>y Ω ∉ SN</code>.</p>
+  <p>So this rule cannot be added. It is the reason why the intersection lemma of {{ops}} asks for a nonempty collection.</p>
+  <p class="note">Quoted from the literature: with <code>ω</code> and its rule, a term is weakly normalizing if and only if it is typable in such a way that <code>ω</code> does not occur in the context or in the type expression of the term.</p>
+</section>

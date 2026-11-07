@@ -1,0 +1,23 @@
+<section class="box np" id="np5">
+  <p class="tag">Narrow point 5 · ∀ over type expressions</p>
+  <dl class="rows">
+    <dt>Goal</dt><dd>Say which set of terms <code>∀X.A</code> names.</dd>
+    <dt>Try</dt><dd>Let <code>C</code> run over type expressions and not over sets. In System F a term with the type expression <code>∀X.A</code> may be used at <code>A[B/X]</code> for any type expression <code>B</code>. So let <code>∀X.A</code> name the terms that are in the set named by <code>A[B/X]</code>, for every type expression <code>B</code>.</dd>
+    <dt>Breaks</dt><dd>The definition is circular. The set that a type expression names is defined from the sets that shorter type expressions name. But <code>B</code> may be <code>∀X.A</code> itself, or something longer. With <code>A = X → X</code> and <code>B = ∀X.X→X</code>, the instance <code>(∀X.X→X) → (∀X.X→X)</code> contains the type expression being defined, twice.</dd>
+    <dt>Hence</dt><dd>The definition of names lets <code>C</code> run over all type sets in the sense of {{typeset}}. Those are sets, and the collection of them was fixed by the three conditions before <code>⇒</code> or <code>∀</code> were mentioned. So it is one intersection of sets that already exist. The result is again a type set, and so it is one of the sets it was intersected over. So the definition is impredicative, in the sense of {{ops}}. Ordinary set theory allows it. Predicative foundations do not, and this is the one place where the proof needs a strong metatheory, that is, a strong theory to carry the proof out in. The idea is Girard’s.</dd>
+  </dl>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · Most type sets have no name<span class="st">here, reviewed</span></p>
+  <p>There are countably many type expressions and uncountably many type sets. So almost every type set is named by no closed type expression.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>A type expression is a finite string of symbols, so there are countably many. For the type sets, let <code>S</code> be any set of closed normal forms, and take the type set <code>Gen(S)</code> of {{typeset}}. Its closed normal forms are exactly the members of <code>S</code>: members of <code>Min</code> have free variables, and what the closure condition adds always has a head step. So different <code>S</code> give different type sets, and there are uncountably many sets <code>S</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>So a variable <code>X</code> ranges over far more than type expressions can name. Type sets built by hand, like <code>T<sub>I</sub></code> in {{typeset}}, are legitimate values for <code>X</code>. No rule mentions them, yet every member of the set that <code>∀X.X→X</code> names has to send each of them into itself.</p>

@@ -1,0 +1,37 @@
+<p>Some type sets vary with a term. Such a varying type set is called a family. The dependent arrow, self types and the dependent intersection are built from families.</p>
+
+<section class="box def" id="families">
+  <p class="tag">Definition · Family</p>
+  <p>A <b>function from terms to type sets</b> is a function <code>V</code> that gives a type set <code>V(u)</code> for every term <code>u</code>.</p>
+  <p>Two terms are <b>convertible</b> if they are joined by steps, taken in either direction.</p>
+  <p>A <b>family</b> is a function from terms to type sets that is constant along steps: if <code>u → u′</code> then <code>V(u) = V(u′)</code>. So a family gives convertible terms the same type set.</p>
+  <p>For a function <code>F</code> that gives a type set for each family, <code>⋂<sub>V</sub> F(V)</code> is the intersection indexed by the set of all families, in the sense of {{ops}}: the terms that are in <code>F(V)</code> for every family <code>V</code>.</p>
+  <p class="note">The set of all families is not empty, because the constant functions are families. So <code>⋂<sub>V</sub> F(V)</code> is a type set by the intersection lemma of {{ops}}, and <i>generalize</i> and <i>instantiate</i> of {{facts}} hold for it. Like the intersection over all type sets, this intersection is impredicative.</p>
+</section>
+
+<section class="aside">
+  <p class="tag">Remark · Two modeling choices, and what each costs</p>
+  <p><b>A family is defined on all terms</b>, and not only on the members of some type set. The reason is that the self type of {{self}} and the dependent intersection of {{dinter}} apply <code>V</code> to the very term that is being tested, which may be any strongly normalizing term. So <code>V</code> has to be defined on all of <code>SN</code> at least, and defining it on all terms costs nothing more. The price is that no rule says which type expressions are well formed: in <code>P t</code> of {{dep}}, the term <code>t</code> may be any term. The usual presentations give <code>P</code> a domain, and {{self}} reports what that changes in System S.</p>
+  <p><b>A family is constant along steps.</b> Each construction built from a function from terms to type sets asks something of that function, and the list is this. The dependent arrow of {{darrow}} and the intersection over the members of a type set in {{implicit}} ask nothing. The self type of {{self}} and the dependent intersection of {{dinter}} ask that the function is constant along safe head steps. The rule of term conversion in {{dep}} asks that it is constant along all steps, so that a term inside a type expression can be run without changing what the type expression names; and so does the rule “∀ out, for families” there, because the function <code>w ↦ ⟦B⟧<sub>ρ[x↦w]</sub></code> that it instantiates at is constant along steps of <code>w</code> only if every family is constant along all steps, as the proof of N4 (term steps) shows. The page asks the strongest of the three of every family, so that one notion serves every construction. The price is that <code>∀P</code> ranges over fewer functions than it otherwise could, and the example “A function that is not a family” shows one that is excluded; <code>EQ(u, v)</code> of {{darrow}} is weaker by the same amount. Each lemma that follows states which of the three it needs.</p>
+</section>
+
+<section class="box def">
+  <p class="tag">Definition · The family V<sub>v</sub></p>
+  <p>For a term <code>v</code>, <code>V<sub>v</sub></code> is the function that gives <code>SN</code> at every term convertible with <code>v</code>, and <code>Min</code> at every other term.</p>
+  <p class="note">A step does not change which terms a term is convertible with, so <code>V<sub>v</sub></code> is a family. It tells the terms convertible with <code>v</code> apart from all others, and {{darrow}} and {{equality}} check other families against it.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · V<sub>I</sub></p>
+  <p><code>V<sub>I</sub>(I I) = SN</code>, because <code>I I → I</code>. <code>V<sub>I</sub>(K) = Min</code>, because <code>K</code> and <code>I</code> are not convertible. That rests on the Church–Rosser theorem, quoted here and not proved: two different normal forms are never convertible.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A function that is not a family</p>
+  <p>Let <code>V(u)</code> be <code>SN</code> if <code>u</code> is the term <code>I</code> itself, and <code>Min</code> otherwise. Every value is a type set. But <code>I I → I</code>, and <code>V(I I) = Min</code> while <code>V(I) = SN</code>. So <code>V</code> is not constant along steps, and it is not a family. {{dep}} shows which rule would be false if it were one.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A family that no program can decide</p>
+  <p>Let <code>W(u)</code> be <code>SN</code> if <code>u</code> has a normal form, and <code>Min</code> otherwise. It is a family: if <code>u → u′</code> and <code>u</code> has a normal form <code>n</code>, then <code>u′</code> reaches <code>n</code> too, by the Church–Rosser theorem; and if <code>u′</code> has a normal form, then so does <code>u</code>, through <code>u′</code>. No program decides whether a term has a normal form, which is a standard fact, quoted. So <code>∀P</code> ranges over families that no program could pick out. It also ranges over families that no type expression names, by the counting of {{allsets}}: the constant families alone are as many as the type sets, uncountably many, and there are countably many type expressions.</p>
+</section>

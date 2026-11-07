@@ -1,0 +1,39 @@
+<p>The soundness theorem says that every derivable judgment is true. Two questions are left. What keeps that so if a new type expression is added? And is every true judgment derivable?</p>
+
+<section class="box np" id="np6">
+  <p class="tag">Narrow point 6 · Names must be checked</p>
+  <dl class="rows">
+    <dt>Goal</dt><dd>Keep the rule “∀ out” true, and keep C1 (strong normalization).</dd>
+    <dt>Try</dt><dd>Use <code>∀X.A</code> at any type expression <code>B</code> without checking what <code>B</code> names. After all, <i>instantiate</i> is trivial.</dd>
+    <dt>Breaks</dt><dd>Twice. System F has no type expression that names <code>∅</code>, and Lemma N is the reason. Suppose one were added, called <code>Empty</code>.
+      <ol>
+        <li>“∀ out” is no longer true. The judgment <code>x : ∀X.X ⊢ x : Empty</code> is derivable, by “∀ out” with <code>B = Empty</code>. It is not true: <code>∀X.X</code> names <code>Min</code>, the variable <code>y</code> is in <code>Min</code>, and <code>y</code> is not in <code>∅</code>. <i>Instantiate</i> needs <code>D</code> to be one of the sets that were intersected over, and those are the type sets.</li>
+        <li>Even true rules stop certifying strong normalization. Add the rule “from <code>Γ ⊢ x : Empty</code> conclude <code>Γ ⊢ t : A</code>”, which is true because nothing is in <code>∅</code>. Then <code>x : Empty ⊢ Ω : A</code>, and <code>λx.Ω</code> gets the type expression <code>Empty → A</code>. It is closed, it is typable, and it is not in <code>SN</code>. The judgment is true and tells nothing: <code>Empty → A</code> names <code>∅ ⇒ U</code>, the set of all terms.</li>
+      </ol></dd>
+    <dt>Hence</dt><dd>Lemma N. Having let <code>∀</code> range over type sets in narrow point 5, one has to show that every type expression names a type set. C1 (strong normalization) rests on N1 (type set): the set named by the type expression of a term is a type set, so its members are strongly normalizing.</dd>
+  </dl>
+</section>
+
+<p>The second question has the answer no.</p>
+
+<section class="box thm">
+  <p class="tag">Lemma · True and not derivable<span class="st">here, reviewed</span></p>
+  <p>The judgment <code>⊨ (λz.I) y : ∀X.X→X</code> is true and not derivable. So the soundness theorem has no converse.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>It is true, because <code>(λz.I) y</code> is in <code>ID</code> by the closure condition. It is not derivable: the variable <code>y</code> is not in the empty context, so the rules cannot give it a type expression. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>A sharper case replaces <code>y</code> by a closed strongly normalizing term that is not typable in System F. Such terms are known to exist; this is quoted from the literature and not shown here. The result is closed, is in <code>ID</code>, and is not typable. With intersection types this cannot happen: {{andsn}} shows that then every strongly normalizing term is typable.</p>
+
+<p>So the set that a type expression <code>A</code> names is not the set of terms that the rules give <code>A</code>. The second set is inside the first, by the soundness theorem, and the lemma shows that it can be strictly inside.</p>
+
+<section class="aside">
+  <p class="tag">Remark · Two readings of the rules</p>
+  <p>A derivation of <code>⊢ t : A</code> is a finite object that a machine can check. The theorem turns it into a guarantee about every run of <code>t</code>. So the rules are a proof system for statements of the form “<code>t</code> is in the set named by <code>A</code>”. The theorem says that this proof system is sound: what it derives is true. The lemma “True and not derivable” says that it is not complete: some true statements have no derivation.</p>
+  <p>The same rules have a second reading. Read <code>A → B</code> as “<code>A</code> implies <code>B</code>” and <code>∀X.A</code> as “<code>A</code>, for every proposition <code>X</code>”. Then a type expression is a formula, a closed term <code>t</code> with <code>⊢ t : A</code> is a proof of <code>A</code>, and the rules are those of second-order propositional logic with implication. C2 (consistency) says that this logic does not prove everything. The match between the two readings is the Curry–Howard correspondence.</p>
+</section>

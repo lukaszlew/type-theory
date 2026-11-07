@@ -1,0 +1,49 @@
+<p>System F is now a notation for some of these sets, together with a list of facts about them.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Type expressions are names</p>
+  <p>A <b>type expression</b> is a variable <code>X</code>, an arrow <code>A → B</code>, or <code>∀X.A</code>. The variables <code>X</code>, <code>Y</code> of type expressions are a second sort of variable, separate from the variables of terms, which are called term variables from here on. The arrow groups to the right, so <code>X→X→X</code> means <code>X→(X→X)</code>.</p>
+  <p>In <code>∀X.A</code> the variable <code>X</code> is bound. A variable is <b>free</b> in a type expression if it occurs there outside every <code>∀X</code>.</p>
+  <p>A type expression is <b>closed</b> if no variable is free in it.</p>
+  <p><code>A[B/X]</code> is <code>A</code> with <code>B</code> in place of every free occurrence of <code>X</code>.</p>
+  <p>An <b>assignment</b> <code>ρ</code> gives a type set <code>ρ(X)</code> for each variable <code>X</code>.</p>
+  <p>The set that a type expression <b>names</b> under <code>ρ</code> is:</p>
+  <p class="eq"><code>⟦X⟧<sub>ρ</sub> = ρ(X)</code><br><code>⟦A → B⟧<sub>ρ</sub> = ⟦A⟧<sub>ρ</sub> ⇒ ⟦B⟧<sub>ρ</sub></code><br><code>⟦∀X.A⟧<sub>ρ</sub> = ⋂<sub>C</sub> ⟦A⟧<sub>ρ[X↦C]</sub></code></p>
+  <p>Here <code>ρ[X↦C]</code> is <code>ρ</code> changed to send <code>X</code> to <code>C</code>. The third clause needs each <code>⟦A⟧<sub>ρ[X↦C]</sub></code> to be a type set. Lemma N, which follows the examples, proves that.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · One type expression, two assignments</p>
+  <p>Take the type expression <code>X → X</code>.</p>
+  <ul>
+    <li>With <code>ρ(X) = SN</code> it names <code>SN ⇒ SN</code>.</li>
+    <li>With <code>ρ(X) = T<sub>K</sub></code> it names <code>T<sub>K</sub> ⇒ T<sub>K</sub></code>.</li>
+  </ul>
+  <p><code>I</code> is in both sets. <code>λx.I</code> is in <code>SN ⇒ SN</code> and not in <code>T<sub>K</sub> ⇒ T<sub>K</sub></code>: it sends <code>K</code> to a term whose head step leads to <code>I</code>, and <code>I</code> is not in <code>T<sub>K</sub></code>. A type expression with free variables names a different set for each assignment.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Closed type expressions</p>
+  <p>A type expression without free variables names the same set under every assignment. <code>∀X.X→X</code> names <code>ID</code>. <code>∀X.X</code> names <code>Min</code>. <code>∀X.X→X→X</code> names <code>BOOL</code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Working out a named set</p>
+  <p><code>∀X.∀Y.X→Y</code> names <code>⋂<sub>C</sub> ⋂<sub>D</sub> (C ⇒ D)</code>, and that set is <code>SN ⇒ Min</code>. Every <code>C ⇒ D</code> contains <code>SN ⇒ Min</code>: a term that sends <code>SN</code> into <code>Min</code> sends <code>C</code> into <code>D</code>, because <code>C ⊆ SN</code> and <code>Min ⊆ D</code>. And <code>SN ⇒ Min</code> is one of the sets intersected. It contains the variable <code>y</code> and no closed term: a closed member applied to <code>I</code> would be a closed member of <code>Min</code>.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma N · Every type expression names a type set<span class="st">textbook</span></p>
+  <dl class="conds">
+    <dt>N0</dt><dd><b>Free variables.</b> If <code>ρ</code> and <code>ρ′</code> agree on the free variables of <code>A</code>, then <code>⟦A⟧<sub>ρ</sub> = ⟦A⟧<sub>ρ′</sub></code>.</dd>
+    <dt>N1</dt><dd><b>Type set.</b> <code>⟦A⟧<sub>ρ</sub></code> is a type set, for every type expression <code>A</code> and every <code>ρ</code>.</dd>
+    <dt>N2</dt><dd><b>Substitution.</b> <code>⟦A[B/X]⟧<sub>ρ</sub> = ⟦A⟧<sub>ρ[X↦⟦B⟧ρ]</sub></code>. <span>Replacing <code>X</code> by the type expression <code>B</code> names the same set as sending <code>X</code> to the set that <code>B</code> names. For example, <code>(X → X)[∀Y.Y→Y / X]</code>, and <code>X → X</code> with <code>ρ(X) = ID</code>, both name <code>ID ⇒ ID</code>.</span></dd>
+  </dl>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>All three by induction on <code>A</code>. For N1 (type set), a variable names <code>ρ(X)</code>, which is a type set by assumption. An arrow is covered by the arrow lemma, and <code>∀</code> by the intersection lemma. N0 (free variables) and N2 (substitution) are unfolding the three clauses. The <code>∀</code> case of N2 (substitution) uses N0 (free variables), because the bound variable can be taken to be not free in <code>B</code>. <span class="qed">∎</span></p>
+  </div>
+</details>

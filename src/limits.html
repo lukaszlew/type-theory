@@ -1,0 +1,39 @@
+<p>“One lemma per addition” is true, and the lemma is not a formality. There are four limits.</p>
+
+<section class="aside">
+  <p class="tag">Limit 1 · True rules about the wrong set are worthless</p>
+  <dl class="rows">
+    <dt>Try</dt><dd>Add a name for a set that is not a type set, together with rules that are true of that set.</dd>
+    <dt>Breaks</dt><dd>Narrow point 6 did this with <code>Empty</code>, a name for <code>∅</code>, and typed the looping term <code>λx.Ω</code>.</dd>
+    <dt>Lesson</dt><dd>The lemma “the new set is a type set” carries the weight, and it is not a formality. A type set for “false” can be no smaller than <code>Min</code>, which has no closed member and still contains the variables.</dd>
+  </dl>
+</section>
+
+<section class="aside">
+  <p class="tag">Limit 2 · Some sets do not exist</p>
+  <dl class="rows">
+    <dt>Try</dt><dd>A type set <code>T</code> with <code>T = T ⇒ T</code>, so that every untyped term is typable. </dd>
+    <dt>Breaks</dt><dd>For such a <code>T</code>, any <code>u ∈ T</code> is also in <code>T ⇒ T</code>, so <code>u u ∈ T</code>, so <code>δ ∈ T ⇒ T = T</code> by <i>abstract</i>. Then <code>δ δ ∈ T</code>, against the SN condition.</dd>
+    <dt>Lesson</dt><dd>No type set satisfies the equation. Fixed points exist for monotone <code>F</code>, as {{more}} shows, and <code>C ⇒ C</code> is not monotone in <code>C</code>.</dd>
+  </dl>
+</section>
+
+<section class="aside">
+  <p class="tag">Limit 3 · Only strong normalization is certified</p>
+  <dl class="rows">
+    <dt>Try</dt><dd>Read <code>t ∈ T</code> as all that typing usually promises, including that <code>t</code> stays in <code>T</code> while it runs.</dd>
+    <dt>Breaks</dt><dd>Take <code>T = Gen({I I})</code> from {{typeset}}. <code>I I ∈ T</code> and <code>I I → I</code>, but <code>I ∉ T</code>.</dd>
+    <dt>Lesson</dt><dd>Type sets are closed under undoing safe head steps. They are not closed under steps. The statement “if <code>t : A</code> and <code>t → t′</code> then <code>t′ : A</code>”, called subject reduction, is known to hold for plain System F, by a separate proof about derivations. It is known to fail for the rule that uses a member of an existential type, in {{more}}.</dd>
+  </dl>
+</section>
+
+<section class="aside">
+  <p class="tag">Limit 4 · New forms of terms reopen the definition</p>
+  <dl class="rows">
+    <dt>Try</dt><dd>Add pairs with projections, or built-in numbers with a recursor, as a few more rules.</dd>
+    <dt>Breaks</dt><dd>The Base condition and the closure condition list forms of terms: a variable applied to arguments, an abstraction applied to arguments. With pairs, <code>fst x</code> is a new form with no head step, and <code>fst ⟨t,u⟩ → t</code> is a new head step that throws <code>u</code> away. Narrow point 3 comes back for it.</dd>
+    <dt>Lesson</dt><dd>Lemma R and the three conditions have to be restated for the new terms, and {{ops}} checked again. It is the same work as in {{typeset}} and {{ops}}, and no harder. But it is the definition again, and not one more lemma on top of it.</dd>
+  </dl>
+</section>
+
+<p>One more observation on cost. Every intersection over all type sets uses the same strong principle as narrow point 5. The additions do not need more than that.</p>

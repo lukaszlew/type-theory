@@ -1,0 +1,108 @@
+<section class="box def">
+  <p class="tag">Definition · The rules of System F</p>
+  <p>System F has five rules. Each rule concludes one judgment from at most two others.</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Rule</th><th>From</th><th>Conclude</th></tr></thead>
+    <tbody>
+      <tr><td>variable</td><td><code>x:A</code> is in <code>Γ</code></td><td><code>Γ ⊢ x : A</code></td></tr>
+      <tr><td>→ out</td><td><code>Γ ⊢ t : A→B</code> and <code>Γ ⊢ u : A</code></td><td><code>Γ ⊢ t u : B</code></td></tr>
+      <tr><td>→ in</td><td><code>Γ, x:A ⊢ t : B</code></td><td><code>Γ ⊢ λx.t : A→B</code></td></tr>
+      <tr><td>∀ in</td><td><code>Γ ⊢ t : A</code>, with <code>X</code> not free in <code>Γ</code></td><td><code>Γ ⊢ t : ∀X.A</code></td></tr>
+      <tr><td>∀ out</td><td><code>Γ ⊢ t : ∀X.A</code></td><td><code>Γ ⊢ t : A[B/X]</code></td></tr>
+    </tbody>
+  </table></div>
+  <p><code>Γ, x:A</code> is the context <code>Γ</code> with <code>x:A</code> added at the end.</p>
+  <p>A <b>derivation</b> is a finite list of judgments in which each judgment follows from earlier ones by one of the rules.</p>
+  <p>A judgment is <b>derivable</b>, written <code>Γ ⊢ t : A</code>, if it is the last judgment of a derivation.</p>
+  <p>A term <code>t</code> is <b>typable</b> if <code>Γ ⊢ t : A</code> is derivable for some <code>Γ</code> and some <code>A</code>. The rules then <b>give</b> <code>t</code> the type expression <code>A</code>.</p>
+  <p>A rule is <b>true</b> if the following holds: if the judgments it starts from are true, then the judgment it concludes is true.</p>
+  <p class="note">The two <code>∀</code> rules leave the term unchanged. This way of presenting System F, with no annotations inside terms, is called Curry style.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · What a side condition prevents</p>
+  <p><code>x : X ⊨ x : X</code> is true. <code>x : X ⊨ x : ∀X.X</code> is false: send <code>X</code> to <code>SN</code> and replace <code>x</code> by <code>I</code>, and recall that <code>∀X.X</code> names <code>Min</code>. The rule “∀ in” would lead from the true judgment to the false one if it did not require that <code>X</code> is not free in the context.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Soundness theorem · The rules of System F are true<span class="st">textbook</span></p>
+  <p>If <code>Γ ⊢ t : A</code>, then <code>Γ ⊨ t : A</code>.</p>
+  <p>Each rule except the variable rule is one of the four facts of {{facts}}. “→ out” is <i>apply</i>, “→ in” is <i>abstract</i>, “∀ in” is <i>generalize</i>, and “∀ out” is <i>instantiate</i>.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>By induction on the derivation, with one case per rule. In each case the variables of <code>Γ</code> have been replaced by members of their sets.</p>
+    <ul>
+      <li><b>Variable.</b> The term that replaces <code>x</code> was taken from <code>⟦A⟧<sub>ρ</sub></code>.</li>
+      <li><b>→ out.</b> <i>Apply.</i></li>
+      <li><b>→ in.</b> <i>Abstract.</i> The bound variable <code>x</code> is renamed if needed, so that it is not a variable of <code>Γ</code> and not free in the terms that replace them.</li>
+      <li><b>∀ in.</b> <i>Generalize.</i> Because <code>X</code> is not free in <code>Γ</code>, the sets <code>⟦A<sub>i</sub>⟧<sub>ρ</sub></code> do not change while <code>ρ(X)</code> varies, by N0 (free variables). So the terms that replace the variables stay in their sets.</li>
+      <li><b>∀ out.</b> <i>Instantiate</i> at <code>D = ⟦B⟧<sub>ρ</sub></code>, which is a type set by N1 (type set). Then N2 (substitution) turns the result into <code>⟦A[B/X]⟧<sub>ρ</sub></code>. <span class="qed">∎</span></li>
+    </ul>
+  </div>
+</details>
+
+<section class="box thm">
+  <p class="tag">Corollaries · Strong normalization and consistency<span class="st">textbook</span></p>
+  <dl class="conds">
+    <dt>C1</dt><dd><b>Strong normalization.</b> If <code>Γ ⊢ t : A</code>, then <code>t</code> is strongly normalizing.</dd>
+    <dt>C2</dt><dd><b>Consistency.</b> No closed term <code>t</code> has <code>⊢ t : ∀X.X</code>.</dd>
+  </dl>
+  <p>C1 (strong normalization) holds because the variables are members of every type set, so each variable can be replaced by itself. C2 is called consistency for this reason: read as a statement, <code>∀X.X</code> says that everything holds, and a closed term <code>t</code> with <code>⊢ t : ∀X.X</code> would be a proof of it.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>C1.</b> Pick any <code>ρ</code>. Replace each variable <code>x<sub>i</sub></code> by itself. That is allowed because <code>x<sub>i</sub> ∈ ⟦A<sub>i</sub>⟧<sub>ρ</sub></code> by the Base condition. The theorem gives <code>t ∈ ⟦A⟧<sub>ρ</sub></code>, and <code>t ∈ SN</code> by the SN condition.</p>
+    <p><b>C2.</b> Such a term would be in <code>Min</code>, which has no closed member. The word “closed” costs nothing here: a term <code>t</code> with <code>⊢ t : A</code> is always closed, because a free variable can enter a derivation only through the variable rule, which takes it from the context. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · A derivation and what it certifies</p>
+  <p>Write <code>J</code> for the type expression <code>∀X.X→X</code>. It names the type set <code>ID</code>.</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Line</th><th>Judgment</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>x : J ⊢ x : J</code></td><td>variable</td></tr>
+      <tr><td>2</td><td><code>x : J ⊢ x : J → J</code></td><td>∀ out, with <code>B = J</code></td></tr>
+      <tr><td>3</td><td><code>x : J ⊢ x x : J</code></td><td>→ out, from 2 and 1</td></tr>
+      <tr><td>4</td><td><code>⊢ λx.x x : J → J</code></td><td>→ in</td></tr>
+      <tr><td>5</td><td><code>⊢ λx.x : J</code></td><td>→ in, then ∀ in</td></tr>
+      <tr><td>6</td><td><code>⊢ (λx.x x)(λx.x) : J</code></td><td>→ out, from 4 and 5</td></tr>
+    </tbody>
+  </table></div>
+  <p>By C1 (strong normalization) the term in line 6 is strongly normalizing. The “∀ out” line is the self-instantiation that narrow point 5 was about.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A typed term that copies a lot</p>
+  <p><code>two</code> is the term <code>λf.λx.f (f x)</code>.</p>
+  <p><code>N</code> is the type expression <code>∀X.(X→X)→(X→X)</code>.</p>
+  <p><code>⊢ two : N</code> is derivable, by two uses of “→ out”, two of “→ in” and one of “∀ in”. The derivation follows the example “The four facts at work” in {{facts}} line for line. Then <code>⊢ two two : N</code> is derivable: “∀ out” with <code>B = X→X</code> for the first <code>two</code>, “∀ out” with <code>B = X</code> for the second, then “→ out”, then “∀ in”. In the same way <code>⊢ two two two : N</code>. By C1 (strong normalization) this term is strongly normalizing, although its runs copy <code>two</code> again and again before they stop.</p>
+</section>
+
+<section class="aside">
+  <p class="tag">Remark · Where the context is</p>
+  <p>Type sets are not indexed by a context. A variable is an untyped term, and by the Base condition it belongs to every type set, whatever type expression a context might give it. That does no harm, because a variable does nothing: it has no step. The context appears in two places only. In a judgment it is the list of sets that the replacing terms are taken from. In a derivation it is the list of variables that the term may have free. C2 (consistency) uses that: a term derived in the empty context is closed.</p>
+  <p>This is what lets the sets come before the rules. A set that depended on the type expressions of its variables would need those first. Proofs that compute normal forms, and not only prove strong normalization, usually cannot avoid this, and they index every set by a context.</p>
+</section>
+
+<section class="aside">
+  <p class="tag">Remark · Church style: System F with annotations</p>
+  <p>System F is often written with type expressions inside terms: <code>λx:A.t</code>, an abstraction <code>ΛX.t</code> over a variable of type expressions, and its application <code>t [B]</code> to a type expression. Erasing these annotations gives a term that the five rules accept. Every step of the annotated calculus either erases to a step, or is a step <code>(ΛX.t) [B] → t[B/X]</code>, which erases to nothing and removes one <code>Λ</code>. So between two steps that erase to steps there are at most as many steps that erase to nothing as the term has <code>Λ</code>s, an infinite run with annotations would give an infinite run without them, and C1 (strong normalization) covers both presentations. This argument was worked out for this page.</p>
+  <p>Curry style has a price. A derivation cannot be read off the term, so nothing on this page is something a machine could check from the term alone; and systems whose terms carry type expressions that contain terms again are covered only through an erasure argument of this kind, which {{erasure}} states in general.</p>
+</section>
+
+<section class="aside">
+  <p class="tag">Remark · What the proof asked of the collection that ∀ ranges over</p>
+  <p>The proofs of Lemma N, of the four facts, of the soundness theorem and of its corollaries use five things about the collection of all type sets, and nothing else: that every member satisfies the three conditions of {{typeset}}; that the arrow of two members is a member; that the intersection of a nonempty set of members is a member; that the collection itself is not empty, so that <code>∀</code> is such an intersection; and, for C2 (consistency), that the smallest member of the collection, which is what <code>∀X.X</code> names, has no closed member. For the collection of all type sets that member is <code>Min</code>. Any collection of type sets with these properties could take the place of the collection of all type sets as the range of <code>∀</code>, with assignments taking their values in it, and the results would hold with the same proofs. {{families}} does this for two smaller collections, and {{tests}} for a third. This page keeps the largest one, because it asks the least of a set; {{families}} says what the smaller ones give in return.</p>
+</section>
+
+<section class="aside">
+  <p class="tag">Remark · What the proof asked of terms</p>
+  <p>The same proofs use, about terms, only the following, and nothing else about what a term is. Lemma R of {{head}}: R1 (subterms), R2 (variable applied) and R3 (safe head step). That a head step survives one more argument, with the same argument. That <code>(λx.t) u</code> takes a head step to <code>t[u/x]</code>, with argument <code>u</code>. That a variable is in <code>Base</code>, that a member of <code>Base</code> applied to a member of <code>SN</code> is in <code>Base</code>, and that a member of <code>Base</code> has a free variable. And, for M2 (generated), that a member of <code>cl(S)</code> reaches <code>S</code> by safe head steps. The list was made by reading the proofs of {{typeset}} to this section, and it is the list that {{pairs}} checks for pairs of terms. Anything with an application, an abstraction, a notion of step and a set <code>Base</code> for which these hold carries the theory: pairs of terms, and in the same way lists of any fixed length, which give relations between several terms; and terms with further forms, such as pairs or numbers inside them, once Lemma R and the three conditions have been restated for the new forms, which is what limit 4 of {{limits}} says has to be done. Combinators, terms built from <code>S</code>, <code>K</code> and application with no abstraction at all, carry it too, with the facts about <code>S</code> and <code>K</code> in the place of <i>abstract</i>: <code>K u v</code> and <code>S u v w</code> take head steps that discard or copy an argument, exactly as <code>(λx.t) u</code> does, and the three conditions are stated for those head steps; this was not written out for this page. What the list does not mention is as telling: that a term has one of three forms, or that steps are confluent, is never used on the main line. A different route is open whenever a translation into terms sends each step of the other system to one or more steps, or to none with only finitely many such in a row: then the erasure lemma of {{erasure}} gives strong normalization for the other system from the theorem for terms, with no semantics of its own.</p>
+</section>

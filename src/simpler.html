@@ -1,0 +1,50 @@
+<p>Could the definition be simpler? The measure is the list of requirements W1 to W5 at the end of {{obstacle}}.</p>
+
+<p>W1 (inside SN) is the SN condition. The Base condition and the closure condition are what W2 (arrow), W3 (abstraction) and W5 (variables) force, as narrow points 2, 3 and 4 show. W4 (intersection) is used in narrow point 2 and proved in {{ops}}.</p>
+
+<p>The narrow points show that the conditions cannot be weakened in the ways tried. They do not show that this list of conditions is the only one that works. {{cmpsets}} gives another.</p>
+
+<p>Each narrow point puts a simpler definition of a type set on trial. A set <b>qualifies</b> if it satisfies the definition on trial. The trial fails if some requirement fails for the sets that qualify.</p>
+
+<section class="box np" id="np2">
+  <p class="tag">Narrow point 2 · Less than the Base condition</p>
+  <dl class="rows">
+    <dt>Goal</dt><dd>A definition under which every member of a type set is strongly normalizing (W1), the arrow of two type sets is a type set (W2), an intersection of type sets is a type set (W4), and every type set contains every variable (W5).</dd>
+    <dt>Try</dt><dd>Keep the SN condition, leave the closure condition aside, and ask for less than the Base condition. Four ways are tried in turn. Each one repairs the one before it. W5 (variables) alone would rule out the first two. They are tried without it, because they show that W2 and W4 already force every type set to have members, and all type sets to share some.</dd>
+    <dt>Breaks</dt><dd>
+      <ol>
+        <li><b>Ask nothing more.</b> The empty set qualifies, and so does <code>SN</code>. But <code>∅ ⇒ SN</code> is the set of all terms, because “for every <code>u ∈ ∅</code>” asks nothing. It contains <code>Ω</code>, which is not in <code>SN</code>. So <code>∅ ⇒ SN</code> fails the SN condition and does not qualify, and W2 (arrow) fails. A type set has to have a member.</li>
+        <li><b>Ask only that the set is not empty.</b> Then <code>{I}</code> and <code>{K}</code> qualify. Their intersection is empty and does not qualify, so W4 (intersection) fails. All type sets have to have members in common. W5 (variables) says which: at least the variables.</li>
+        <li><b>Ask only for the variables.</b> The set <code>Var</code> of all variables qualifies. But <code>Var ⇒ Var</code> is empty, because <code>t x</code> is an application and never a variable. So <code>Var ⇒ Var</code> does not contain the variables and does not qualify, and W2 (arrow) fails.</li>
+        <li><b>Ask only for the members of <code>Base</code> with <code>n ≤ 1</code>.</b> That is a variable alone or applied to one argument. Let <code>U</code> be exactly the set on trial: the variables and the terms <code>x u</code> with <code>u ∈ SN</code>. Then <code>U</code> qualifies, and so does <code>SN</code>. No term <code>x u v</code> is in <code>U</code>. So <code>SN ⇒ U</code> contains the variables and no term <code>x u</code>: it is exactly <code>Var</code>, the set of the third trial. It does not qualify, and W2 (arrow) fails. One arrow further, <code>SN ⇒ (SN ⇒ U)</code> contains no variable at all. Each arrow uses up one argument.</li>
+      </ol>
+      Adding the closure condition does not rescue any of the four. The empty set satisfies it. Closing <code>{I}</code> and <code>{K}</code> gives <code>cl({I})</code> and <code>cl({K})</code>, which are still disjoint, because a term has at most one head step. Closing <code>Var</code> or <code>U</code> adds only abstractions applied to arguments, so the same terms are still missing.</dd>
+    <dt>Hence</dt><dd>
+      <ol>
+        <li>A variable in <code>T</code> serves as the argument: if <code>x ∈ T</code> and <code>t ∈ T ⇒ U</code>, then <code>t x ∈ U</code>, so <code>t x ∈ SN</code>, so <code>t ∈ SN</code> by R1 (subterms). This gives W1 (inside SN) for <code>T ⇒ U</code>.</li>
+        <li>W2 (arrow) says that <code>T ⇒ U</code> is a type set, and W5 (variables) says that a type set contains the variables. So <code>T ⇒ U</code> must contain the variables. This follows from W2 and W5 and is no new requirement. It needs <code>x u ∈ U</code> for every <code>u ∈ T</code>. <code>SN</code> qualified in every trial, so <code>T</code> may be <code>SN</code>, and then all we know about <code>u</code> is that it is in <code>SN</code>.</li>
+        <li>Each arrow adds one argument to what is asked: one arrow deeper it reads <code>x u<sub>1</sub> u<sub>2</sub> ∈ U</code>. Arrows nest to any depth. So the condition that keeps itself true under <code>⇒</code> is the Base condition, for every <code>n</code>.</li>
+        <li>The Base condition puts the same set, <code>Base</code>, inside every type set. So an intersection of type sets is never empty, which W4 (intersection) needs.</li>
+      </ol></dd>
+  </dl>
+</section>
+
+<section class="box np" id="np3">
+  <p class="tag">Narrow point 3 · Undoing a step</p>
+  <dl class="rows">
+    <dt>Goal</dt><dd>W3 (abstraction): if <code>t[u/x] ∈ U</code> for every <code>u ∈ T</code>, then <code>λx.t ∈ T ⇒ U</code>. By the definition of <code>⇒</code>, the claim <code>λx.t ∈ T ⇒ U</code> means <code>(λx.t) u ∈ U</code> for every <code>u ∈ T</code>. W3 hands us only <code>t[u/x] ∈ U</code>, and <code>t[u/x]</code> is what <code>(λx.t) u</code> becomes after one step. So if every type set that contains the term after that step also contains the term before it, then W3 holds.</dd>
+    <dt>Try</dt><dd>Replace the closure condition by the simplest condition that does this: every type set is closed under undoing a step, any step.</dd>
+    <dt>Breaks</dt><dd>Twice. First, a step may throw its argument away. The variable <code>y</code> is in every type set, and <code>(λx.y) Ω</code> steps to <code>y</code>, but it is not in <code>SN</code>, because <code>Ω</code> is still inside it. So ask at least that the argument is in <code>SN</code>. Second, even then a step inside an abstraction can hide a loop. <code>(λz.y) δ</code> is in every type set, since a head step with a strongly normalizing argument takes it to <code>y</code>. Undoing a step inside it gives <code>(λz.(λx.y) (z z)) δ</code>, and the argument <code>z z</code> is in <code>SN</code>. But this term also steps to <code>(λx.y) (δ δ)</code>, which is not in <code>SN</code>. Either way a term that is not in <code>SN</code> would be in every type set, so W1 (inside SN) fails.</dd>
+    <dt>Hence</dt><dd>The closure condition undoes only a head step, and only if the head step is safe. R3 (safe head step) says that <code>SN</code> is closed in exactly this way, so at least one type set exists. W3 (abstraction) still follows: the step from <code>(λx.t) u</code> to <code>t[u/x]</code> is a head step, and it is safe because <code>u</code> comes from a type set.</dd>
+  </dl>
+</section>
+
+<section class="box np" id="np4">
+  <p class="tag">Narrow point 4 · Trailing arguments</p>
+  <dl class="rows">
+    <dt>Goal</dt><dd>W2 (arrow) again: the arrow of two type sets has to be a type set. The closure condition is now one of the conditions, so <code>T ⇒ U</code> has to satisfy it too.</dd>
+    <dt>Try</dt><dd>State the closure condition for the bare form only: if <code>t[u/x] ∈ T</code> and <code>u ∈ SN</code>, then <code>(λx.t) u ∈ T</code>.</dd>
+    <dt>Breaks</dt><dd>W2 (arrow) fails. Let <code>U</code> be the smallest set with the Base condition and this short rule. It qualifies. Its members have two forms: <code>x u<sub>1</sub>…u<sub>n</sub></code>, or an abstraction applied to exactly one argument. Then <code>I ∈ U ⇒ U</code>, and the short rule for <code>U ⇒ U</code> asks for <code>(λz.I) y ∈ U ⇒ U</code>, which means <code>(λz.I) y v ∈ U</code> for <code>v ∈ U</code>. That term has neither form, so it is not in <code>U</code>. So <code>U ⇒ U</code> does not satisfy the short rule and does not qualify.</dd>
+    <dt>Hence</dt><dd>Membership in <code>T ⇒ U</code> is tested by adding one argument. So a head step allows arguments after the redex, as in <code>(λx.t) u u<sub>1</sub>…u<sub>n</sub></code>, and it survives one more argument. Then the closure condition passes through <code>⇒</code> in one line.</dd>
+  </dl>
+</section>

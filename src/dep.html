@@ -1,0 +1,118 @@
+<p>Type expressions can now contain terms. This section adds three forms of type expression, extends Lemma N and the addition lemma of {{price}} to terms inside type expressions, extends the definition of a true judgment, and adds five rules.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Type expressions that contain terms</p>
+  <p>A <b>family variable</b> <code>P</code> is a third sort of variable.</p>
+  <p>There are three more forms of type expression: <code>P t</code>, a family variable applied to a term; <code>Πx:A.B</code>, where the term variable <code>x</code> may be free in <code>B</code>; and <code>∀P.A</code>.</p>
+  <p>On this page a family variable takes one term, and a type expression is never abstracted over a term. The price is paid in {{cube}}: the kinds of functions from terms, which the dependent corners of the λ-cube need in full, are only sketched there.</p>
+  <p>An assignment <code>ρ</code> now also gives a family <code>ρ(P)</code> for each family variable <code>P</code> and a term <code>ρ(x)</code> for each term variable <code>x</code>.</p>
+  <p><code>t[ρ]</code> is <code>t</code> with each free variable <code>x</code> replaced by <code>ρ(x)</code>, all at once.</p>
+  <p><code>u ≡ v</code> is short for the type expression <code>∀P. P u → P v</code>.</p>
+  <p>Three clauses are added:</p>
+  <p class="eq"><code>⟦P t⟧<sub>ρ</sub> = ρ(P) at the term t[ρ]</code><br><code>⟦Πx:A.B⟧<sub>ρ</sub> = Π<sub>u∈⟦A⟧ρ</sub> ⟦B⟧<sub>ρ[x↦u]</sub></code><br><code>⟦∀P.A⟧<sub>ρ</sub> = ⋂<sub>V</sub> ⟦A⟧<sub>ρ[P↦V]</sub></code></p>
+  <p><code>A → B</code> is now the case of <code>Πx:A.B</code> in which <code>x</code> is not free in <code>B</code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A type expression for equality</p>
+  <p>The type expression <code>u ≡ v</code> names <code>EQ(u[ρ], v[ρ])</code> of {{darrow}}. The closed type expression <code>I I ≡ I</code> names <code>EQ(I I, I)</code>, which contains <code>I</code>. The type expression <code>Πx:X. x ≡ x</code> names the terms that send every <code>u ∈ ρ(X)</code> into <code>EQ(u, u)</code>, and <code>λx.I</code> is one of them.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma N · Extended to terms inside type expressions<span class="st">here, reviewed</span></p>
+  <dl class="conds">
+    <dt>N1</dt><dd><b>Type set.</b> <code>⟦A⟧<sub>ρ</sub></code> is a type set.</dd>
+    <dt>N2</dt><dd><b>Substitution.</b> <code>⟦B[u/x]⟧<sub>ρ</sub> = ⟦B⟧<sub>ρ[x↦u[ρ]]</sub></code>. Also <code>⟦A[P:=x.B]⟧<sub>ρ</sub> = ⟦A⟧<sub>ρ[P↦V]</sub></code>. Here <code>A[P:=x.B]</code> is <code>A</code> with every <code>P t</code> replaced by <code>B[t/x]</code>, and <code>V</code> is the family <code>w ↦ ⟦B⟧<sub>ρ[x↦w]</sub></code>.</dd>
+    <dt>N4</dt><dd><b>Term steps.</b> Running a term does not change what a type expression names. If a term inside <code>A</code> takes a step and the result is <code>A′</code>, then <code>⟦A⟧<sub>ρ</sub> = ⟦A′⟧<sub>ρ</sub></code>. If the term <code>ρ(x)</code> takes a step and the result is <code>ρ′</code>, then <code>⟦A⟧<sub>ρ</sub> = ⟦A⟧<sub>ρ′</sub></code>.</dd>
+  </dl>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>N0 (free variables) holds as stated, for all three sorts of variable.</p>
+    <p><b>N4</b> comes first, by induction on <code>A</code>. The case that matters is <code>P t</code>. A step of a term inside <code>t</code>, or of <code>ρ(x)</code>, takes <code>t[ρ]</code> to the new term in zero or more steps, and <code>ρ(P)</code> is constant along steps, because it is a family. In every other case what the type expression names is computed from what the type expressions inside it name.</p>
+    <p><b>N1.</b> By induction on <code>A</code>. <code>P t</code> names a value of a family. For <code>Πx:A.B</code>, the function <code>u ↦ ⟦B⟧<sub>ρ[x↦u]</sub></code> gives type sets by induction, and the lemma on the dependent arrow in {{darrow}} asks nothing more of it. <code>∀P.A</code> is an intersection over all families, which is a type set by {{fam}}.</p>
+    <p><b>N2.</b> By induction, unfolding the clauses. In the equation for <code>A[P:=x.B]</code> the case <code>P t</code> reads <code>⟦B[t/x]⟧<sub>ρ</sub> = ⟦B⟧<sub>ρ[x↦t[ρ]]</sub> = V(t[ρ])</code>, by the equation for <code>B[u/x]</code>. That <code>V</code> is a family, and not only a function from terms to type sets, is N4 (term steps). <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box thm">
+  <p class="tag">Addition lemma · Extended to parts that are terms<span class="st">here, reviewed</span></p>
+  <p>A part of an addition may now be a term <code>t</code>, which contributes the term <code>t[ρ]</code> to the clause, or a type expression <code>B</code> under a bound term variable <code>x</code>, which contributes the function <code>w ↦ ⟦B⟧<sub>ρ[x↦w]</sub></code>. The addition lemma of {{price}} holds with one more hypothesis under <i>names</i>: the operation of the clause gives a type set for all inputs that are type sets, families and terms, and it is constant along steps of its term inputs. Then Lemma N holds with N4 (term steps) for the language with the new form.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>As in {{price}}, with one more case in the induction for N4 (term steps). A step of a term inside the new form, or of <code>ρ(x)</code>, changes a term input of the operation by zero or more steps, which the operation does not see, by the new hypothesis; and it changes no other input, by the induction. The function <code>w ↦ ⟦B⟧<sub>ρ[x↦w]</sub></code> is a family by N4 (term steps), so it is an input of the kind the hypothesis speaks of. For N2 (substitution) at a term part, the case uses that substituting a term and then applying <code>ρ</code> is the same as applying <code>ρ</code> with the substituted term: <code>t[u/x][ρ] = t[ρ[x↦u[ρ]]]</code>, a fact about substitution and not about type expressions. The part <i>rules</i> is unchanged, with the definition of a true judgment of this section in the place of that of {{judg}}; the five rules of {{rules}} stay true under it by their old proofs, the two rules for <code>→</code> being the cases of “Π in” and “Π out”. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box def">
+  <p class="tag">Definition · True judgment, with terms inside type expressions</p>
+  <p>A context may now be dependent: <code>A<sub>i</sub></code> may contain the earlier variables <code>x<sub>1</sub>,…,x<sub>i−1</sub></code>, and <code>A</code> may contain all of them.</p>
+  <p>The judgment is <b>true</b>, written <code>Γ ⊨ t : A</code>, if the following holds: for every <code>ρ</code> such that <code>ρ(x<sub>i</sub>) ∈ ⟦A<sub>i</sub>⟧<sub>ρ</sub></code> for each <code>i</code>, and <code>ρ(y) = y</code> for every term variable <code>y</code> that is not in <code>Γ</code>, the term <code>t[ρ]</code> is in <code>⟦A⟧<sub>ρ</sub></code>.</p>
+  <p class="note">If no type expression contains a term variable, then this is the definition of {{judg}}, with <code>u<sub>i</sub> = ρ(x<sub>i</sub>)</code>. The clause <code>ρ(y) = y</code> says that a term variable outside <code>Γ</code> stands for itself. It is there so that a judgment speaks only about the variables that <code>Γ</code> declares, even when a type expression in <code>Γ</code> mentions another one, and so that C1 (strong normalization) can replace every variable by itself exactly as in {{rules}}.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Theorem · The rules for dependent types<span class="st">here, reviewed</span></p>
+  <p>The theorem and both corollaries hold with the five rules of the table added. The two rules for <code>→</code> are the cases of “Π in” and “Π out” in which <code>x</code> is not free in <code>B</code>.</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Rule</th><th>From</th><th>Conclude</th></tr></thead>
+    <tbody>
+      <tr><td>Π in</td><td><code>Γ, x:A ⊢ t : B</code></td><td><code>Γ ⊢ λx.t : Πx:A.B</code></td></tr>
+      <tr><td>Π out</td><td><code>Γ ⊢ t : Πx:A.B</code> and <code>Γ ⊢ u : A</code></td><td><code>Γ ⊢ t u : B[u/x]</code></td></tr>
+      <tr><td>∀ in, for families</td><td><code>Γ ⊢ t : A</code>, with <code>P</code> not free in <code>Γ</code></td><td><code>Γ ⊢ t : ∀P.A</code></td></tr>
+      <tr><td>∀ out, for families</td><td><code>Γ ⊢ t : ∀P.A</code></td><td><code>Γ ⊢ t : A[P:=x.B]</code></td></tr>
+      <tr><td>term conversion</td><td><code>Γ ⊢ t : A</code>, and <code>A</code>, <code>B</code> joined by steps of the terms inside them</td><td><code>Γ ⊢ t : B</code></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>Lemma N is proved. So, by the part <i>rules</i> of the addition lemma, it is enough that each rule is true. <b>Π in</b> is <i>abstract</i> for the dependent arrow. <b>Π out</b> is <i>apply</i>, and then N2 (substitution) turns <code>⟦B⟧<sub>ρ[x↦u[ρ]]</sub></code> into <code>⟦B[u/x]⟧<sub>ρ</sub></code>. The two <b>∀</b> rules are <i>generalize</i> and <i>instantiate</i> over families, and <i>instantiate</i> is used at the family of N2 (substitution). <b>Term conversion</b> is N4 (term steps).</p>
+    <p>The corollaries are proved as they are for System F. Each variable is replaced by itself, which is allowed because each <code>⟦A<sub>i</sub>⟧<sub>ρ</sub></code> is a type set and so contains <code>x<sub>i</sub></code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · Applying a dependent function</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Line</th><th>Judgment</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>f : Πx:X. P x, a : X ⊢ f : Πx:X. P x</code></td><td>variable</td></tr>
+      <tr><td>2</td><td><code>f : Πx:X. P x, a : X ⊢ a : X</code></td><td>variable</td></tr>
+      <tr><td>3</td><td><code>f : Πx:X. P x, a : X ⊢ f a : P a</code></td><td>Π out, from 1 and 2, since <code>(P x)[a/x]</code> is <code>P a</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>As sets, line 3 is <i>apply</i> and then N2 (substitution). <i>Apply</i> puts <code>f[ρ] a[ρ]</code> into <code>⟦P x⟧<sub>ρ[x↦a[ρ]]</sub></code>, which is <code>ρ(P)</code> at the term <code>a[ρ]</code>; and that is <code>⟦P a⟧<sub>ρ</sub></code>. The passage from the first set to the second is what the rule table hides.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Why term conversion needs a family</p>
+  <p>{{fam}} gave a function <code>V</code> that is not a family: <code>V(u)</code> is <code>SN</code> if <code>u</code> is the term <code>I</code> itself, and <code>Min</code> otherwise. If it counted as a family, the rule of term conversion would be false. That rule leads from <code>z : P I ⊢ z : P I</code> to <code>z : P I ⊢ z : P (I I)</code>. With <code>V</code> for <code>P</code> and <code>I</code> for <code>z</code>: <code>I ∈ V(I)</code>, and <code>I ∉ V(I I)</code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A derivation that records a computation</p>
+  <p>Here <code>u ≡ v</code> stands for <code>∀P. P u → P v</code>.</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Line</th><th>Judgment</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>y : X, z : P y ⊢ z : P y</code></td><td>variable</td></tr>
+      <tr><td>2</td><td><code>y : X ⊢ λz.z : P y → P y</code></td><td>→ in</td></tr>
+      <tr><td>3</td><td><code>y : X ⊢ λz.z : y ≡ y</code></td><td>∀ in, for families</td></tr>
+      <tr><td>4</td><td><code>y : X ⊢ λz.z : I y ≡ y</code></td><td>term conversion, since <code>I y → y</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>Line 4 says that <code>I y</code> and <code>y</code> are equal, and its derivation contains the step that shows it. In the other direction, no closed term <code>t</code> has <code>⊢ t : I ≡ K</code>, because that type expression names <code>EQ(I, K)</code>, which has no closed member.</p>
+</section>
+
+<section class="aside">
+  <p class="tag">Remark · What this treatment of dependent types covers</p>
+  <p><b>Where “constant along steps” is used.</b> Two of the five rules of this section need families to be constant along all steps: term conversion, which is N4 (term steps) itself, and “∀ out, for families”, because the function <code>w ↦ ⟦B⟧<sub>ρ[x↦w]</sub></code> that it instantiates at has to be a family, and the proof of N4 (term steps) makes it one only because every <code>ρ(P)</code> is constant along all steps. If families were asked less, that function could fail to be one: with <code>B = P (y x)</code>, a safe head step of <code>w</code> is not a head step of <code>y w</code>. The dependent arrow needs nothing of its function, by {{darrow}}. {{fam}} lists what every construction on this page asks.</p>
+  <p><b>What is proved.</b> Strong normalization for terms that carry no annotations, which is the price of Curry style named in {{rules}}. The usual presentations of dependent types put type expressions inside terms, and those type expressions contain terms again. Showing that everything there is strongly normalizing, annotations included, takes more bookkeeping, and this page does not do it. {{cube}} comes back to this.</p>
+</section>

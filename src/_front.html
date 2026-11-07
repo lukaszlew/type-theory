@@ -1,0 +1,46 @@
+<header class="head">
+  <p class="eyebrow">Types as sets of terms: a technique, and what it reaches</p>
+  <h1>The Narrow Path</h1>
+  <p class="lede">These notes are about one technique for understanding a type system. A type expression, such as <code>∀X. X → X</code>, is read as the <b>name of a set of untyped terms</b>; such a set is called a <b>type set</b>, and it has to satisfy three conditions. A typing rule is then not an axiom but a statement about the named sets, which is true or false, and can be checked. When every rule is true, two theorems follow at once: every typable term is strongly normalizing, so that no way of running it goes on forever, and the system is consistent. That is the first thing the technique gives, and the notes prove it for System F in a few lines. The rest of the notes is about what else the same reading gives, because the sets outlast the proof: an exact account of what each rule costs and which additions are cheap; a verdict on every proposed rule, with the reason when the verdict is no; a meaning for a hypothesis, for an equality, for a term with annotations; and the same theorems again when the reading is run on pairs of terms, on smaller collections of sets, or on larger languages. The narrow path is the definition of a type set: each natural simplification of it fails, and the notes show every failure next to the clause it concerns. Particular systems from the literature appear as tests of the technique, not as its subject.</p>
+</header>
+
+<section class="box">
+  <p class="tag">What this page claims</p>
+  <ol>
+    <li><b>One definition carries the difficulty.</b> A type set is a set of untyped terms with three conditions ({{typeset}}). In <code>∀X. X → X</code> the variable <code>X</code> ranges over all type sets, which are fixed before any type expression exists, and there are far more of them than type expressions can name ({{allsets}}). The three conditions cannot be weakened in any natural way: each simplification is tried and fails ({{simpler}}), and the failures are what the theorem demands ({{lookback}}).</li>
+    <li><b>The rules are facts about sets, and the proof uses little.</b> Every type expression names a type set ({{names}}), each rule of System F is one of four facts about sets ({{facts}}, {{rules}}), and strong normalization and consistency follow in two lines. What the proof uses is listed where it is used: three facts about <code>SN</code> ({{good}}), five about the collection that <code>∀</code> ranges over and a short list about terms ({{rules}}), and one strong principle, the intersection over all type sets, whose strength {{strength}} measures and {{impred}} shows is paid once.</li>
+    <li><b>Adding a rule has a fixed price.</b> The addition lemma ({{price}}) says that a new form of type expression costs one lemma, that its clause gives type sets, and one membership fact per rule; nothing proved before is touched. The price is paid in full once, for intersection types ({{and}}), with which the rules reach every strongly normalizing term ({{andsn}}), and then in a few lines each for subtyping, least fixed points, existential types, self types, the dependent intersection, the implicit product and equality types; dependent types and higher kinds extend the lemma itself, once each. {{limits}} says exactly where a rule stops being cheap, and why.</li>
+    <li><b>Larger languages name members of the same collection.</b> Dependent types ({{fam}} to {{dep}}), types that mention the term they type ({{self}} to {{equality}}), inductive types built three ways ({{induct}}) and System F<sub>ω</sub> ({{kinds}} to {{allkinds}}) add forms of type expression, and every one of them names a type set of the kind defined in {{typeset}}. For each rule of each system the page says whether it is true as a statement about sets; where a rule is false, the semantics gives a counterexample, and the reasons are of two kinds only: a set that is not a type set ({{true}}), or a rule that asks a hypothesis to carry a fact about other terms, which a term cannot do ({{hyp}}).</li>
+    <li><b>The one choice in the definition is dissolved, not defended.</b> The three conditions are Tait’s. Girard’s candidates, the head-closed type sets and the sets defined by tests are three smaller collections that satisfy them, and the four form a chain ({{cmpsets}}, {{families}}, {{tests}}): each is closed under the arrow and under intersections, each carries the theorem, and each asks of a set one more invariance than the one before. The head-closed collection is exactly the sets of values and the only one with complements, which makes the picture “a type set is a set of values” exact.</li>
+    <li><b>The same proofs run on other inputs.</b> Run on pairs of terms, the reading makes a type expression name a relation, and gives Reynolds’s abstraction theorem and its free theorems with no new proof ({{pairs}}). Run on a smaller collection, it gives the other collections’ theorems. What the proofs ask of their inputs is written down once ({{rules}}), so that the reader can see what else would carry them.</li>
+    <li><b>The reading answers questions that the rules do not ask.</b> What an equality between terms can be, and why none is built in ({{structure}}, {{equalities}}); what a hypothesis means ({{hyp}}); what a term with annotations needs before the theorem reaches it, as one lemma and an inventory ({{erasure}}); and what each corner of the λ-cube costs ({{cube}}).</li>
+    <li><b>The status of every claim is on the page.</b> Each lemma’s header says whether it is textbook, quoted, or worked out here, and whether a reader independent of the author re-derived it; the closing section lists what is quoted, what is the page’s own, what reviews found and fixed, what is open, and what is not here. The sections that treat one particular system are the specialist ones; the goal selector shows what each needs, and none is needed by the main line.</li>
+  </ol>
+</section>
+
+<section class="aside">
+  <p class="tag">The proof in five lines</p>
+  <ol>
+    <li>Terms are untyped, and strong normalization is a property of terms ({{terms}}).</li>
+    <li>A type set is a set of strongly normalizing terms that contains one fixed set of terms, called <code>Base</code>, and is closed under undoing safe head steps ({{head}}, {{typeset}}).</li>
+    <li>Two operations on type sets, the arrow and the intersection over all type sets, give type sets again ({{ops}}).</li>
+    <li>A type expression such as <code>∀X. X → X</code> names a type set ({{names}}), and each typing rule is a true fact about the named sets ({{facts}}, {{rules}}).</li>
+    <li>So a typable term is a member of a type set, and members of type sets are strongly normalizing ({{rules}}).</li>
+  </ol>
+</section>
+
+<section class="aside">
+  <p class="tag">What here is not in the textbooks</p>
+  <p>The main line is Girard’s proof in Tait’s form, and the page says so. Worked out for the page, and re-derived by readers independent of its author, are: the narrow points, each a counterexample to a simplification of the definition ({{simpler}}, {{allsets}}, {{true}}, {{allkinds}}); the addition lemma ({{price}}); the lemma that type sets tell every two terms apart, which is why every equality has to be added ({{structure}}); the characterization of Girard’s candidates as the type sets closed under steps, with a two-line proof of Riba’s theorem on unions ({{cmpsets}}); the chain of four collections, the correspondence between head-closed type sets and sets of values, and the lemma that only the head-closed type sets have complements ({{families}}, {{tests}}); the lemma that every closed term fails some test ({{tests}}); the lemma that the main line uses nothing about terms beyond a short list, so that it runs on pairs ({{pairs}}); the erasure lemma with its inventory ({{erasure}}); and, among the tests of the technique on particular systems, the verdict that a rule which retypes a term by an equation cannot be true in any semantics that proves strong normalization ({{equality}}), and the fit of Mendler-style inductive types, whose fixed point and constructor ask nothing of the signature ({{induct}}). Which of these is known elsewhere under another name is said where it is known; the closing section keeps the account.</p>
+</section>
+
+<ul class="legend">
+  <li class="def">Definition</li>
+  <li class="thm">Lemma or theorem</li>
+  <li class="ex">Example</li>
+  <li class="np">Narrow point</li>
+</ul>
+
+<div class="controls">
+  <button class="btn" id="toggle-proofs" type="button">Open all proofs</button>
+</div>

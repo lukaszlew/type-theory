@@ -1,0 +1,50 @@
+<p>The arrow <code>T ⇒ U</code> sends every member of <code>T</code> into one type set <code>U</code>. With a family in the place of <code>U</code>, the type set that the result lands in can depend on the argument.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Dependent arrow</p>
+  <p>For a type set <code>T</code> and a function <code>V</code> from terms to type sets, the <b>dependent arrow</b> is</p>
+  <p class="eq"><code>Π<sub>u∈T</sub> V(u) = { t : t u ∈ V(u) for every u ∈ T }</code></p>
+  <p>If <code>V</code> is the constant function <code>V(u) = U</code>, then the dependent arrow is <code>T ⇒ U</code>.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · The dependent arrow is a type set<span class="st">here, reviewed</span></p>
+  <p>If <code>T</code> is a type set and <code>V</code> is any function from terms to type sets, then <code>Π<sub>u∈T</sub> V(u)</code> is a type set. Nothing is asked of <code>V</code> along steps.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p>The proof of the arrow lemma goes through with <code>V(v)</code> in the place of <code>U</code>, where <code>v</code> is the argument at hand: in each of the three conditions the argument is fixed before <code>U</code> is used. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>The four facts of {{facts}} carry over. <i>Apply</i> and <i>abstract</i> hold for the dependent arrow. If <code>t ∈ Π<sub>u∈T</sub> V(u)</code> and <code>u ∈ T</code>, then <code>t u ∈ V(u)</code>. If <code>t[u/x] ∈ V(u)</code> for every <code>u ∈ T</code>, then <code>λx.t ∈ Π<sub>u∈T</sub> V(u)</code>. <i>Generalize</i> and <i>instantiate</i> hold for <code>⋂<sub>V</sub> F(V)</code>. There is a fifth fact, <i>convert</i>: if <code>u</code> and <code>u′</code> are convertible, then a member of <code>V(u)</code> is a member of <code>V(u′)</code>. It is the definition of a family.</p>
+
+<section class="box def">
+  <p class="tag">Definition · EQ(u, v)</p>
+  <p>For terms <code>u</code> and <code>v</code>, <code>EQ(u, v) = ⋂<sub>V</sub> (V(u) ⇒ V(v))</code>.</p>
+  <p class="note">A member turns a member of <code>V(u)</code> into a member of <code>V(v)</code>, for every family <code>V</code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Equality as a type set</p>
+  <ul>
+    <li>If <code>u</code> and <code>v</code> are convertible, then <code>V(u) = V(v)</code> for every family, so <code>I ∈ EQ(u, v)</code>. For instance <code>I ∈ EQ(I I, I)</code>.</li>
+    <li>If <code>u</code> and <code>v</code> are not convertible, then <code>EQ(u, v)</code> has no closed member. Test with the family <code>V<sub>u</sub></code> of {{fam}}. A member is in <code>SN ⇒ Min</code>. If it were closed, then applied to <code>I</code> it would be a closed member of <code>Min</code>, and there is none. For instance <code>EQ(I, K)</code> has no closed member.</li>
+  </ul>
+  <p>So <code>EQ(u, v)</code> has a closed member if and only if the two terms are convertible. It is a type set that says something about terms, and it is built from <code>⋂</code> and <code>⇒</code> alone.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Equality is symmetric</p>
+  <p>Claim: <code>λe.e I ∈ EQ(u, v) ⇒ EQ(v, u)</code>, for all terms <code>u</code> and <code>v</code>.</p>
+  <ol>
+    <li>Take any <code>e ∈ EQ(u, v)</code>.</li>
+    <li>The function <code>W(w) = EQ(w, u)</code> is a family, because a step of <code>w</code> changes no <code>V(w)</code>.</li>
+    <li><i>Instantiate</i> with <code>W</code>: <code>e ∈ W(u) ⇒ W(v)</code>, which is <code>EQ(u, u) ⇒ EQ(v, u)</code>.</li>
+    <li><i>Apply</i> to <code>I ∈ EQ(u, u)</code>: <code>e I ∈ EQ(v, u)</code>.</li>
+    <li><i>Abstract</i>: <code>λe.e I ∈ EQ(u, v) ⇒ EQ(v, u)</code>.</li>
+  </ol>
+  <p>The <i>instantiate</i> line uses the intersection at a family that was itself defined by that intersection. This is the same self-reference as in the self-application example. Narrow point 5 in {{allsets}} says why it is allowed.</p>
+</section>

@@ -1,0 +1,80 @@
+<section class="box def">
+  <p class="tag">Definition · Terms and reduction</p>
+  <p>A <b>term</b> is one of three things:</p>
+  <dl class="conds">
+    <dt>x</dt><dd>a variable;</dd>
+    <dt>λx.t</dt><dd>an <b>abstraction</b>, where <code>t</code> is a term;</dd>
+    <dt>t u</dt><dd>an <b>application</b>, where <code>t</code> and <code>u</code> are terms.</dd>
+  </dl>
+  <p>In short:</p>
+  <p class="eq"><code>t, u ::= x | λx.t | t u</code></p>
+  <p>Application groups to the left, so <code>t u v</code> means <code>(t u) v</code>.</p>
+  <p>A <b>subterm</b> of a term is the term itself or any term that occurs inside it.</p>
+  <p>A variable <code>x</code> is <b>free</b> in a term if it occurs there outside every <code>λx</code>.</p>
+  <p>A term is <b>closed</b> if no variable is free in it. For example <code>λx.x</code> is closed, and <code>λx.x y</code> is not.</p>
+  <p>The <b>substitution</b> <code>t[u/x]</code> is the term <code>t</code> with a copy of <code>u</code> in place of every free occurrence of <code>x</code>.</p>
+  <p>Terms that differ only in the names of bound variables count as the same term. Substitution renames bound variables if needed, so that no free variable of <code>u</code> becomes bound.</p>
+  <p>The simultaneous substitution <code>t[u<sub>1</sub>/x<sub>1</sub>,…,u<sub>n</sub>/x<sub>n</sub>]</code> replaces all of the variables <code>x<sub>1</sub>,…,x<sub>n</sub></code> at once.</p>
+  <p>A <b>redex</b> is a term of the form <code>(λx.t) u</code>.</p>
+  <p>There is one rewrite rule, called β. It rewrites a redex:</p>
+  <p class="eq"><code>(λx.t) u → t[u/x]</code></p>
+  <p>A <b>step</b>, in full a β-reduction step, applies β to one redex. The redex may be any subterm:</p>
+  <p class="eq"><code>if t → t′ then λx.t → λx.t′, t u → t′ u and u t → u t′</code></p>
+  <p>A <b>run</b>, or reduction sequence, is a sequence of steps.</p>
+  <p>To <b>run</b> a term is to take steps from it.</p>
+  <p>A <b>normal form</b> is a term that has no step.</p>
+  <p class="note">Two modeling choices are made here. The terms are untyped: type sets do not exist yet, {{typeset}} defines them as sets of these terms, so the terms come first and carry no annotations. And β is the only rewrite rule. The usual second rule, η, which rewrites <code>λx.t x</code> to <code>t</code> when <code>x</code> is not free in <code>t</code>, is left out. The price is paid later: <code>λx.K x</code> and <code>K</code> are different terms that no step joins ({{structure}}), and a statement that two functions with the same results are equal has no home on this page ({{equalities}}). The reason is cost: with η, the forms of terms in {{head}} and the conditions of {{typeset}} would have to be restated for one more sort of step, which is the work that limit 4 of {{limits}} describes.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · What a step does to its argument</p>
+  <p>It depends on how often the variable occurs.</p>
+  <ul>
+    <li>Once: <code>(λx.x) u → u</code>. The argument is moved.</li>
+    <li>Twice: <code>(λx.x x) u → <span class="cp">u</span> <span class="cp">u</span></code>. The argument is copied, and the term can grow.</li>
+    <li>Not at all: <code>(λx.y) u → y</code>. The argument is discarded, and whatever it would have done never happens.</li>
+  </ul>
+  <p>Copying is what makes strong normalization hard to prove. If no abstraction used its variable more than once, every step would make the term shorter, and no term could run forever. With copying, no simple measure of size goes down. Discarding is what makes the order of steps matter.</p>
+</section>
+
+<section class="box def">
+  <p class="tag">Definition · Strongly normalizing</p>
+  <p>A term is <b>strongly normalizing</b> if no infinite run starts from it. Every way of running it stops, whatever order the steps are taken in.</p>
+  <p><code>SN</code> is the set of strongly normalizing terms. So <code>t ∈ SN</code> says that <code>t</code> is strongly normalizing.</p>
+  <p>A term is <b>weakly normalizing</b> if at least one run from it ends in a normal form.</p>
+  <p class="note">This page does not say that a term “terminates”. That word does not say whether one run stops or every run does.</p>
+</section>
+
+<p>Four terms are used as examples throughout.</p>
+
+<div class="tw"><table class="terms">
+  <thead><tr><th>Name</th><th>Term</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td><code>I</code></td><td><code>λx.x</code></td><td>returns its argument</td></tr>
+    <tr><td><code>K</code></td><td><code>λx.λy.x</code></td><td>keeps the first argument, discards the second</td></tr>
+    <tr><td><code>δ</code></td><td><code>λx.x x</code></td><td>copies its argument and applies it to itself</td></tr>
+    <tr><td><code>Ω</code></td><td><code>δ δ</code></td><td>δ applied to itself</td></tr>
+  </tbody>
+</table></div>
+
+<section class="box ex">
+  <p class="tag">Example · Normal forms</p>
+  <p><code>I</code>, <code>K</code>, <code>δ</code> and <code>y y</code> are normal forms. No step is possible, so they are strongly normalizing. A term with one step and then none, such as <code>I I → I</code>, is strongly normalizing too.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A loop</p>
+  <p><code>Ω = (λx.x x) δ → <span class="cp">δ</span> <span class="cp">δ</span> = Ω</code>. Its only step copies <code>δ</code> and rebuilds the same term. It is not even weakly normalizing.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A term with several runs</p>
+  <p>Take <code>δ (I y)</code>, where <code>y</code> is a variable. Two steps are possible at the start: the outer one, which copies the argument, and the inner one, <code>I y → y</code>. That gives three runs that go on until no step is left.</p>
+  <p class="eq"><code>δ (I y) → δ y → <span class="cp">y</span> <span class="cp">y</span></code><br><code>δ (I y) → <span class="cp">(I y)</span> <span class="cp">(I y)</span> → y (I y) → y y</code><br><code>δ (I y) → <span class="cp">(I y)</span> <span class="cp">(I y)</span> → (I y) y → y y</code></p>
+  <p>Every run stops, so the term is strongly normalizing. The runs that copy first are longer, because the copied redex has to be reduced twice.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Weakly but not strongly normalizing</p>
+  <p><code>K I Ω</code> can stop: <code>K I Ω → (λy.I) Ω → I</code>, where the last step discards <code>Ω</code>. It can also step inside <code>Ω</code> forever. So it is weakly normalizing and not strongly normalizing. The definition of <code>SN</code> asks about every order of steps, and one finishing run is not enough.</p>
+</section>

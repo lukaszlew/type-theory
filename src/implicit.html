@@ -1,0 +1,62 @@
+<p>Cedille is the system that Stump built after System S; its theory is the Calculus of Dependent Lambda Eliminations. It replaces self types by three constructions: the dependent intersection of {{dinter}}, the implicit product of this section, and an equality between terms, in {{equality}}. The implicit product is due to Miquel. As a set, it is the intersection over the members of a type set.</p>
+
+<section class="box def">
+  <p class="tag">Definition · Intersection over the members of a type set</p>
+  <p>For a type set <code>T</code> and a function <code>V</code> from terms to type sets, the <b>intersection over the members of <code>T</code></b>, written <code>⋂<sub>u∈T</sub> V(u)</code>, is the intersection indexed by <code>T</code> in the sense of {{ops}}: the terms that are in <code>V(u)</code> for every <code>u ∈ T</code>.</p>
+  <p class="note"><code>T</code> contains <code>Base</code>, so it is not empty, and the intersection is a type set by the intersection lemma of {{ops}}; <i>generalize</i> and <i>instantiate</i> of {{facts}} hold for it. Nothing is asked of <code>V</code> along steps. Contrast with the dependent arrow of {{darrow}}. A member <code>t</code> of <code>Π<sub>u∈T</sub> V(u)</code> is given <code>u</code> as an argument: <code>t u ∈ V(u)</code>. A member <code>t</code> of <code>⋂<sub>u∈T</sub> V(u)</code> is in <code>V(u)</code> without being given <code>u</code>.</p>
+</section>
+
+<section class="box def">
+  <p class="tag">Definition · The implicit product</p>
+  <p>There is one more form of type expression: <code>∀x:A.B</code>, where the term variable <code>x</code> may be free in <code>B</code>. Cedille calls it an implicit product.</p>
+  <p>One clause is added:</p>
+  <p class="eq"><code>⟦∀x:A.B⟧<sub>ρ</sub> = ⋂<sub>u∈⟦A⟧ρ</sub> ⟦B⟧<sub>ρ[x↦u]</sub></code></p>
+  <p>Two rules are added:</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Rule</th><th>From</th><th>Conclude</th></tr></thead>
+    <tbody>
+      <tr><td>∀ in, for terms</td><td><code>Γ, x:A ⊢ t : B</code>, with <code>x</code> not free in <code>t</code></td><td><code>Γ ⊢ t : ∀x:A.B</code></td></tr>
+      <tr><td>∀ out, for terms</td><td><code>Γ ⊢ t : ∀x:A.B</code> and <code>Γ ⊢ u : A</code></td><td><code>Γ ⊢ t : B[u/x]</code></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">The term is the same above and below each rule, as it is for <code>∧</code> in {{and}}. Contrast with “Π in” in {{dep}}: from <code>Γ, x:A ⊢ t : B</code> it concludes <code>Γ ⊢ λx.t : Πx:A.B</code>. The implicit rule drops the <code>λ</code>, and in return asks that <code>t</code> does not use <code>x</code>. In Cedille the term carries an abstraction <code>Λx.t</code> and an application <code>t -u</code> for these two rules; erasure removes both, and the rules above are what is left.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · The two rules for the implicit product are true<span class="st">here, reviewed</span></p>
+  <p>The rules “∀ in, for terms” and “∀ out, for terms” are true. So, by the addition lemma of {{price}} as extended in {{dep}}, Lemma N, the soundness theorem and both corollaries hold with them added.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>The addition lemma.</b> The clause computes the set from the type set that <code>A</code> names and the family <code>w ↦ ⟦B⟧<sub>ρ[x↦w]</sub></code>, by the intersection over the members of the first, which is a type set by the definition’s note and has no term input.</p>
+    <p><b>∀ in, for terms.</b> Fix <code>ρ</code> with <code>ρ(x<sub>i</sub>) ∈ ⟦A<sub>i</sub>⟧<sub>ρ</sub></code> for each variable of <code>Γ</code>. Take any <code>u ∈ ⟦A⟧<sub>ρ</sub></code> and let <code>ρ′ = ρ[x↦u]</code>. The variables of <code>Γ</code> are still well placed under <code>ρ′</code>, because <code>x</code> is not free in their type expressions, by N0 (free variables). So the premise gives <code>t[ρ′] ∈ ⟦B⟧<sub>ρ′</sub></code>. And <code>t[ρ′] = t[ρ]</code>, because <code>x</code> is not free in <code>t</code>. So <code>t[ρ] ∈ ⟦B⟧<sub>ρ[x↦u]</sub></code> for every <code>u ∈ ⟦A⟧<sub>ρ</sub></code>, which is the clause.</p>
+    <p><b>∀ out, for terms.</b> <code>t[ρ]</code> is in <code>⟦B⟧<sub>ρ[x↦u[ρ]]</sub></code> by <i>instantiate</i>, and that set is <code>⟦B[u/x]⟧<sub>ρ</sub></code> by N2 (substitution). <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · A term that works for every u without being told u</p>
+  <p><code>I ∈ ⋂<sub>u∈T</sub> (V(u) ⇒ V(u))</code> for every type set <code>T</code> and every family <code>V</code>, because <code>I ∈ V(u) ⇒ V(u)</code> for each <code>u</code>. So <code>⊢ I : ∀x:A. P x → P x</code> is derivable, by the variable rule, “→ in” and “∀ in, for terms”. With the dependent arrow in the place of the implicit product, the term would have to be <code>λx.I</code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Cedille’s natural numbers: induction with no recursive definition</p>
+  <p>Write <code>cNat</code> for the type set that <code>∀X.(X→X)→X→X</code> names, with <code>0 = λs.λz.z</code> and <code>S = λn.λs.λz.s (n s z)</code> as in {{self}}. For a family <code>P</code>, let</p>
+  <p class="eq"><code>Step<sub>P</sub> = ⋂<sub>y∈cNat</sub> (P(y) ⇒ P(S y))</code></p>
+  <p>which is an intersection over the members of <code>cNat</code>. Let <code>V(w) = ⋂<sub>P</sub> ( Step<sub>P</sub> ⇒ (P(0) ⇒ P(w)) )</code>, with <code>P</code> over all families, and let</p>
+  <p class="eq"><code>Nat′ = { t : t ∈ cNat and t ∈ V(t) }</code></p>
+  <p>which is the dependent intersection of {{dinter}} with <code>cNat</code> as its first part. Then <code>Nat′</code> is a type set, <code>0 ∈ Nat′</code>, <code>S ∈ Nat′ ⇒ Nat′</code>, and every <code>t ∈ Nat′</code> satisfies <code>t s z ∈ P(t)</code> for every family <code>P</code>, every <code>s ∈ Step<sub>P</sub></code> and every <code>z ∈ P(0)</code>. That is induction, and the type set of the result mentions <code>t</code>.</p>
+  <p>Contrast with the <code>Nat</code> of {{self}}. There <code>Step<sub>P</sub></code> was an intersection over the members of <code>Nat</code> itself, so <code>Nat</code> was defined in terms of itself and needed the least fixed point of {{more}}. Here <code>y</code> ranges over <code>cNat</code>, which was fixed first, and no fixed point is needed. This is Stump’s construction, with the argument order of this page.</p>
+  <p>The implicit product is what makes it work. If <code>Step<sub>P</sub></code> were the dependent arrow <code>Π<sub>y∈cNat</sub> (P(y) ⇒ P(S y))</code>, then a member <code>s</code> would take <code>y</code> as an argument, and <code>S t s z</code>, which runs to <code>s (t s z)</code>, would hand <code>s</code> one argument where it expects two. Stump makes the same point about erasure: the step function must erase to the step of the Church numeral.</p>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>Type set.</b> Each <code>V(w)</code> is a type set, by the arrow lemma and the intersection lemma of {{ops}}. <code>V</code> is constant along steps, because each <code>P</code> is. So <code>V</code> is a family, and the lemma of {{dinter}} applies.</p>
+    <p><b>0 ∈ Nat′.</b> For <code>0 ∈ V(0)</code>, take any family <code>P</code>, <code>s ∈ Step<sub>P</sub></code> and <code>z ∈ P(0)</code>. Then <code>0 s z →<sub>h</sub> (λz.z) z →<sub>h</sub> z</code>, and <code>z ∈ P(0)</code>. Both head steps are safe, because <code>s</code> and <code>z</code> are in <code>SN</code>. So <code>0 s z ∈ P(0)</code> by the closure condition, twice. The same two steps, with any type set <code>C</code> in the place of <code>P(0)</code> and any <code>s ∈ C ⇒ C</code>, give <code>0 ∈ cNat</code>.</p>
+    <p><b>S ∈ Nat′ ⇒ Nat′.</b> Take <code>t ∈ Nat′</code>. For any type set <code>C</code>, <code>s ∈ C ⇒ C</code> and <code>z ∈ C</code>, the term <code>S t s z</code> reaches <code>s (t s z)</code> by three safe head steps, and <code>t s z ∈ C</code> because <code>t ∈ cNat</code>; so <code>S t ∈ cNat</code>. For <code>S t ∈ V(S t)</code>, take any <code>P</code>, <code>s ∈ Step<sub>P</sub></code> and <code>z ∈ P(0)</code>. Again <code>S t s z</code> reaches <code>s (t s z)</code> by three safe head steps. Now <code>t ∈ V(t)</code> gives <code>t s z ∈ P(t)</code>. And <code>t ∈ cNat</code>, so <i>instantiate</i> gives <code>s ∈ P(t) ⇒ P(S t)</code>. So <code>s (t s z) ∈ P(S t)</code>, and <code>S t s z ∈ P(S t)</code> by the closure condition.</p>
+    <p><b>Induction</b> is <code>t ∈ V(t)</code>, read off. <span class="qed">∎</span></p>
+  </div>
+</details>
+

@@ -1,0 +1,50 @@
+<p>Three more additions follow, each at the price that the addition lemma of {{price}} states. Each is given by its set, by the lemma that the set is a type set, and by its membership facts. The form of type expression, the clause and the rules are then read off, as {{and}} did for <code>∧</code>, and the addition lemma gives Lemma N, the soundness theorem and both corollaries for the system with the new rules.</p>
+
+<section class="aside">
+  <p class="tag">Addition · Subtyping</p>
+  <dl class="rows">
+    <dt>Set</dt><dd>No new set. The relation <code>T ⊆ T′</code> between type sets.</dd>
+    <dt>Lemma</dt><dd>Nothing to check.</dd>
+    <dt>Facts</dt><dd>If <code>t ∈ T</code> and <code>T ⊆ T′</code> then <code>t ∈ T′</code>. Inclusions come from true facts: <code>Min ⊆ T ⊆ SN</code>; if <code>T′ ⊆ T</code> and <code>U ⊆ U′</code> then <code>T ⇒ U ⊆ T′ ⇒ U′</code>; <code>⋂<sub>C</sub> F(C) ⊆ F(D)</code>; and the laws of <code>∩</code> in {{andlaws}}.</dd>
+  </dl>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Subtyping</p>
+  <div><code>ID ⊆ ID ⇒ ID</code>, by the fact <code>⋂<sub>C</sub> F(C) ⊆ F(D)</code>, with <code>D = ID</code>. So the self-application example reads: pass to a larger type set, then apply.</div>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A bigger input gives a smaller arrow</p>
+  <p>A smaller input set gives a larger arrow, so <code>SN ⇒ SN ⊆ T<sub>I</sub> ⇒ SN</code>, because <code>T<sub>I</sub> ⊆ SN</code>. The inclusion is strict: <code>δ</code> is in <code>T<sub>I</sub> ⇒ SN</code> and not in <code>SN ⇒ SN</code>. With fewer inputs to handle, more terms qualify. In standard terms, the arrow is contravariant in its first argument.</p>
+  <p class="note">Why <code>δ ∈ T<sub>I</sub> ⇒ SN</code>: take <code>u ∈ T<sub>I</sub></code>. Its head steps lead to <code>I</code> or to a variable applied to arguments. <code>I u ∈ SN</code> because <code>u ∈ SN</code>, and a variable applied to strongly normalizing arguments is in <code>SN</code> by R2 (variable applied). R3 (safe head step) carries this back along the head steps, so <code>u u ∈ SN</code>, and then <code>δ u ∈ SN</code>.</p>
+</section>
+
+<section class="aside">
+  <p class="tag">Addition · Least fixed points</p>
+  <dl class="rows">
+    <dt>Set</dt><dd>For a function <code>F</code> from type sets to type sets, <code>μF</code> is the intersection of all type sets <code>C</code> with <code>F(C) ⊆ C</code>. <code>F</code> is <b>monotone</b> if the following holds: if <code>C ⊆ C′</code> then <code>F(C) ⊆ F(C′)</code>.</dd>
+    <dt>Lemma</dt><dd><code>μF</code> is a type set for every <code>F</code>, as an intersection of a nonempty collection: <code>SN</code> is in the collection, since <code>F(SN) ⊆ SN</code>. If <code>F</code> is monotone, then <code>F(μF) = μF</code>. For every <code>C</code> in the collection <code>F(μF) ⊆ F(C) ⊆ C</code>, so <code>F(μF) ⊆ μF</code>. Then <code>F(F(μF)) ⊆ F(μF)</code>, so <code>F(μF)</code> is in the collection and <code>μF ⊆ F(μF)</code>. This is the Knaster–Tarski theorem.</dd>
+    <dt>Facts</dt><dd>For monotone <code>F</code>: <code>t ∈ μF</code> if and only if <code>t ∈ F(μF)</code>, with the term unchanged. Induction: if <code>F(C) ⊆ C</code> then <code>μF ⊆ C</code>. The rules carry the side condition that <code>F</code> is monotone, which the usual presentations state as “<code>X</code> occurs positively in <code>A</code>”; without it the two rules are false, because <code>μF</code> is still a type set but need not be a fixed point.</dd>
+  </dl>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Least fixed points</p>
+  <div>Numbers that carry their predecessor. Let <code>F(C) = ⋂<sub>D</sub> (D ⇒ ((C ⇒ D) ⇒ D))</code>. It is monotone, because <code>C</code> sits to the left of two arrows. Zero is <code>λz.λs.z</code>, which is in <code>F(C)</code> for every <code>C</code>. If <code>n ∈ μF</code> then its successor <code>λz.λs.s n</code> is in <code>F(μF) = μF</code>.</div>
+</section>
+
+<section class="aside">
+  <p class="tag">Addition · Existential types</p>
+  <dl class="rows">
+    <dt>Set</dt><dd><code>⋃<sub>C</sub> F(C)</code>, the terms that are in <code>F(C)</code> for at least one type set <code>C</code>.</dd>
+    <dt>Lemma</dt><dd>It is a type set. It is the union of a nonempty collection of type sets, so the union lemma of {{ops}} applies.</dd>
+    <dt>Facts</dt><dd>If <code>t ∈ F(D)</code> then <code>t ∈ ⋃<sub>C</sub> F(C)</code>. To use a member <code>t</code>: if <code>s[v/x] ∈ U</code> for every type set <code>C</code> and every <code>v ∈ F(C)</code>, then <code>s[t/x] ∈ U</code>.</dd>
+    <dt>Caution</dt><dd>Only the length of the proof depends on the conditions chosen in {{typeset}}. For type sets, closure under union is the union lemma, which takes one line. For Girard’s reducibility candidates, which {{cmpsets}} compares, the union of candidates is also a candidate, by a proof given there, together with the history of the question.</dd>
+  </dl>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Existential types</p>
+  <div><code>δ ∈ ⋃<sub>C</sub> (C ⇒ C)</code>, with <code>C = ID</code>, although <code>δ ∉ ⋂<sub>C</sub> (C ⇒ C)</code>. The term sends some type set into itself, and not every type set.</div>
+</section>

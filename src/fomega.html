@@ -1,0 +1,80 @@
+<section class="box def">
+  <p class="tag">Definition · Type expressions of higher kind</p>
+  <p>F<sub>ω</sub> has three more forms of type expression: an abstraction <code>λX:κ.A</code>, an application <code>A B</code>, and <code>∀X:κ.A</code> for any kind <code>κ</code>.</p>
+  <p>A well-formed type expression has a kind, written <code>A : κ</code>. The rules are the usual ones:</p>
+  <ul>
+    <li>Each variable <code>X</code> comes with a kind.</li>
+    <li>If <code>A : κ′</code>, then <code>λX:κ.A : κ → κ′</code>.</li>
+    <li>If <code>A : κ → κ′</code> and <code>B : κ</code>, then <code>A B : κ′</code>.</li>
+    <li>If <code>A : ∗</code> and <code>B : ∗</code>, then <code>A → B : ∗</code>.</li>
+    <li>If <code>A : ∗</code>, then <code>∀X:κ.A : ∗</code>.</li>
+  </ul>
+  <p>A <b>step</b> of a type expression rewrites a type expression <code>(λX:κ.A) B</code> inside it to <code>A[B/X]</code>.</p>
+  <p>The symbols <code>∗</code> and <code>κ → κ′</code> are written inside type expressions here. There they are names for the kinds of {{kinds}}.</p>
+  <p>An assignment <code>ρ</code> now sends each variable to a member of its kind, and three clauses are added:</p>
+  <p class="eq"><code>⟦λX:κ.A⟧<sub>ρ</sub> = the function c ↦ ⟦A⟧<sub>ρ[X↦c]</sub></code><br><code>⟦A B⟧<sub>ρ</sub> = ⟦A⟧<sub>ρ</sub> applied to ⟦B⟧<sub>ρ</sub></code><br><code>⟦∀X:κ.A⟧<sub>ρ</sub> = ⋂<sub>c∈κ</sub> ⟦A⟧<sub>ρ[X↦c]</sub></code></p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A type expression that names a function</p>
+  <p><code>λX:∗. X → X</code> names the function <code>C ↦ C ⇒ C</code>, a member of <code>∗ → ∗</code>. <code>λX:∗. X → Y</code> has a free variable. With <code>ρ(Y) = SN</code> it names <code>C ↦ C ⇒ SN</code>, and another assignment gives another function.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Two type expressions, one set</p>
+  <p><code>(λX:∗. X → X) (∀Y:∗. Y → Y)</code> names the function <code>C ↦ C ⇒ C</code> applied to <code>ID</code>, which is <code>ID ⇒ ID</code>. The type expression <code>(∀Y:∗. Y → Y) → (∀Y:∗. Y → Y)</code> names the same set. The two differ by one step inside the type expression.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · Quantifying over a function on type sets</p>
+  <p><code>∀F:∗→∗. ∀X:∗. F X → F X</code> names the intersection over a kind from {{kinds}}. So <code>I</code> is in it.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma N · Extended to kinds<span class="st">textbook</span></p>
+  <dl class="conds">
+    <dt>N1</dt><dd><b>Member of its kind.</b> If <code>A : κ</code>, then <code>⟦A⟧<sub>ρ</sub></code> is a member of <code>κ</code>.</dd>
+    <dt>N2</dt><dd><b>Substitution.</b> <code>⟦A[B/X]⟧<sub>ρ</sub> = ⟦A⟧<sub>ρ[X↦⟦B⟧ρ]</sub></code>.</dd>
+    <dt>N3</dt><dd><b>Type steps.</b> <code>(λX:κ.A) B</code> and <code>A[B/X]</code> name the same thing. So do any two type expressions joined by such steps.</dd>
+  </dl>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>N1</b> is by induction on the rules that give <code>A</code> its kind. An abstraction names a function into the right kind. An application applies a function to a member of its domain. The <code>∀</code> case is the intersection lemma. <b>N2</b> is by induction on <code>A</code>.</p>
+    <p><b>N3.</b> By the clauses for <code>λ</code> and for application, <code>(λX:κ.A) B</code> names <code>⟦A⟧<sub>ρ[X↦⟦B⟧ρ]</sub></code>. By N2 (substitution) that is <code>⟦A[B/X]⟧<sub>ρ</sub></code>. A step inside a larger type expression changes nothing either, because what a type expression names is computed from what the type expressions inside it name. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box thm">
+  <p class="tag">Addition lemma · Extended to parts of higher kind<span class="st">here, reviewed</span></p>
+  <p>A part of an addition may now name a member of any kind. The addition lemma of {{price}} holds with its hypothesis read for kinds, that the operation of the clause gives a member of the form’s kind for all inputs that are members of their kinds, and with N1 read as “member of its kind” and N3 (type steps) added to its conclusion: a step inside a part changes nothing, because the clause computes from what the parts name, and by N3 that is unchanged.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Theorem · The rules that change<span class="st">textbook</span></p>
+  <p>The theorem and both corollaries hold for System F<sub>ω</sub>. Its two <code>∀</code> rules carry a kind, and there is one new rule.</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Rule</th><th>From</th><th>Conclude</th></tr></thead>
+    <tbody>
+      <tr><td>∀ in</td><td><code>Γ ⊢ t : A</code>, with <code>X</code> not free in <code>Γ</code></td><td><code>Γ ⊢ t : ∀X:κ.A</code></td></tr>
+      <tr><td>∀ out</td><td><code>Γ ⊢ t : ∀X:κ.A</code> and <code>B : κ</code></td><td><code>Γ ⊢ t : A[B/X]</code></td></tr>
+      <tr><td>conversion</td><td><code>Γ ⊢ t : A</code>, and <code>A</code>, <code>B</code> joined by steps inside type expressions</td><td><code>Γ ⊢ t : B</code></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Every type expression in a judgment has the kind <code>∗</code>. The rule of conversion also needs that a step takes a well-formed type expression of kind <code>κ</code> to a well-formed type expression of the same kind, so that <code>B</code> names a member of <code>∗</code>. That is subject reduction for the kinding rules, which are the rules of the simply typed λ-calculus one level up; it is a textbook fact, quoted here and not proved.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>∀ in</b> and <b>∀ out</b> are <i>generalize</i> and <i>instantiate</i> over the kind <code>κ</code>. <i>Instantiate</i> is used at <code>⟦B⟧<sub>ρ</sub></code>, which is a member of <code>κ</code> by N1 (member of its kind). <b>Conversion</b> holds because <code>A</code> and <code>B</code> name the same set, by N3 (type steps). The corollaries use the SN condition and the Base condition exactly as they do for System F. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="aside">
+  <p class="tag">Remark · What was not needed</p>
+  <p>The proof never asks whether type expressions are strongly normalizing under their own steps. The set that a type expression names is defined by recursion on the type expression, so it exists either way. That they are strongly normalizing is a separate fact and an easier one. The type expressions of F<sub>ω</sub> form a simply typed λ-calculus, in which the kinds play the role of type expressions, and that is the case Tait’s method was made for, the one in Harper’s note of {{harper}}. It matters for checking derivations by machine, and not for C1 (strong normalization).</p>
+  <p>The cost is in the metatheory, the theory in which this proof is carried out. Each level of kinds needs the set of all functions on the level below, which amounts to one more power set.</p>
+</section>

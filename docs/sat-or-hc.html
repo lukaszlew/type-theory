@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAT or HC</title>
+<style>
+:root{
+  /* Layout: one textbook column. Only four kinds of block are framed in colour. Everything else is set plain under a labelled rule, and proofs fold under their statements. */
+  --paper:#f7f8fa; --ink:#1a2030; --muted:#56607a; --rule:#cdd3de;
+  --def:#1d5bb8;  --def-bg:#e9f0fb;
+  --thm:#6336ad;  --thm-bg:#f0eafa;
+  --np:#b62f1b;   --np-bg:#fbeae6;
+  --ex:#19704a;   --ex-bg:#e6f3ec;
+  --font-display:"Bodoni Moda",Didot,"Bodoni MT",Georgia,serif;
+  --font-body:"STIX Two Text","STIX Two Math","Noto Sans Math","Cambria Math",Cambria,Georgia,"Times New Roman",serif;
+  --font-label:"IBM Plex Sans Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#11141b; --ink:#e3e7ef; --muted:#9ba5b8; --rule:#2d3544;
+    --def:#8ab6ff;  --def-bg:#16223a;
+    --thm:#bda6f3;  --thm-bg:#221b38;
+    --np:#ff9684;   --np-bg:#341a18; --ex:#74d0a0; --ex-bg:#12251c;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#11141b; --ink:#e3e7ef; --muted:#9ba5b8; --rule:#2d3544;
+  --def:#8ab6ff;  --def-bg:#16223a;
+  --thm:#bda6f3;  --thm-bg:#221b38;
+  --np:#ff9684;   --np-bg:#341a18; --ex:#74d0a0; --ex-bg:#12251c;
+  color-scheme:dark;
+}
+
+body{background:var(--paper);color:var(--ink);font:400 1.125rem/1.6 var(--font-body);-webkit-text-size-adjust:100%}
+p,ul,ol,dl,dd,h1,h2,h3{margin:0}
+.page{max-width:41rem;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:2.75rem 4.5rem;display:flex;flex-direction:column;gap:1.35rem}
+.page>*{min-width:0}
+
+a{color:inherit;text-decoration-color:var(--muted);text-underline-offset:.16em}
+a:hover{text-decoration-color:currentColor}
+a:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:2px}
+b,strong{font-weight:600}
+code{font-family:var(--font-body);font-size:1em;white-space:nowrap}
+sub{font-size:.72em;line-height:0}
+
+/* opener */
+.head{display:flex;flex-direction:column;gap:.85rem;padding-bottom:1.5rem;border-bottom:3px double var(--ink)}
+.eyebrow,.lab{font:600 .8rem/1.3 var(--font-label);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font:600 clamp(2.6rem,10vw,4rem)/1 var(--font-display);letter-spacing:-.012em;text-wrap:balance}
+.lede{font-size:1.22rem;line-height:1.5;max-width:35rem}
+
+h2{font:600 1.8rem/1.15 var(--font-display);text-wrap:balance;margin-top:2rem;padding-top:1.2rem;border-top:3px double var(--rule);display:flex;gap:.65rem;align-items:baseline}
+h2 .sec{font:600 .95rem/1 var(--font-label);letter-spacing:.06em;color:var(--muted);flex:none}
+.sub{font:600 1.3rem/1.25 var(--font-display);margin-top:1.1rem;text-wrap:balance}
+
+/* coloured frames: definition, lemma or theorem, narrow point */
+.box{--c:var(--ink);--b:transparent;border:1.5px solid var(--c);background:var(--b);border-radius:3px;padding:1.15rem 1.1rem 1.05rem;display:flex;flex-direction:column;gap:.7rem;margin-top:.55rem}
+.box>*,.aside>*{min-width:0}
+.box>.tag{align-self:flex-start;margin:-1.87rem 0 -.1rem -.35rem;background:var(--paper);color:var(--c);border:1.5px solid var(--c);border-radius:2px;padding:.14rem .5rem .1rem;font:600 .78rem/1.25 var(--font-label);letter-spacing:.09em;text-transform:uppercase;display:inline-flex;gap:.4rem;align-items:center}
+.tag svg{width:.95em;height:.95em;flex:none}
+.tag .st{font-weight:500;letter-spacing:.06em;opacity:.78;border-left:1px solid currentColor;padding-left:.45rem;white-space:nowrap}
+.def{--c:var(--def);--b:var(--def-bg)}
+.thm{--c:var(--thm);--b:var(--thm-bg)}
+.np{--c:var(--np);--b:var(--np-bg)}
+.ex{--c:var(--ex);--b:var(--ex-bg)}
+
+/* plain material: a hairline with a label on it, no fill */
+.aside{--c:var(--muted);border-top:1px solid var(--rule);padding:.95rem 0 0 1.1rem;display:flex;flex-direction:column;gap:.65rem;margin-top:.5rem}
+.aside>.tag{align-self:flex-start;margin:-1.45rem 0 -.05rem -.5rem;background:var(--paper);color:var(--muted);padding:0 .5rem;font:600 .78rem/1.25 var(--font-label);letter-spacing:.09em;text-transform:uppercase}
+
+.box ul,.box ol,.aside ul,.aside ol,.pf ul,.list{padding-left:1.25rem;display:flex;flex-direction:column;gap:.45rem}
+.note{color:var(--muted);font-size:.94em}
+
+/* proofs: folded, uncoloured, attached to the statement above */
+details.proof{margin:-.8rem 0 0 1.1rem}
+details.proof>summary{display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;list-style:none;font:600 .78rem/1.25 var(--font-label);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding:.3rem .15rem;border-radius:2px}
+details.proof>summary::-webkit-details-marker{display:none}
+details.proof>summary::before{content:"+";display:inline-flex;align-items:center;justify-content:center;width:1.05rem;height:1.05rem;border:1.5px solid currentColor;border-radius:2px;font:600 .85rem/1 var(--font-label);letter-spacing:0}
+details.proof[open]>summary::before{content:"−"}
+details.proof>summary:hover{color:var(--ink)}
+details.proof>summary:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.pf{display:flex;flex-direction:column;gap:.55rem;padding:.4rem 0 .2rem}
+.qed{float:right}
+.cp{background:color-mix(in srgb,var(--ink) 14%,transparent);border-radius:2px;padding:0 .14em}
+
+/* anatomy rows inside narrow points, additions, limits */
+.rows{display:grid;grid-template-columns:5.6rem minmax(0,1fr);gap:.6rem .9rem}
+.rows dt{font:600 .78rem/1.5 var(--font-label);letter-spacing:.08em;text-transform:uppercase;color:var(--c);padding-top:.28rem}
+@media (max-width:32rem){
+  .rows{grid-template-columns:minmax(0,1fr);gap:.1rem}
+  .rows dd{margin-bottom:.55rem}
+}
+
+/* labelled lists of conditions */
+.conds{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.55rem .8rem}
+.conds dt{font-weight:600;color:var(--c)}
+.conds dd span{display:block;color:var(--muted);font-size:.94em}
+
+/* displayed formulas */
+.eq{padding-left:1.3rem;overflow-x:auto;white-space:nowrap;line-height:1.95}
+
+/* tables */
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.95em}
+th{font:600 .76rem/1.3 var(--font-label);letter-spacing:.09em;text-transform:uppercase;text-align:left;color:var(--muted);border-bottom:1.5px solid var(--ink);padding:.4rem .8rem .4rem 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--rule);padding:.5rem .8rem .5rem 0;vertical-align:top}
+tr>:last-child{padding-right:0}
+td:first-child{font-weight:600}
+.w34{min-width:34rem}
+.w40{min-width:40rem}
+.terms td:first-child{white-space:nowrap}
+
+/* legend, contents, controls */
+.legend{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.4rem 1.7rem;font-size:.95em}
+.legend li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.45rem;align-items:baseline}
+.legend li::before{content:"";width:.85rem;height:.85rem;border:1.5px solid var(--c);background:var(--b);border-radius:2px;transform:translateY(.1rem)}
+.btn{font:600 .8rem/1 var(--font-label);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:transparent;border:1.5px solid var(--ink);border-radius:2px;padding:.55rem .75rem;cursor:pointer}
+.btn:hover{background:color-mix(in srgb,var(--ink) 9%,transparent)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.toc{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:.3rem 1.4rem}
+.toc li{display:flex;gap:.55rem;align-items:baseline}
+.toc .n{font:600 .82rem/1 var(--font-label);letter-spacing:.05em;color:var(--muted);flex:none;width:2.1rem}
+.pin{display:inline-flex;align-items:center;justify-content:center;width:1.3rem;height:1.3rem;border:1.5px solid var(--np);color:var(--np);border-radius:50%;font:600 .72rem/1 var(--font-label);text-decoration:none;margin-left:.2rem;vertical-align:.08em}
+.fig{margin:0;display:flex;flex-direction:column;gap:.5rem;align-items:center}
+.fig svg{display:block;width:100%;max-width:27.5rem;height:auto}
+.fig text{font:400 15px var(--font-body);fill:currentColor;stroke:none}
+.fig .ax text{font:600 12px var(--font-label);letter-spacing:.04em;fill:var(--muted)}
+.fig .nm text{font-weight:600}
+.fig figcaption{color:var(--muted);font-size:.94em;max-width:34rem}
+.src{padding-left:1.2rem;display:flex;flex-direction:column;gap:.35rem;font-size:.95em}
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:.8rem 1.5rem;align-items:center}
+
+/* sections: a part label, a line that says what the section uses, and links between sections */
+.part{font:600 .8rem/1.3 var(--font-label);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-top:2.6rem;padding-top:.75rem;border-top:3px double var(--ink)}
+.part+h2{margin-top:0;padding-top:0;border-top:0}
+.uses{font:500 .9rem/1.45 var(--font-label);letter-spacing:.01em;color:var(--muted);margin-top:-.75rem}
+a.xr{white-space:nowrap;text-decoration-style:dotted}
+.tocp{font:600 .78rem/1.3 var(--font-label);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:-.9rem}
+.toc+.tocp{margin-top:.2rem}
+
+/* the dependency graph */
+.dep{align-items:stretch;width:min(100vw - 2rem,60rem);align-self:center}
+.lc{text-transform:none}
+.dep .tw{overflow-x:auto}
+.dep svg{max-width:none;width:100%;min-width:46rem}
+.dep .de{opacity:.55}
+.dep .de .m{stroke-width:2;opacity:1}
+.dep .dh{opacity:.75}
+.dep rect{fill:var(--paper);stroke:currentColor;stroke-width:1}
+.dep .m rect{stroke-width:2.2}
+.dep text{font:500 10px var(--font-label);letter-spacing:0;text-anchor:middle;fill:currentColor}
+.dep .num{font-weight:600}
+.dep a{text-decoration:none}
+.dep a:hover rect,.dep a:focus-visible rect{fill:color-mix(in srgb,var(--ink) 10%,var(--paper))}
+.dep figcaption{max-width:39rem;align-self:center}
+.dep .dim rect{opacity:.22}
+.dep .dim text{opacity:.28}
+.dep path.dim,.dep polygon.dim{opacity:.1}
+.dep a.anc rect{fill:color-mix(in srgb,var(--def) 18%,var(--paper))}
+.toc li.dim{opacity:.38}
+.goal{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center}
+.goal label{font:600 .95rem/1.2 var(--font-label);letter-spacing:.02em}
+.goal select{font:500 .95rem/1.2 var(--font-label);color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:2px;padding:.45rem .5rem;max-width:100%}
+.goal select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.goal .note{flex-basis:100%}
+.goal .note:empty{display:none}
+</style>
+<style>
+.page{max-width:60rem}
+.item{margin:2.4rem 0;padding-top:.4rem;border-top:1px solid var(--rule)}
+.item h2{font-size:1.05rem;margin:.6rem 0 .8rem}
+.item h2 .sec{color:var(--muted);font-weight:500;margin-right:.4rem}
+.badge{display:inline-block;font:600 .68rem/1 system-ui;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .5rem;border-radius:.3rem;margin-left:.5rem;vertical-align:middle;background:var(--chip);color:var(--ink)}
+.item.changed .badge{background:#f0dfa0;color:#4a3800}.item.added .badge{background:#cfe8cf;color:#174217}.item.deleted .badge{background:#f3c9c4;color:#5a1a12}.item.unchanged .badge{background:#dfe6ee;color:#2a3a4a}
+:root[data-theme="dark"] .item.changed .badge{background:#6a5410;color:#ffe9a8}:root[data-theme="dark"] .item.added .badge{background:#1f4a1f;color:#cfe8cf}:root[data-theme="dark"] .item.deleted .badge{background:#5a1a12;color:#f3c9c4}:root[data-theme="dark"] .item.unchanged .badge{background:#2a3a4a;color:#dfe6ee}
+.fr{position:relative;margin:.9rem 0 .9rem;padding:1.6rem .9rem .5rem;border:1px solid var(--rule);border-radius:.5rem}
+.fr .lab{position:absolute;top:-.55rem;left:.8rem;padding:0 .4rem;background:var(--paper);font:600 .68rem/1.1 system-ui;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fr.hc{border-color:#8a6d00}.fr.empty{border-style:dashed;min-height:3.2rem}
+.fr .box,.fr .aside{margin:.4rem 0}
+.empty{color:var(--muted);font-style:italic;margin:.2rem 0 .4rem}
+ins{background:#cfe8cf;color:#174217;text-decoration:none;border-radius:.15rem;padding:0 .08em}
+del{background:#f3c9c4;color:#5a1a12;text-decoration:line-through;border-radius:.15rem;padding:0 .08em}
+:root[data-theme="dark"] ins{background:#1f4a1f;color:#cfe8cf}:root[data-theme="dark"] del{background:#5a1a12;color:#f3c9c4}
+.fr code,.fr del,.fr ins{white-space:normal;overflow-wrap:anywhere}
+.item h2{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .5rem}.badge{white-space:nowrap;margin-left:0}
+.fr dl.conds,.fr dl.rows{overflow-wrap:anywhere;min-width:0}.fr dl.conds dd,.fr dl.rows dd{min-width:0}
+@media (max-width:480px){.fr{padding-left:.45rem;padding-right:.45rem}.fr dl.conds,.fr dl.rows{grid-template-columns:1fr}.fr dl.conds dt,.fr dl.rows dt{margin-top:.4rem}}
+.why{margin:.4rem 0 0;padding-left:.9rem;border-left:3px solid var(--rule);color:var(--muted)}
+.sum td,.sum th{padding:.3rem .6rem}
+</style>
+</head>
+<body>
+<div class="page">
+<header class="head">
+  <p class="eyebrow">A side-by-side reading of The Narrow Path</p>
+  <h1>SAT or HC</h1>
+  <p class="lede">The page defines a type set with Tait’s three conditions (<code>SAT</code>): inside <code>SN</code>, containing <code>Base</code>, closed under undoing safe head steps. This comparison shows what the page would say if the definition asked, in addition, that a type set is closed under taking head steps (<code>HC</code>, the head-closed type sets of §36). For every definition, lemma, example and remark that would change, the version on the page comes first, and the version under <code>HC</code> below it; in a changed item the words that go are struck through and the words that come are marked. An item that would disappear is followed by an empty frame; an item that would have to be added is preceded by one. Items whose statement does not change are listed once, with what happens to their proofs. Nothing here is on the main page.</p>
+</header>
+<section class="box">
+  <p class="tag">In one paragraph</p>
+  <p>The theorem and its proof do not change: no fact and no rule uses the added direction, which is why the SAT page can call its definition the narrow path and the HC page could not (narrow point 5 below is a trial that succeeds). What changes is the picture and the examples. Under <code>HC</code> a type set is exactly a set of values, the lemma that says so moves next to the definition, and the semantics identifies a term with its evaluation; <code>Gen({I I})</code> gains <code>I</code>, the chain of Lemma L collapses, limit 3 shrinks to steps inside abstractions, and <code>Gen({λx.I x})</code> takes over the role of the escaping member. Every addition pays one more line, that its set is closed under head steps. §36 changes sides: the page’s collection becomes the middle one, the complements lemma is about it, and the remark has to explain why the largest collection was not taken.</p>
+  <div class="tw"><table class="w34 sum"><thead><tr><th>changed</th><th>added</th><th>deleted</th><th>statement unchanged</th></tr></thead><tbody><tr><td>16</td><td>3</td><td>2</td><td>3</td></tr></tbody></table></div>
+</section>
+<section class="item added">
+<h2><span class="sec">§2 Head steps</span> Definition · Evaluation, value, stuck <span class="badge">added under HC</span></h2>
+<div class="fr empty"><div class="lab">SAT — as on the page</div><p class="empty">absent</p></div>
+<div class="fr hc"><div class="lab">HC — as it would be</div><section class="box def">
+  <p class="tag">Definition · Evaluation, value, stuck</p>
+  <p>Let <code>t</code> be a strongly normalizing term. Its head steps are steps, so they end, at an abstraction or at a member of <code>Base</code>. That term is the <b>evaluation</b> of <code>t</code>, written <code>eval(t)</code>.</p>
+  <p>A <b>value</b> is a strongly normalizing abstraction.</p>
+  <p><code>t</code> <b>gets stuck</b> if <code>eval(t)</code> is in <code>Base</code>.</p>
+</section></div>
+<p class="why">On the SAT page this definition sits in §36 The three collections, where the head-closed type sets are introduced. Under HC it is needed before the definition of a type set, so it moves to §2 and §36 loses it.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§5 Type sets</span> Definition · Type set <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box def">
+  <p class="tag">Definition · Type set</p>
+  <p>Write <code>Base</code> for the set of all terms <code>x u<sub>1</sub>…u<sub>n</sub></code> with <code>n ≥ 0</code> and <code>u<sub>1</sub>,…,u<sub>n</sub> ∈ SN</code>: a variable applied to any number of strongly normalizing arguments. For example <code>y</code>, <code>y I</code> and <code>y δ δ</code> are in <code>Base</code>. By R2 (variable applied) every member of <code>Base</code> is in <code>SN</code>. <code>Base</code> is what every type set starts from.</p>
+  <p>For a set <code>S</code> of terms, write <code>cl(S)</code>, the <b>closure</b> of <code>S</code>, for <code>S</code> together with every term that reaches a member of <code>S</code> by safe head steps. For example <code>cl({K})</code> contains <code>K</code>, <code>(λb.K) y</code> and <code>K K y</code>.</p>
+  <p>A <b>type set</b> is a set <code>T</code> of terms that satisfies three conditions. They are called the SN condition, the Base condition and the closure condition.</p>
+  <dl class="conds">
+    <dt>SN</dt><dd><code>T ⊆ SN</code>. Every member of <code>T</code> is strongly normalizing. <span>This is W1 (inside SN), the purpose.</span></dd>
+    <dt>Base</dt><dd><code>Base ⊆ T</code>. <span>Needed for W5 (variables) and for W2 (arrow). Every type set contains the same set <code>Base</code>. So for every variable <code>x</code> and all strongly normalizing terms <code>u</code> and <code>v</code>, the terms <code>x</code>, <code>x u</code> and <code>x u v</code> are in every type set, and so on for any number of arguments.</span></dd>
+    <dt>closure</dt><dd><code>cl(T) ⊆ T</code>. Equivalently: if <code>s →<sub>h</sub> s′</code> is safe and <code>s′ ∈ T</code>, then <code>s ∈ T</code>. <span>Needed for W3 (abstraction). Written out: if <code>t[u/x] u<sub>1</sub>…u<sub>n</sub> ∈ T</code> and <code>u ∈ SN</code>, then <code>(λx.t) u u<sub>1</sub>…u<sub>n</sub> ∈ T</code>, for every <code>n ≥ 0</code>. Membership survives undoing a head step that discards nothing dangerous. Only the argument <code>u</code> has to be asked about. The step may have thrown <code>u</code> away, so nothing is known about it. The other arguments <code>u<sub>1</sub>,…,u<sub>n</sub></code> are subterms of a member of <code>T</code>, so they are in <code>SN</code> already, by the SN condition and R1 (subterms). <code>SN</code> has this property by R3 (safe head step).</span></dd>
+  </dl>
+  <p>In short, a type set is a set between <code>Base</code> and <code>SN</code> that is closed under undoing safe head steps. The definition talks about terms and steps only. It does not mention type expressions. Those come only in §10 Type expressions are names, as names for some of the type sets.</p>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box def">
+  <p class="tag">Definition · Type set</p>
+  <p>Write <code>Base</code> for the set of all terms <code>x u<sub>1</sub>…u<sub>n</sub></code> with <code>n ≥ 0</code> and <code>u<sub>1</sub>,…,u<sub>n</sub> ∈ SN</code>: a variable applied to any number of strongly normalizing arguments. For example <code>y</code>, <code>y I</code> and <code>y δ δ</code> are in <code>Base</code>. By R2 (variable applied) every member of <code>Base</code> is in <code>SN</code>. <code>Base</code> is what every type set starts from.</p>
+  <p>For a set <code>S</code> of terms, write <code>cl(S)</code>, the <b>closure</b> of <code>S</code>, for <code>S</code> together with every term that reaches a member of <code>S</code> by safe head steps. For example <code>cl({K})</code> contains <code>K</code>, <code>(λb.K) y</code> and <code>K K y</code>.</p>
+  <p>A <b>type set</b> is a set <code>T</code> of terms that satisfies three conditions. They are called the SN condition, the Base condition and the closure condition.</p>
+  <dl class="conds">
+    <dt>SN</dt><dd><code>T ⊆ SN</code>. Every member of <code>T</code> is strongly normalizing. <span>This is W1 (inside SN), the purpose.</span></dd>
+    <dt>Base</dt><dd><code>Base ⊆ T</code>. <span>Needed for W5 (variables) and for W2 (arrow). Every type set contains the same set <code>Base</code>. So for every variable <code>x</code> and all strongly normalizing terms <code>u</code> and <code>v</code>, the terms <code>x</code>, <code>x u</code> and <code>x u v</code> are in every type set, and so on for any number of arguments.</span></dd>
+    <dt>closure</dt><dd><code>cl(T) ⊆ T</code><del>.</del> <ins>, and</ins> <code><ins>T</ins></code> <ins>is closed under head steps.</ins> Equivalently: if <code>s →<sub>h</sub> s′</code> is <del>safe and</del> <ins>safe, then</ins> <code>s′ ∈ T</code> <del>, then</del> <ins>if and only if</ins> <code>s ∈ T</code>. <span><del>Needed</del> <ins>The direction from</ins> <code><ins>s′</ins></code> <ins>to</ins> <code><ins>s</ins></code> <ins>is needed</ins> for W3 (abstraction). <ins>The direction from</ins> <code><ins>s</ins></code> <ins>to</ins> <code><ins>s′</ins></code> <ins>is needed by nothing in the proof: it is a modeling choice, which makes a type set exactly a set of values, as the lemma “Type sets are sets of values” says, and narrow point 5 records that the theorem does not ask for it.</ins> Written out: if <code>t[u/x] u<sub>1</sub>…u<sub>n</sub> ∈ T</code> and <code>u ∈ SN</code>, then <code>(λx.t) u u<sub>1</sub>…u<sub>n</sub> ∈ T</code>, for every <code>n ≥ 0</code>. Membership survives undoing a head step that discards nothing dangerous. Only the argument <code>u</code> has to be asked about. The step may have thrown <code>u</code> away, so nothing is known about it. The other arguments <code>u<sub>1</sub>,…,u<sub>n</sub></code> are subterms of a member of <code>T</code>, so they are in <code>SN</code> already, by the SN condition and R1 (subterms). <code>SN</code> has this property by R3 (safe head step).</span></dd>
+  </dl>
+  <p>In short, a type set is a set between <code>Base</code> and <code>SN</code> that is closed under <del>undoing</del> safe head <del>steps.</del> <ins>steps in both directions.</ins> The definition talks about terms and steps only. It does not mention type expressions. Those come only in §10 Type expressions are names, as names for some of the type sets.</p>
+</section></div>
+<p class="why">The one real change. Everything below follows from it.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§5 Type sets</span> The picture to carry through the page <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><p>A picture to carry through the page. A type set is, roughly, a set of <b>values</b>, that is, of strongly normalizing abstractions, together with every term that reaches one of them by safe head steps, together with the terms that get stuck at a variable, which belong to every type set. “Roughly” because a type set may contain a term and not the term that its head step leads to; §36 The three collections makes the picture exact and says what the word hides.</p></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><p>A picture to carry through the <del>page.</del> <ins>page, and it is exact.</ins> A type set <del>is, roughly,</del> <ins>is</ins> a set of <b>values</b>, that is, of strongly normalizing abstractions, together with every term that <del>reaches</del> <ins>evaluates to</ins> one of <del>them by safe head steps,</del> <ins>them,</ins> together with the terms that get stuck at a variable, which belong to every type set. <del>“Roughly” because a type set may contain a term and not the term that its head step leads to; §36</del> The <del>three collections makes the picture exact and</del> <ins>lemma “Type sets are sets of values” below</ins> says <del>what the word hides.</del> <ins>so.</ins></p></div>
+</section>
+<section class="item changed">
+<h2><span class="sec">§5 Type sets</span> Definition · Gen(S) and Min <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box def">
+  <p class="tag">Definition · Gen(S) and Min</p>
+  <p>For a set <code>S</code> of strongly normalizing terms, <code>Gen(S) = cl(Base ∪ S)</code>. It is called the set generated by <code>S</code>.</p>
+  <p><code>Min = Gen(∅) = cl(Base)</code>.</p>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box def">
+  <p class="tag">Definition · Gen(S) and Min</p>
+  <p>For a set <code>S</code> of strongly normalizing terms, <code>Gen(S) = cl(Base ∪ <del>S) .</del> <ins>S</ins><sub><ins>h</ins></sub><ins>)</ins></code><ins>, where</ins> <code><ins>S</ins><sub><ins>h</ins></sub></code> <ins>is</ins> <code><ins>S</ins></code> <ins>together with every term that a member of</ins> <code><ins>S</ins></code> <ins>reaches by head steps.</ins> It is called the set generated by <code>S</code>.</p>
+  <p><code>Min = Gen(∅) = cl(Base)</code>.</p>
+</section></div>
+<p class="why"><code>cl(Base ∪ S)</code> is no longer a type set in general: for <code>S = {I I}</code> it contains <code>I I</code> and not <code>I</code>. The head reducts have to be added first. <code>Min = cl(Base)</code> is unchanged, because a member of <code>Base</code> has no head step.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§5 Type sets</span> Lemma M · Three facts about type sets <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box thm">
+  <p class="tag">Lemma M · Three facts about type sets</p>
+  <dl class="conds">
+    <dt>M1</dt><dd><b>Largest.</b> <code>SN</code> is a type set, and every type set is inside it.</dd>
+    <dt>M2</dt><dd><b>Generated.</b> For a set <code>S</code> of strongly normalizing terms, <code>Gen(S)</code> is a type set, the smallest one that contains <code>S</code>. A term <code>t</code> is in it if and only if <code>t ∈ SN</code> and its head steps lead to a member of <code>S</code> or of <code>Base</code>. Zero head steps are allowed.</dd>
+    <dt>M3</dt><dd><b>Smallest.</b> <code>Min</code> is inside every type set. Every member of <code>Min</code> has a free variable, so <code>Min</code> has no closed member.</dd>
+  </dl>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box thm">
+  <p class="tag">Lemma M · Three facts about type sets</p>
+  <dl class="conds">
+    <dt>M1</dt><dd><b>Largest.</b> <code>SN</code> is a type set, and every type set is inside it.</dd>
+    <dt>M2</dt><dd><b>Generated.</b> For a set <code>S</code> of strongly normalizing terms, <code>Gen(S)</code> is a type set, the smallest one that contains <code>S</code>. A term <code>t</code> is in it if and only if <code>t ∈ SN</code><ins>,</ins> and <code><del>its head steps lead to a member of</del> <ins>t</ins></code> <ins>gets stuck or</ins> <code><ins>eval(t) = eval(s)</ins></code> <ins>for some</ins> <code><ins>s ∈</ins> S</code><del>or of Base</del> .</dd>
+    <dt><del>Zero head steps are allowed.</del> M3</dt><dd><b>Smallest.</b> <code>Min</code> is inside every type set. Every member of <code>Min</code> has a free variable, so <code>Min</code> has no closed member.</dd>
+  </dl>
+</section></div>
+<p class="why">M1 and M3 are unchanged. The membership condition in M2 no longer counts head steps: a term and everything on its head reduction stand or fall together.</p>
+</section>
+<section class="item added">
+<h2><span class="sec">§5 Type sets</span> Lemma · Type sets are sets of values <span class="badge">added under HC</span></h2>
+<div class="fr empty"><div class="lab">SAT — as on the page</div><p class="empty">absent</p></div>
+<div class="fr hc"><div class="lab">HC — as it would be</div><section class="box thm">
+  <p class="tag">Lemma · Type sets are sets of values</p>
+  <p>Send a type set <code>T</code> to the set of values it contains, and send a set <code>W</code> of values to</p>
+  <p class="eq"><code>T<sub>W</sub> = { t ∈ SN : eval(t) ∈ W, or t gets stuck }</code></p>
+  <dl class="conds">
+    <dt>bijection</dt><dd>The two maps are inverse to each other, between the type sets and the sets of values.</dd>
+    <dt>operations</dt><dd>Intersection and union of type sets are intersection and union of their sets of values. For a value <code>v</code>, <code>Gen({v})</code> has the set of values <code>{v}</code>.</dd>
+    <dt>tell apart</dt><dd>Two strongly normalizing terms belong to the same type sets if and only if they have the same evaluation, or both get stuck.</dd>
+  </dl>
+  <p>So a type set is just a choice of which values belong, and <code>Gen(S)</code> is the choice of the values that members of <code>S</code> evaluate to.</p>
+</section></div>
+<p class="why">This is the lemma “Head-closed type sets are sets of values” of §36 on the SAT page, now about every type set, and placed where the definition is. Its proof is unchanged.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§5 Type sets</span> Example · A type set built from two terms <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box ex">
+  <p class="tag">Example · A type set built from two terms</p>
+  <p>Let <code>G = Gen({K, I I})</code>. Members:</p>
+  <ul>
+    <li><code>K</code> and <code>I I</code>, the two chosen terms.</li>
+    <li><code>y</code>, <code>y δ δ</code> and <code>y (I I)</code>: members of <code>Base</code>.</li>
+    <li><code>I (I I)</code> and <code>(λz.K) y</code>: one head step leads to a chosen term.</li>
+    <li><code>K K y</code>: two head steps lead to <code>K</code>, through <code>(λb.K) y</code>.</li>
+    <li><code>(λz.z K) y</code>: one head step leads to <code>y K</code>, which is in <code>Base</code>.</li>
+  </ul>
+  <p>Not members:</p>
+  <ul>
+    <li><code>I</code>. It is in <code>SN</code> and has no head step, and it is neither chosen nor in <code>Base</code>.</li>
+    <li><code>K K</code>. Its head step gives <code>λb.K</code>, an abstraction that is not <code>K</code>.</li>
+    <li><code>λx.K x</code>. It has no head step, although one step inside it gives <code>K</code>.</li>
+    <li><code>Ω</code> and <code>K I Ω</code>. They are not in <code>SN</code>.</li>
+  </ul>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box ex">
+  <p class="tag">Example · A type set built from two terms</p>
+  <p>Let <code>G = Gen({K, I I})</code>. Members:</p>
+  <ul>
+    <li><code>K</code> and <code>I I</code>, the two chosen terms.</li>
+    <li><code>y</code>, <code>y δ δ</code> and <code>y (I I)</code>: members of <code>Base</code>.</li>
+    <li><code>I (I I)</code> and <code>(λz.K) y</code>: one head step leads to a chosen term.</li>
+    <li><code>K K y</code>: two head steps lead to <code>K</code>, through <code>(λb.K) y</code>.</li>
+    <li><code>(λz.z K) y</code>: one head step leads to <code>y K</code>, which is in <code>Base</code>.</li>
+    <li><code><ins>I</ins></code><ins>: it is the evaluation of the chosen term</ins> <code><ins>I I</ins></code><ins>.</ins></li>
+  </ul>
+  <p>Not members:</p>
+  <ul>
+    <li><code><del>I . It is in SN and has no head step, and it is neither chosen nor in Base .</del> K K</code>. Its <del>head step gives</del> <ins>evaluation is</ins> <code>λb.K</code>, <del>an abstraction that</del> <ins>which</ins> is <del>not</del> <ins>neither</ins> <code>K</code> <ins>nor</ins> <code><ins>I</ins></code>.</li>
+    <li><code>λx.K x</code>. It <del>has no head step,</del> <ins>is its own evaluation, and it is neither</ins> <code><ins>K</ins></code> <ins>nor</ins> <code><ins>I</ins></code><ins>,</ins> although one step inside it gives <code>K</code>.</li>
+    <li><code>Ω</code> and <code>K I Ω</code>. They are not in <code>SN</code>.</li>
+  </ul>
+</section></div>
+<p class="why"><code>G</code> gains the member <code>I</code>. Its set of values is <code>{K, I}</code>.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§5 Type sets</span> Example · A member can leave by running <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box ex">
+  <p class="tag">Example · A member can leave by running</p>
+  <p><code>I I</code> is in <code>G</code>, and <code>I I → I</code>, but <code>I</code> is not in <code>G</code>. A type set need not keep a term while it runs. The same is true of <code>Gen({I I})</code>, which contains <code>I I</code> and not <code>I</code>; §23 Limits of adding rules and §35 Other collections of sets use that type set. The other direction cannot happen: if <code>I</code> is in a type set, then <code>I I</code> is in it too, by the closure condition. Nothing later needs a type set to keep a term while it runs.</p>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box ex">
+  <p class="tag">Example · A member can leave by <del>running</del> <ins>a step inside an abstraction</ins></p>
+  <p><code>I I</code> is in <code>G</code>, and <code>I I → I</code>, <del>but</del> <ins>and</ins> <code>I</code> is <del>not</del> in <code>G</code> <del>. A</del> <ins>too: a</ins> type set <ins>keeps a term along its head steps, by definition. It</ins> need not keep <del>a term while</del> it <del>runs. The same is true of Gen({I I}) , which</del> <ins>along other steps.</ins> <code><ins>Gen({λx.I x})</ins></code> contains <code><del>I I</del> <ins>λx.I x</ins></code> and not <code>I</code><del>;</del> <ins>, because the step from</ins> <code><ins>λx.I x</ins></code> <ins>to</ins> <code><ins>I</ins></code> <ins>is inside the abstraction and is not a head step;</ins> §23 Limits <del>of adding rules</del> and <del>§35 Other</del> <ins>§36 The three</ins> collections <del>of sets</del> use that type set. <del>The other direction cannot happen: if I is in a type set, then I I is in it too, by the closure condition.</del> Nothing later needs a type set to keep a term while it runs.</p>
+</section></div>
+<p class="why">The example that the SAT page uses in §23 (limit 3), §36 and §37, <code>Gen({I I})</code> with <code>I ∉ Gen({I I})</code>, no longer exists. Its role is taken by <code>Gen({λx.I x})</code>, where the escaping step is inside the abstraction.</p>
+</section>
+<section class="item added">
+<h2><span class="sec">§6 Could the definition be simpler</span> Narrow point 5 · Closure under head steps is not forced <span class="badge">added under HC</span></h2>
+<div class="fr empty"><div class="lab">SAT — as on the page</div><p class="empty">absent</p></div>
+<div class="fr hc"><div class="lab">HC — as it would be</div><section class="box np">
+  <p class="tag">Narrow point 5 · Closure under head steps is not forced</p>
+  <dl class="rows">
+    <dt>Goal</dt><dd>A definition that drops the direction from <code>s</code> to <code>s′</code> of the closure condition, and keeps the other direction.</dd>
+    <dt>Try</dt><dd>A set qualifies if it satisfies the SN condition, the Base condition, and <code>cl(T) ⊆ T</code>. These are Tait’s saturated sets.</dd>
+    <dt>Holds</dt><dd>Every requirement, W1 to W5. The proofs of §8 to §13 never use the dropped direction, so they go through unchanged for the sets that qualify, and the theorem holds with <code>∀</code> ranging over them.</dd>
+    <dt>Lesson</dt><dd>The fourth clause of the definition is not forced by the theorem. It is kept because it makes a type set exactly a set of values, and the page says so wherever the clause is used. The three remaining conditions are the narrow path; this page walks a slightly wider one.</dd>
+  </dl>
+</section></div>
+<p class="why">The SAT page can say that each of its conditions is forced. The HC page cannot, and honesty requires this narrow point, which is a trial that <em>succeeds</em>. The title “The Narrow Path” then names Tait’s definition, not the page’s own.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§7 The collection of all type sets</span> Lemma E · The definition in other words <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box thm">
+  <p class="tag">Lemma E · The definition in other words</p>
+  <dl class="conds">
+    <dt>E1</dt><dd><b>Min inside.</b> For a set with the closure condition, the Base condition holds if and only if <code>Min ⊆ T</code>.</dd>
+    <dt>E2</dt><dd><b>One argument at a time.</b> For a set with the SN condition, the Base condition holds if and only if both of these hold: every variable is in <code>T</code>, and if <code>s ∈ T</code> is a variable applied to arguments and <code>u ∈ SN</code>, then <code>s u ∈ T</code>. <span><code>Base</code> is built one argument at a time.</span></dd>
+    <dt>E3</dt><dd><b>Whole term in SN.</b> For a set with the SN condition, the closure condition holds if and only if this holds: if <code>s ∈ SN</code>, <code>s →<sub>h</sub> s′</code> and <code>s′ ∈ T</code>, then <code>s ∈ T</code>. <span>“The argument is in <code>SN</code>” becomes “the whole term is in <code>SN</code>”.</span></dd>
+    <dt>E4</dt><dd><b>Generated.</b> <code>T</code> is a type set if and only if <code>T = Gen(S)</code> for some set <code>S</code> of strongly normalizing terms. <span>Every type set is built the way <code>G</code> was: it is the closure of <code>Base</code> and some chosen strongly normalizing terms.</span></dd>
+  </dl>
+  <p>Put together: a type set is a set between <code>Min</code> and <code>SN</code> that contains every strongly normalizing term whose head step leads into it.</p>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box thm">
+  <p class="tag">Lemma E · The definition in other words</p>
+  <dl class="conds">
+    <dt>E1</dt><dd><b>Min inside.</b> For a set with the closure condition, the Base condition holds if and only if <code>Min ⊆ T</code>.</dd>
+    <dt>E2</dt><dd><b>One argument at a time.</b> For a set with the SN condition, the Base condition holds if and only if both of these hold: every variable is in <code>T</code>, and if <code>s ∈ T</code> is a variable applied to arguments and <code>u ∈ SN</code>, then <code>s u ∈ T</code>. <span><code>Base</code> is built one argument at a time.</span></dd>
+    <dt>E3</dt><dd><b>Whole term in SN.</b> For a set with the SN condition, the closure condition holds if and only if this holds: if <code>s ∈ SN</code> <del>,</del> <ins>and</ins> <code>s →<sub>h</sub> s′</code><del>and s′ ∈ T</del> , then <code>s <ins>∈ T</ins></code> <ins>if and only if</ins> <code><ins>s′</ins> ∈ T</code>. <span>“The argument is in <code>SN</code>” becomes “the whole term is in <code>SN</code>”.</span></dd>
+    <dt>E4</dt><dd><b>Generated.</b> <code>T</code> is a type set if and only if <code>T = Gen(S)</code> for some set <code>S</code> of strongly normalizing terms. <span>Every type set is built the way <code>G</code> was: it is the closure of <code>Base</code> and some chosen strongly normalizing terms.</span></dd>
+  </dl>
+  <p>Put together: a type set is a set between <code>Min</code> and <code>SN</code> <del>that contains every</del> <ins>in which a</ins> strongly normalizing term <del>whose</del> <ins>and its</ins> head <del>step leads into it.</del> <ins>reduct are members together.</ins></p>
+</section></div>
+<p class="why">E1, E2 and E4 are unchanged in wording; E4 refers to the new <code>Gen</code>.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§7 The collection of all type sets</span> Lemma L · Type sets generated by one term <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box thm">
+  <p class="tag">Lemma L · Type sets generated by one term follow head steps</p>
+  <p>Let <code>a</code>, <code>b</code> and <code>c</code> be strongly normalizing terms, and let <code>S</code> and <code>S′</code> be sets of strongly normalizing terms.</p>
+  <dl class="conds">
+    <dt>L1</dt><dd><b>Unions.</b> <code>Gen(S) ⊆ Gen(S′)</code> if and only if <code>S ⊆ Gen(S′)</code>. Also <code>Gen(S ∪ S′) = Gen(S) ∪ Gen(S′)</code>, and the same holds for the union of any nonempty collection of sets. <span>So every type set <code>T</code> is the union of the type sets <code>Gen({a})</code> with <code>a ∈ T</code>.</span></dd>
+    <dt>L2</dt><dd><b>One term inside another.</b> <code>Gen({a}) ⊆ Gen({b})</code> if and only if <code>a ∈ Min</code> or <code>a</code> reaches <code>b</code> by zero or more head steps. <span>In particular, if <code>a →<sub>h</sub> b</code>, then <code>Gen({a}) ⊆ Gen({b})</code>.</span></dd>
+    <dt>L3</dt><dd><b>Chain.</b> If <code>a ∈ Min</code>, then <code>Gen({a}) = Min</code>. If <code>a ∉ Min</code>, let <code>a = a<sub>0</sub> →<sub>h</sub> a<sub>1</sub> →<sub>h</sub> … →<sub>h</sub> a<sub>k</sub></code> be all the head steps of <code>a</code>. Then <code>a<sub>k</sub></code> is an abstraction, and the type sets of the form <code>Gen({c})</code> that contain <code>a</code> are exactly <code>Gen({a<sub>0</sub>}) ⊊ Gen({a<sub>1</sub>}) ⊊ … ⊊ Gen({a<sub>k</sub>})</code>. <span>The smallest type set that contains <code>a</code> grows along the head steps of <code>a</code>. It is largest at the abstraction where the head steps end.</span></dd>
+    <dt>L4</dt><dd><b>Not for other steps.</b> The inclusion of L2 can fail for a step that is not a head step. <code>λx.K x → K</code> is such a step, and <code>Gen({λx.K x})</code> is not inside <code>Gen({K})</code>.</dd>
+  </dl>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box thm">
+  <p class="tag">Lemma L · Type sets generated by one term follow head steps</p>
+  <p>Let <code>a</code>, <code>b</code> and <code>c</code> be strongly normalizing terms, and let <code>S</code> and <code>S′</code> be sets of strongly normalizing terms.</p>
+  <dl class="conds">
+    <dt>L1</dt><dd><b>Unions.</b> <code>Gen(S) ⊆ Gen(S′)</code> if and only if <code>S ⊆ Gen(S′)</code>. Also <code>Gen(S ∪ S′) = Gen(S) ∪ Gen(S′)</code>, and the same holds for the union of any nonempty collection of sets. <span>So every type set <code>T</code> is the union of the type sets <code>Gen({a})</code> with <code>a ∈ T</code>.</span></dd>
+    <dt>L2</dt><dd><b>One term inside another.</b> <code>Gen({a}) ⊆ Gen({b})</code> if and only if <code>a ∈ Min</code> or <code><del>a reaches b by zero or more head steps.</del> <ins>eval(a) = eval(b)</ins></code><ins>.</ins> <span>In particular, if <code>a →<sub>h</sub> b</code>, then <code>Gen({a}) <del>⊆</del> <ins>=</ins> Gen({b})</code>.</span></dd>
+    <dt>L3</dt><dd><b><del>Chain.</del> <ins>No chain.</ins></b> If <code>a ∈ Min</code>, then <code>Gen({a}) = Min</code>. If <code>a ∉ Min</code>, <del>let a</del> <ins>then</ins> <code><ins>Gen({a})</ins> = <del>a 0 → h a 1 → h … → h a k be all the head steps of a . Then a k is an abstraction,</del> <ins>Gen({eval(a)})</ins></code><ins>,</ins> and the type sets of the form <code>Gen({c})</code> that contain <code>a</code> are exactly <del>Gen({a 0 }) ⊊ Gen({a 1 }) ⊊ … ⊊ Gen({a k }) .</del> <ins>those with</ins> <code><ins>eval(c) = eval(a)</ins></code><ins>, which are all the same set.</ins> <span>The smallest type set that contains <code>a</code> <del>grows along</del> <ins>is the same at every point of</ins> the head steps of <code>a</code>. <del>It is largest at</del> <ins>The chain of</ins> the <del>abstraction where the</del> <ins>saturated sets, one set per</ins> head <del>steps end.</del> <ins>step, collapses to its last member.</ins></span></dd>
+    <dt>L4</dt><dd><b>Not for other steps.</b> The inclusion of L2 can fail for a step that is not a head step. <code>λx.K x → K</code> is such a step, and <code>Gen({λx.K x})</code> is not inside <code>Gen({K})</code>.</dd>
+  </dl>
+</section></div>
+<p class="why">L1 and L4 are unchanged. L3 is where the two pictures differ most visibly: under SAT the sets <code>Gen({a<sub>i</sub>})</code> along a head reduction form a strictly increasing chain; under HC they are one set. The example “A chain of generated type sets” and the figure of trees of head steps in §7 go with it.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§7 The collection of all type sets</span> Lemma · Type sets tell terms apart <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box thm">
+  <p class="tag">Lemma · Type sets tell terms apart</p>
+  <p>Let <code>a</code> and <code>b</code> be strongly normalizing terms. Then <code>a</code> and <code>b</code> belong to the same type sets if and only if they are the same term, or both are in <code>Min</code>.</p>
+  <p class="note">So the statement “every type set that contains <code>I I</code> contains <code>I</code>” is false: <code>Gen({I I})</code> contains the first and not the second. Outside <code>Min</code>, no two different terms are members of exactly the same type sets, however they are related by steps. §39 Equality type sets draws the consequence: an equality between terms is never built into the semantics, and has to be added as a type set.</p>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box thm">
+  <p class="tag">Lemma · Type sets tell <del>terms</del> <ins>evaluations</ins> apart</p>
+  <p>Let <code>a</code> and <code>b</code> be strongly normalizing terms. Then <code>a</code> and <code>b</code> belong to the same type sets if and only if they <del>are</del> <ins>have</ins> the same <del>term,</del> <ins>evaluation,</ins> or both <del>are in Min .</del> <ins>get stuck.</ins></p>
+  <p class="note">So <code><del>the statement “every type set that contains</del> I I</code> <del>contains</del> <ins>and</ins> <code>I</code> <del>” is false: Gen({I I}) contains the first and not the second. Outside Min , no two different terms are members of exactly</del> <ins>belong to</ins> the same type sets, <del>however they are related by steps. §39</del> <ins>and</ins> <code><ins>λx.K x</ins></code> <ins>and</ins> <code><ins>K</ins></code> <ins>do not. The semantics identifies a term with its evaluation and with nothing else: not with its reducts under other steps, and not with the terms it is convertible with. §34</ins> Equality type sets draws the consequence: an equality <del>between terms is never built into the semantics, and</del> <ins>coarser than “same evaluation”</ins> has to be added as a type set.</p>
+</section></div>
+<p class="why">This is the item <i>tell apart</i> of the values lemma, stated at the place where the SAT page states its own version. The consequence for equality is weaker by one notch: under SAT nothing is identified, under HC a term is identified with its evaluation.</p>
+</section>
+<section class="item unchanged">
+<h2><span class="sec">§8 Two operations</span> Arrow lemma, intersection lemma, union lemma <span class="badge">statement unchanged</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box thm">
+  <p class="tag">Arrow lemma · The arrow of two type sets is a type set</p>
+  <p>If <code>T</code> and <code>U</code> are type sets, then <code>T ⇒ U</code> is a type set.</p>
+</section></div>
+<p class="why">Statements unchanged. Each proof gains one paragraph: closure under head steps passes to <code>T ⇒ U</code> because <code>t u →<sub>h</sub> t′ u</code> when <code>t →<sub>h</sub> t′</code> and <code>U</code> is closed under head steps; and it passes to intersections and unions because it is a condition on single members. The same paragraph is added to the dependent arrow (§25), the self type (§27), the dependent intersection (§28), the implicit product (§29), the least fixed point and the existential type (§22) and the Mendler fixed point (§31). Nothing else in those sections changes.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§15 What the proof used</span> Table · What each condition was for <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><div class="tw"><table class="w34">
+  <thead><tr><th>Condition</th><th>Where it is used</th></tr></thead>
+  <tbody>
+    <tr><td>SN condition</td><td>The arrow keeps the SN condition and the Base condition. <i>Abstract</i>: the argument is in <code>SN</code>, as the closure condition requires. C1 (strong normalization): a member of <code>⟦A⟧<sub>ρ</sub></code> is in <code>SN</code>.</td></tr>
+    <tr><td>Base condition</td><td>The arrow keeps the SN condition: a variable is the argument used. The arrow keeps the Base condition: <code>Base ⊆ U</code>. C1 (strong normalization): each variable may be replaced by itself.</td></tr>
+    <tr><td>Closure condition</td><td>The arrow keeps the closure condition: one more trailing argument. <i>Abstract</i>: abstractions enter <code>T ⇒ U</code>.</td></tr>
+  </tbody>
+</table></div></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><div class="tw"><table class="w34">
+  <thead><tr><th>Condition</th><th>Where it is used</th></tr></thead>
+  <tbody>
+    <tr><td>SN condition</td><td>The arrow keeps the SN condition and the Base condition. <i>Abstract</i>: the argument is in <code>SN</code>, as the closure condition requires. C1 (strong normalization): a member of <code>⟦A⟧<sub>ρ</sub></code> is in <code>SN</code>.</td></tr>
+    <tr><td>Base condition</td><td>The arrow keeps the SN condition: a variable is the argument used. The arrow keeps the Base condition: <code>Base ⊆ U</code>. C1 (strong normalization): each variable may be replaced by itself.</td></tr>
+    <tr><td>Closure <del>condition</del> <ins>condition, undoing a head step</ins></td><td>The arrow keeps the closure condition: one more trailing argument. <i>Abstract</i>: abstractions enter <code>T ⇒ U</code>.</td></tr>
+    <tr><td><ins>Closure condition, taking a head step</ins></td><td><ins>Nowhere. The arrow and the intersection keep it, so that it can be kept at all; no fact and no rule uses it. It is a modeling choice, and narrow point 5 says so.</ins></td></tr>
+  </tbody>
+</table></div></div>
+<p class="why">The sentence “None of the three conditions is spare” before the table has to go.</p>
+</section>
+<section class="item unchanged">
+<h2><span class="sec">§18 The price of a new rule</span> Addition lemma <span class="badge">statement unchanged</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box thm">
+  <p class="tag">Addition lemma · One lemma per addition</p>
+  <p>Let an addition be given.</p>
+  <dl class="conds">
+    <dt>names</dt><dd>If the operation of the clause gives a type set for all inputs that are type sets, or functions from type sets to type sets, then Lemma N holds for the language with the new form.</dd>
+    <dt>rules</dt><dd>If, further, each new rule is true, then the soundness theorem, C1 (strong normalization) and C2 (consistency) hold for the system with the new rules.</dd>
+  </dl>
+  <p class="note">So an addition costs one lemma, that the operation gives type sets, and one membership fact per rule, which is what makes the rule true. §19 Intersection types pays the price in full for <code>∧</code>, and the additions after it pay it in a few lines each. §26 Dependent types: names and rules and §33 System Fω: names and rules extend the lemma to clauses whose parts are terms, and to parts of higher kind.</p>
+</section></div>
+<p class="why">Statement unchanged. The obligation “the operation gives type sets” is heavier by one clause, closure under head steps, so every addition on the page pays one more line: §19, §22 (three times), §27, §28, §29, §30, §31.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§23 Limits</span> Limit 3 · Only strong normalization is certified <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="aside">
+  <p class="tag">Limit 3 · Only strong normalization is certified</p>
+  <dl class="rows">
+    <dt>Try</dt><dd>Read <code>t ∈ T</code> as all that typing usually promises, including that <code>t</code> stays in <code>T</code> while it runs.</dd>
+    <dt>Breaks</dt><dd>Take <code>T = Gen({I I})</code> from §5 Type sets. <code>I I ∈ T</code> and <code>I I → I</code>, but <code>I ∉ T</code>.</dd>
+    <dt>Lesson</dt><dd>Type sets are closed under undoing safe head steps. They are not closed under steps. The statement “if <code>t : A</code> and <code>t → t′</code> then <code>t′ : A</code>”, called subject reduction, is known to hold for plain System F, by a separate proof about derivations. It is known to fail for the rule that uses a member of an existential type, in §22 Subtyping, least fixed points, existential types.</dd>
+  </dl>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="aside">
+  <p class="tag">Limit 3 · Only strong normalization is certified</p>
+  <dl class="rows">
+    <dt>Try</dt><dd>Read <code>t ∈ T</code> as all that typing usually promises, including that <code>t</code> stays in <code>T</code> while it runs.</dd>
+    <dt>Breaks</dt><dd>Take <code>T = <del>Gen({I I})</del> <ins>Gen({λx.I x})</ins></code> from §5 Type sets. <code><del>I I</del> <ins>λx.I x</ins> ∈ T</code> and <code><del>I I</del> <ins>λx.I x</ins> → I</code> <del>,</del> <ins>by a step inside the abstraction,</ins> but <code>I ∉ T</code>.</dd>
+    <dt>Lesson</dt><dd>Type sets are closed under <del>undoing safe</del> head <del>steps.</del> <ins>steps, in both directions.</ins> They are not closed under <del>steps.</del> <ins>steps inside abstractions.</ins> The statement “if <code>t : A</code> and <code>t → t′</code> then <code>t′ : A</code>”, called subject reduction, is known to hold for plain System F, by a separate proof about derivations. It is known to fail for the rule that uses a member of an existential type, in <del>§22 Subtyping, least fixed points, existential types.</del> <ins>§22.</ins></dd>
+  </dl>
+</section></div>
+<p class="why">The limit shrinks but does not disappear: a member can still leave by a step inside an abstraction.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§34 Equality type sets</span> Opening paragraph <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><p>The lemma “Type sets tell terms apart” in §7 says that two strongly normalizing terms belong to the same type sets only if they are the same term, or both are in <code>Min</code>. So the semantics identifies no two different terms: not convertible ones, such as <code>I I</code> and <code>I</code>, and not even a term and its head reduct. An equality between terms is therefore never built in. It has to be added as a type set, …</p></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><p>The lemma “Type sets tell <del>terms</del> <ins>evaluations</ins> apart” in §7 says that two strongly normalizing terms belong to the same type sets only if they <del>are</del> <ins>have</ins> the same <del>term,</del> <ins>evaluation,</ins> or both <del>are in Min .</del> <ins>get stuck.</ins> So the semantics identifies <del>no two different terms: not convertible ones, such</del> <ins>a term with its evaluation,</ins> as <code>I I</code> <del>and</del> <ins>with</ins> <code>I</code>, and <ins>with nothing else:</ins> not <del>even a term</del> <ins>with</ins> <code><ins>λx.K x</ins></code> and <code><del>its head reduct. An</del> <ins>K</ins></code><ins>, and not with convertible terms in general. Every coarser</ins> equality between terms is therefore <del>never</del> <ins>not</ins> built in. It has to be added as a type set, …</p></div>
+<p class="why">In the definition of <code>E<sub>R</sub></code> the note changes accordingly: “having the same evaluation” is now the relation the semantics has, and the lemma on <code>E<sub>R</sub></code> is unchanged.</p>
+</section>
+<section class="item deleted">
+<h2><span class="sec">§36 The three collections</span> Definition · Value, evaluation, head-closed type set <span class="badge">deleted under HC</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box def">
+  <p class="tag">Definition · Value, evaluation, head-closed type set</p>
+  <p>A <b>value</b> is a strongly normalizing abstraction.</p>
+  <p>Let <code>t</code> be a strongly normalizing term. Its head steps are steps, so they end, at a term with no head step: an abstraction, or a term <code>x u<sub>1</sub>…u<sub>n</sub></code>. That term is the <b>evaluation</b> of <code>t</code>, written <code>eval(t)</code>. It is a value, or it is in <code>Base</code>; in the second case <code>t</code> is said to <b>get stuck</b>.</p>
+  <p>A type set <code>T</code> is <b>head-closed</b> if the following holds: if <code>s ∈ T</code> and <code>s →<sub>h</sub> s′</code>, then <code>s′ ∈ T</code>.</p>
+  <p class="note">Every head step of a strongly normalizing term is safe, because its argument is a subterm. So a head-closed type set is one that is closed under safe head steps in both directions. The lemma “Head-closed type sets are sets of values” shows that its members are exactly its values together with every term that evaluates to one of them, together with <code>Min</code>. The name “head-closed” is this page’s. From general knowledge, and not checked against sources: sets of this shape, every term that evaluates into a chosen set of values, are what the semantics of programming languages builds from a set of values, as in Harper’s note, and what proofs by tests produce for closed terms; the head-closed type sets are their form for open terms. We found no name for the collection in the literature, and that is the price of working with it.</p>
+</section></div>
+<div class="fr empty"><div class="lab">HC — as it would be</div><p class="empty">deleted</p></div>
+<p class="why">Moved to §2 and §5. The name “head-closed type set” is no longer needed: these are the type sets.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§36 The three collections</span> Lemma · The three collections form a chain <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box thm">
+  <p class="tag">Lemma · The three collections form a chain</p>
+  <dl class="conds">
+    <dt>chain</dt><dd><code>CR ⊆ HC ⊆ SAT</code>.</dd>
+    <dt>same operations</dt><dd>Each collection is closed under the intersection and under the union of a nonempty set of its members, computed as sets. So every nonempty set of members has a largest member below it and a smallest member above it, which is what “complete lattice” means in standard terms; and these are computed in the same way in all three.</dd>
+    <dt>same ends</dt><dd><code>Min</code> and <code>SN</code> belong to all three collections. <code>Min</code> is the smallest member and <code>SN</code> the largest, in each.</dd>
+  </dl>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box thm">
+  <p class="tag">Lemma · The three collections form a chain</p>
+  <p><ins>Write</ins> <code><ins>SAT</ins></code> <ins>for the collection of sets that satisfy the SN condition, the Base condition and the direction from</ins> <code><ins>s′</ins></code> <ins>to</ins> <code><ins>s</ins></code> <ins>of the closure condition only; these are Tait’s saturated sets, and narrow point 5 showed that they carry the theorem. Write</ins> <code><ins>TS</ins></code> <ins>for the type sets of this page, and</ins> <code><ins>CR</ins></code> <ins>for the candidates.</ins></p>
+  <dl class="conds">
+    <dt>chain</dt><dd><code>CR ⊆ <del>HC</del> <ins>TS</ins> ⊆ SAT</code>.</dd>
+    <dt>same operations</dt><dd>Each collection is closed under the intersection and under the union of a nonempty set of its members, computed as sets. So every nonempty set of members has a largest member below it and a smallest member above it, which is what “complete lattice” means in standard terms; and these are computed in the same way in all three.</dd>
+    <dt>same ends</dt><dd><code>Min</code> and <code>SN</code> belong to all three collections. <code>Min</code> is the smallest member and <code>SN</code> the largest, in each.</dd>
+  </dl>
+</section></div>
+<p class="why">The page’s own collection is now the middle one. The four conversions, the commuting lemma and the lemma “Each collection carries the theorem” are unchanged in content; the last one now has to be stated for a larger collection as well as for a smaller one, and its proof is the same.</p>
+</section>
+<section class="item deleted">
+<h2><span class="sec">§36 The three collections</span> Lemma · Head-closed type sets are sets of values <span class="badge">deleted under HC</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box thm">
+  <p class="tag">Lemma · Head-closed type sets are sets of values</p>
+  <p>Send a head-closed type set <code>T</code> to the set of values it contains, and send a set <code>W</code> of values to</p>
+  <p class="eq"><code>T<sub>W</sub> = { t ∈ SN : eval(t) ∈ W, or t gets stuck }</code></p>
+  <dl class="conds">
+    <dt>bijection</dt><dd>The two maps are inverse to each other, between <code>HC</code> and the sets of values.</dd>
+    <dt>operations</dt><dd>Intersection and union of head-closed type sets are intersection and union of their sets of values. For a value <code>v</code>, <code>Gen({v})</code> is head-closed and its set of values is <code>{v}</code>.</dd>
+    <dt>candidates</dt><dd>A head-closed type set is a candidate if and only if its set of values is closed under steps.</dd>
+    <dt>tell apart</dt><dd>Two strongly normalizing terms belong to the same head-closed type sets if and only if they have the same evaluation, or both get stuck. Compare the lemma in §7 The collection of type sets: all type sets together tell apart every two terms outside <code>Min</code>.</dd>
+    <dt>not so for SAT</dt><dd>A type set is not determined by its values: <code>Gen({I I})</code> and <code>Min</code> contain no value at all, and differ.</dd>
+  </dl>
+  <p>So <code>HC</code> is, up to the bijection, the collection of all sets of values: a type set in <code>HC</code> is just a choice of which values belong. <code>CR</code> is the sets of values that are closed under steps. And <code>SAT</code> keeps, besides the values, the history: which terms on the way to a value are in and which are out.</p>
+</section></div>
+<div class="fr empty"><div class="lab">HC — as it would be</div><p class="empty">deleted</p></div>
+<p class="why">Moved to §5 as “Type sets are sets of values”. The item <i>candidates</i> (a type set is a candidate if and only if its set of values is closed under steps) and the item <i>not so for SAT</i> stay in §36, under the chain lemma.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§36 The three collections</span> Lemma · Only the head-closed type sets have complements <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box thm">
+  <p class="tag">Lemma · Only the head-closed type sets have complements</p>
+  <p>In <code>HC</code> every type set <code>T</code> has a complement: <code>T′ = (SN ∖ T) ∪ Min</code> is head-closed, <code>T ∩ T′ = Min</code> and <code>T ∪ T′ = SN</code>. In <code>SAT</code> and in <code>CR</code> some type sets have no such complement: <code>Gen({I I})</code> in <code>SAT</code>, and <code>T<sub>I</sub></code> in <code>CR</code>.</p>
+  <p class="note">So in <code>HC</code> a choice of values can be negated, and in the other two collections it cannot. In standard terms, <code>HC</code> is a power set up to <code>Min</code>, and so a complete Boolean algebra, and the other two are not. No result on this page uses this; it is listed because it is the sharpest way to say what the head-closed type sets are.</p>
+  <p class="note"><b>What a complement is not.</b> The negation of System F is <code>A → ∀X.X</code>, which names <code>⟦A⟧ ⇒ Min</code>: a type set in every collection, and not the complement of <code>⟦A⟧</code>. The two differ as intuitionistic and classical negation differ, as the example “The arrow into Min is negation” in §8 Arrow, intersection and union shows: <code>T ∩ (T ⇒ Min)</code> has no closed member but is not empty, and <code>T ∪ (T ⇒ Min)</code> need not be <code>SN</code>. So the page never needs a complement, and working in the largest collection costs nothing here. Nor would a complement give a rule even in <code>HC</code>: a member of the complement of <code>⟦A⟧</code> is a term that evaluates to a value outside <code>⟦A⟧</code>, and no term witnesses that of another, so no typing rule could conclude it; it is one more set that no type expression names, as most are by §11 ∀ ranges over all type sets. Classical reasoning enters the semantics by another door, the tests of §37 Type sets defined by tests, where a continuation is the witness.</p>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box thm">
+  <p class="tag">Lemma · <del>Only the head-closed type</del> <ins>Type</ins> sets have <del>complements In HC every</del> <ins>complements, and the two other collections do not</ins></p>
+  <p><ins>Every</ins> type set <code>T</code> has a complement: <code>T′ = (SN ∖ T) ∪ Min</code> is <del>head-closed,</del> <ins>a type set,</ins> <code>T ∩ T′ = Min</code> and <code>T ∪ T′ = SN</code>. In <code>SAT</code> and in <code>CR</code> some type sets have no such complement: <code>Gen({I I})</code> in <code>SAT</code>, and <code>T<sub>I</sub></code> in <code>CR</code>.</p>
+  <p class="note">So <del>in HC</del> a choice of values can be negated, and in the other two collections it cannot. In standard terms, <del>HC is</del> <ins>the type sets form</ins> a power set up to <code>Min</code>, and so a complete Boolean algebra, and the other two <del>are</del> <ins>collections do</ins> not. No result on this page uses this; it is listed because it is the sharpest way to say what <del>the head-closed</del> <ins>a</ins> type <del>sets are.</del> <ins>set is.</ins></p>
+  <p class="note"><b>What a complement is not.</b> The negation of System F is <code>A → ∀X.X</code>, which names <code>⟦A⟧ ⇒ Min</code>: a type set in every collection, and not the complement of <code>⟦A⟧</code>. The two differ as intuitionistic and classical negation differ, as the example “The arrow into Min is negation” in §8 Arrow, intersection and union shows: <code>T ∩ (T ⇒ Min)</code> has no closed member but is not empty, and <code>T ∪ (T ⇒ Min)</code> need not be <code>SN</code>. So the page never needs a <del>complement, and working in the largest collection costs nothing here.</del> <ins>complement.</ins> Nor <del>would</del> <ins>does</ins> a complement give a <del>rule even in HC :</del> <ins>rule:</ins> a member of the complement of <code>⟦A⟧</code> is a term that evaluates to a value outside <code>⟦A⟧</code>, and no term witnesses that of another, so no typing rule could conclude it; it is one more set that no type expression names, as most are by §11 ∀ ranges over all type sets. Classical reasoning enters the semantics by another door, the tests of §37 Type sets defined by tests, where a continuation is the witness.</p>
+</section></div>
+<p class="why">The content is the same; the subject is now the page’s own collection.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§36 The three collections</span> Remark · What the choice in §5 means <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="aside">
+  <p class="tag">Remark · What the choice in §5 Type sets means</p>
+  <p>The definition in §5 Type sets picks the largest of the three collections, the one that asks least of a set. The other two are what remains when a further invariance is asked: that a term and its evaluation share their type sets, or that a term and all its reducts do. Limit 3 of §23 Limits of adding rules, that a member can leave a type set by running, is the price of the largest collection; the head-closed type sets remove it for head steps and keep it for steps inside abstractions, as <code>Gen({λx.I x})</code> shows, and the candidates remove it altogether.</p>
+  <p>The case for each is short. For <code>SAT</code>: it is the largest, every closure proof is one line, and it is the one with a name and a literature. For <code>HC</code>: it is exactly the sets of values, with complements, which is the object that the semantics of programming languages works with; its price is that it has no name in the literature. For <code>CR</code>: a term keeps its type sets while it runs, which is what typing usually promises, and it is Girard’s. The theorem does not care, by the lemma “Each collection carries the theorem”, and nothing in the main line depends on the choice; the main line asks only what the remark in §13 The rules and the soundness theorem lists. §38 Pairs: parametricity runs the same theory on pairs of terms, so that a type expression names a relation; for head-closed type sets that is a relation between values. §37 Type sets defined by tests adds a fourth collection below the candidates, the sets defined by tests.</p>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="aside">
+  <p class="tag">Remark · What the choice in §5 Type sets means</p>
+  <p>The definition in §5 <del>Type sets</del> picks the <del>largest</del> <ins>middle</ins> of the three <del>collections, the one that</del> <ins>collections. The largest, Tait’s,</ins> asks <del>least</del> <ins>less</ins> of a <del>set. The other two are what remains when a further invariance is asked:</del> <ins>set, and narrow point 5 showed</ins> that <del>a term and its evaluation share their type sets, or</del> <ins>it carries the theorem with the same proofs; the smallest, Girard’s, asks</ins> that a term and all its reducts <del>do.</del> <ins>share their type sets.</ins> Limit 3 of <del>§23 Limits of adding rules,</del> <ins>§23,</ins> that a member can leave a type set by <del>running,</del> <ins>a step inside an abstraction,</ins> is the price of <ins>stopping in</ins> the <del>largest collection; the head-closed type sets remove it for head steps and keep it for steps inside abstractions, as Gen({λx.I x}) shows, and</del> <ins>middle;</ins> the candidates remove it altogether.</p>
+  <p>The case for each is short. For <code>SAT</code>: it is the largest, every closure proof is one <del>line,</del> <ins>line shorter,</ins> and it is the one with a name and a <del>literature.</del> <ins>literature; its price is that a type set is only roughly a set of values.</ins> For <del>HC : it</del> <ins>the type sets of this page: a type set</ins> is exactly <del>the sets</del> <ins>a set</ins> of values, with complements, which is the object that the semantics of programming languages works with; <del>its</del> <ins>the</ins> price is <ins>one more line in every closure proof, and</ins> that <del>it</del> <ins>the collection</ins> has no name in the literature. For <code>CR</code>: a term keeps its type sets while it runs, which is what typing usually promises, and it is Girard’s. The theorem does not care, by the lemma “Each collection carries the theorem”, and nothing in the main line depends on the choice; the main line asks only what the remark in §13 <del>The rules and the soundness theorem</del> lists. §38 <del>Pairs: parametricity</del> <ins>Pairs</ins> runs the same theory on pairs of terms, so that a type expression names a <del>relation; for head-closed type sets that is a</del> relation between values. §37 <del>Type sets defined by tests</del> <ins>Tests</ins> adds a fourth collection below the candidates, the sets defined by tests.</p>
+</section></div>
+<p class="why">The remark changes sides: it now has to explain why the page did not take the largest collection, and the only honest answer is the values picture.</p>
+</section>
+<section class="item changed">
+<h2><span class="sec">§38 Pairs</span> Definition · Pairs, and relations <span class="badge">changed</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box def">
+  <p class="tag">Definition · Pairs, and type sets of pairs</p>
+  <p>A <b>pair</b> is two terms <code>(t, t′)</code>, in order. Everything is done to both sides at once.</p>
+  <p>The variable <code>x</code>, as a pair, is <code>(x, x)</code>.</p>
+  <p>The application <code>(t, t′) (u, u′)</code> is <code>(t u, t′ u′)</code>.</p>
+  <p>The abstraction <code>λx.(t, t′)</code> is <code>(λx.t, λx.t′)</code>.</p>
+  <p>The substitution <code>(t, t′)[(u, u′)/x]</code> is <code>(t[u/x], t′[u′/x])</code>.</p>
+  <p>A pair is in <code>SN</code> if both of its terms are.</p>
+  <p><code>Base</code> is the set of pairs <code>(x u<sub>1</sub>…u<sub>n</sub>, x v<sub>1</sub>…v<sub>n</sub>)</code> with the same variable <code>x</code> and the same <code>n</code> on both sides, and all of <code>u<sub>1</sub>,…,u<sub>n</sub>, v<sub>1</sub>,…,v<sub>n</sub></code> in <code>SN</code>.</p>
+  <p>A pair takes a <b>head step</b> if both of its terms take one at once, and the step is <b>safe</b> if both arguments are in <code>SN</code>.</p>
+  <p>A <b>relation</b> is a set of pairs that satisfies the three conditions of §5 Type sets, read for pairs: inside <code>SN</code>, containing <code>Base</code>, closed under undoing safe head steps. The arrow <code>R ⇒ S</code>, the intersection over all relations, <code>cl</code> and <code>Gen</code> are defined by the same words as for terms, with “pair” for “term”.</p>
+  <p class="note">A relation relates two terms if the pair is a member. <code>R ⇒ S</code> relates two functions if they send related arguments to related results. A pair with a variable at the head on one side only, or with different variables at the head of its two sides, is in no <code>Base</code>; and if only one side has a head step, the pair takes none. Such pairs are simply never produced by the constructions.</p>
+</section></div>
+<div class="fr hc"><div class="lab">HC — as it would be, with the differences marked</div><section class="box def">
+  <p class="tag">Definition · Pairs, and type sets of pairs</p>
+  <p>A <b>pair</b> is two terms <code>(t, t′)</code>, in order. Everything is done to both sides at once.</p>
+  <p>The variable <code>x</code>, as a pair, is <code>(x, x)</code>.</p>
+  <p>The application <code>(t, t′) (u, u′)</code> is <code>(t u, t′ u′)</code>.</p>
+  <p>The abstraction <code>λx.(t, t′)</code> is <code>(λx.t, λx.t′)</code>.</p>
+  <p>The substitution <code>(t, t′)[(u, u′)/x]</code> is <code>(t[u/x], t′[u′/x])</code>.</p>
+  <p>A pair is in <code>SN</code> if both of its terms are.</p>
+  <p><code>Base</code> is the set of pairs <code>(x u<sub>1</sub>…u<sub>n</sub>, x v<sub>1</sub>…v<sub>n</sub>)</code> with the same variable <code>x</code> and the same <code>n</code> on both sides, and all of <code>u<sub>1</sub>,…,u<sub>n</sub>, v<sub>1</sub>,…,v<sub>n</sub></code> in <code>SN</code>.</p>
+  <p>A pair takes a <b>head step</b> if both of its terms take one at once, and the step is <b>safe</b> if both arguments are in <code>SN</code>.</p>
+  <p>A <b>relation</b> is a set of pairs that satisfies the three conditions of §5 Type sets, read for pairs: inside <code>SN</code>, containing <code>Base</code>, closed under <del>undoing</del> safe head <del>steps.</del> <ins>steps taken jointly, in both directions.</ins> The arrow <code>R ⇒ S</code>, the intersection over all relations, <code>cl</code> and <code>Gen</code> are defined by the same words as for terms, with “pair” for “term”.</p>
+  <p class="note">A relation relates two terms if the pair is a member. <code>R ⇒ S</code> relates two functions if they send related arguments to related results. A pair with a variable at the head on one side only, or with different variables at the head of its two sides, is in no <code>Base</code>; and if only one side has a head step, the pair takes none. Such pairs are simply never produced by the constructions.</p>
+</section></div>
+<p class="why">A relation is then determined by the pairs it contains that take no joint head step; among them the pairs of values, which is the usual form of a parametricity relation, but also mixed pairs such as <code>(I, y)</code>.</p>
+</section>
+<section class="item unchanged">
+<h2><span class="sec">§35 Other collections of sets</span> Lemma · Candidates are the type sets that are closed under steps <span class="badge">statement unchanged</span></h2>
+<div class="fr sat"><div class="lab">SAT — as on the page</div><section class="box thm">
+  <p class="tag">Lemma · Candidates are the type sets that are closed under steps</p>
+  <p>Every reducibility candidate is a type set. Every type set satisfies CR1 and CR3. So a type set is a reducibility candidate if and only if it satisfies CR2, and CR2 is the only one of the three that a type set can fail.</p>
+</section></div>
+<p class="why">Unchanged in statement and proof: the candidates are inside the type sets of both pages.</p>
+</section>
+</div>
+</body>
+</html>

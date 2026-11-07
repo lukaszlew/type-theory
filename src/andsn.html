@@ -1,0 +1,76 @@
+<p>In System F the soundness theorem has no converse, even for typability alone: some strongly normalizing terms are not typable, as quoted in {{true}}. With <code>∧</code> that changes.</p>
+
+<section class="box thm">
+  <p class="tag">Characterization theorem · Which terms are typable with ∧<span class="st">known, proof here</span></p>
+  <p>For every term <code>t</code>, the following three statements are equivalent.</p>
+  <dl class="conds">
+    <dt>SN</dt><dd><code>t</code> is strongly normalizing.</dd>
+    <dt>D</dt><dd><code>t</code> is typable in System D.</dd>
+    <dt>F with ∧</dt><dd><code>t</code> is typable in System F with <code>∧</code>.</dd>
+  </dl>
+  <p>So the set of terms that are typable in System D is <code>SN</code>, the largest type set.</p>
+  <p class="note">The theorem is a known result, and so is the route of the proof, induction on the three rules of the generation lemma. The text of the proof is this page’s.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>From D to F with ∧.</b> A derivation of System D is a derivation of System F with <code>∧</code>.</p>
+    <p><b>From F with ∧ to SN.</b> This is C1 (strong normalization) for System F with <code>∧</code>.</p>
+    <p><b>From SN to D.</b> By the generation lemma of {{gen}}, it is enough to show that the set of terms that are typable in System D is closed under the three rules of that lemma. The proof uses three standard facts about the derivations of System D. Each is proved by a routine induction on the derivation, which is omitted.</p>
+    <ul>
+      <li><i>More variables.</i> If <code>Γ ⊢ t : A</code>, and <code>Δ</code> contains every <code>x:B</code> of <code>Γ</code>, in any order, then <code>Δ ⊢ t : A</code>.</li>
+      <li><i>Fewer variables.</i> If <code>Γ ⊢ t : A</code>, and <code>y</code> is not free in <code>t</code>, then <code>Γ</code> without <code>y</code> also derives <code>t : A</code>.</li>
+      <li><i>Stronger variables.</i> If <code>Γ ⊢ t : A</code>, and <code>Δ</code> is <code>Γ</code> with one <code>x:B</code> replaced by <code>x : B ∧ C</code> or by <code>x : C ∧ B</code>, then <code>Δ ⊢ t : A</code>.</li>
+    </ul>
+    <p>For two contexts <code>Γ</code> and <code>Γ′</code>, write <code>Γ ∧ Γ′</code> for a context that has the variables of both. A variable with <code>B</code> in <code>Γ</code> and <code>B′</code> in <code>Γ′</code> has <code>B ∧ B′</code> in it. By <i>more variables</i> and <i>stronger variables</i>, every judgment that <code>Γ</code> derives, and every judgment that <code>Γ′</code> derives, <code>Γ ∧ Γ′</code> derives too.</p>
+    <p><b>Variable applied.</b> Let <code>Γ<sub>i</sub> ⊢ u<sub>i</sub> : A<sub>i</sub></code> for each <code>i</code>. Let <code>Γ</code> be <code>Γ<sub>1</sub> ∧ … ∧ Γ<sub>n</sub></code> joined in the same way with the context <code>x : A<sub>1</sub> → … → A<sub>n</sub> → Y</code>. Then <code>Γ ⊢ x : A<sub>1</sub> → … → A<sub>n</sub> → Y</code> and <code>Γ ⊢ u<sub>i</sub> : A<sub>i</sub></code>, and <code>n</code> uses of “→ out” give <code>Γ ⊢ x u<sub>1</sub>…u<sub>n</sub> : Y</code>.</p>
+    <p><b>Abstraction.</b> Let <code>Γ ⊢ t : B</code>. If <code>x</code> is not in <code>Γ</code>, add <code>x : X</code>. Move <code>x : A</code> to the end of the context. Then “→ in” gives <code>λx.t</code> the type expression <code>A → B</code>.</p>
+    <p><b>Head step, without trailing arguments.</b> Let <code>Γ ⊢ t[u/x] : A</code> and <code>Γ′ ⊢ u : B</code>, with <code>x</code> chosen so that it is not in <code>Γ</code>, not in <code>Γ′</code> and not free in <code>u</code>. The claim is that there is a type expression <code>B′</code> with</p>
+    <p class="eq"><code>Γ ∧ Γ′ ⊢ u : B′</code> &nbsp;and&nbsp; <code>Γ ∧ Γ′, x:B′ ⊢ t : A</code></p>
+    <p>Then “→ in” and “→ out” give <code>Γ ∧ Γ′ ⊢ (λx.t) u : A</code>. The claim is proved by induction on the derivation of <code>Γ ⊢ t[u/x] : A</code>, for all <code>Γ</code>, <code>t</code> and <code>A</code> at once.</p>
+    <ul>
+      <li>If <code>t</code> is <code>x</code>, then <code>t[u/x]</code> is <code>u</code>. Take <code>B′ = A</code>.</li>
+      <li>If <code>x</code> is not free in <code>t</code>, then <code>t[u/x]</code> is <code>t</code>. Take <code>B′ = B</code>. This is the only place where the proof uses that <code>u</code> is typable.</li>
+      <li>Otherwise <code>t</code> is an application or an abstraction, and the last rule of the derivation is not the variable rule.
+        <ul>
+          <li>“∧ in”, with <code>A = A<sub>1</sub> ∧ A<sub>2</sub></code>. The induction gives <code>B<sub>1</sub></code> for <code>A<sub>1</sub></code> and <code>B<sub>2</sub></code> for <code>A<sub>2</sub></code>. Take <code>B′ = B<sub>1</sub> ∧ B<sub>2</sub></code>.</li>
+          <li>“∧ out”. The induction gives a <code>B′</code> for the judgment above the rule, and the same <code>B′</code> serves.</li>
+          <li>“→ out”, with <code>t = t<sub>1</sub> t<sub>2</sub></code>. The induction gives <code>B<sub>1</sub></code> for <code>t<sub>1</sub></code> and <code>B<sub>2</sub></code> for <code>t<sub>2</sub></code>. Take <code>B′ = B<sub>1</sub> ∧ B<sub>2</sub></code>.</li>
+          <li>“→ in”, with <code>t = λy.t<sub>1</sub></code> and <code>y</code> chosen so that it is not in <code>Γ′</code> and not free in <code>u</code>. The judgment above the rule is <code>Γ, y:A<sub>1</sub> ⊢ t<sub>1</sub>[u/x] : A<sub>2</sub></code>. The induction gives a <code>B′</code>, with <code>u : B′</code> derived in a context that contains <code>y</code>. <i>Fewer variables</i> removes <code>y</code> from that context. Then “→ in” gives <code>λy.t<sub>1</sub></code> its type expression.</li>
+        </ul>
+      </li>
+    </ul>
+    <p>Where two type expressions <code>B<sub>1</sub></code> and <code>B<sub>2</sub></code> are replaced by <code>B<sub>1</sub> ∧ B<sub>2</sub></code>, “∧ in” gives <code>u : B<sub>1</sub> ∧ B<sub>2</sub></code>, and <i>stronger variables</i> keeps the judgments about <code>t</code> derivable.</p>
+    <p><b>Head step, with trailing arguments.</b> Let <code>Γ ⊢ t[u/x] u<sub>1</sub>…u<sub>n</sub> : C</code> with <code>n ≥ 1</code>, and <code>Γ′ ⊢ u : B</code>. The claim is that <code>Γ ∧ Γ′ ⊢ (λx.t) u u<sub>1</sub>…u<sub>n</sub> : C</code>. It is proved by induction on the derivation. If the last rule is “∧ in” or “∧ out”, the induction applies to the judgments above it, which are about the same term. Otherwise the last rule is “→ out”, from <code>Γ ⊢ t[u/x] u<sub>1</sub>…u<sub>n−1</sub> : A′ → C</code> and <code>Γ ⊢ u<sub>n</sub> : A′</code>. By induction, or by the case without trailing arguments if <code>n = 1</code>, <code>Γ ∧ Γ′ ⊢ (λx.t) u u<sub>1</sub>…u<sub>n−1</sub> : A′ → C</code>. Then “→ out” gives the claim. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>The proof needs <code>∧</code> wherever one thing has to serve several uses. There are two such places. If two contexts are joined, then a variable that both contain gets both type expressions. And if a head step is undone, then the copies of the argument <code>u</code> inside <code>t[u/x]</code> may have received different type expressions <code>B<sub>1</sub>,…,B<sub>k</sub></code>, one for each copy. Before the step there is one <code>u</code>, and it gets <code>B<sub>1</sub> ∧ … ∧ B<sub>k</sub></code>. The example with <code>δ I</code> in {{and}} shows this for two copies.</p>
+
+<p>If there is no copy, because the head step threw <code>u</code> away, then the derivation for <code>t[u/x]</code> says nothing about <code>u</code>, and <code>u</code> has to be typable by assumption. This is the safe head step of {{head}} again, with “typable” in the place of “in <code>SN</code>”. So the proof follows the definition of a type set: its case “variable applied” matches the Base condition, and its case “head step” matches the closure condition.</p>
+
+<section class="box ex">
+  <p class="tag">Example · The discarded argument has to be typable</p>
+  <p>The head step <code>(λx.y) (I I) →<sub>h</sub> y</code> discards its argument. A derivation in System D for the term before the step:</p>
+  <div class="tw"><table class="w34">
+    <thead><tr><th>Line</th><th>Judgment</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>y : X, x : Y→Y ⊢ y : X</code></td><td>variable</td></tr>
+      <tr><td>2</td><td><code>y : X ⊢ λx.y : (Y→Y) → X</code></td><td>→ in, from 1</td></tr>
+      <tr><td>3</td><td><code>y : X ⊢ I : (Y→Y) → (Y→Y)</code></td><td>variable, → in</td></tr>
+      <tr><td>4</td><td><code>y : X ⊢ I : Y→Y</code></td><td>variable, → in</td></tr>
+      <tr><td>5</td><td><code>y : X ⊢ I I : Y→Y</code></td><td>→ out, from 3 and 4</td></tr>
+      <tr><td>6</td><td><code>y : X ⊢ (λx.y) (I I) : X</code></td><td>→ out, from 2 and 5</td></tr>
+    </tbody>
+  </table></div>
+  <p>The derivation for <code>y</code> alone is line 1 without <code>x</code>. It says nothing about <code>I I</code>, and lines 3 to 5 have to be supplied from the assumption that the argument is typable. In the proof this is the case “<code>x</code> is not free in <code>t</code>”, with <code>Γ′</code> empty and <code>B′ = Y→Y</code>; there, <i>more variables</i> is what moves <code>⊢ I I : Y→Y</code> under the context <code>y : X</code>, which the example avoids by deriving lines 3 to 5 under <code>y : X</code> directly. With <code>Ω</code> in the place of <code>I I</code> there would be no line 5, and <code>(λx.y) Ω</code> is indeed not in <code>SN</code>.</p>
+</section>
+
+<p>Three things the theorem does not say.</p>
+
+<ul class="list">
+  <li><b>It is about typability, NOT about every true judgment.</b> It says that a strongly normalizing term has some type expression in some context. It does not say that every true judgment is derivable. The lemma “True and not derivable” of {{true}} still holds with <code>∧</code>, and so does the law that is true and not derivable, in {{andlaws}}.</li>
+  <li><b>It does not make System F easier.</b> System D has no <code>∀</code>, so its soundness needs no intersection over all type sets, and the impredicative definition of narrow point 5 does not occur. To get the strong normalization of System F from System D, one would have to show that every term that is typable in System F is typable in System D. By the theorem, that is the same as showing that it is strongly normalizing.</li>
+  <li><b>It gives no way to find a derivation.</b> No program decides whether a term is strongly normalizing. That is a standard fact, quoted here. So, by the theorem, no program decides whether a term is typable in System D. A derivation that is given can still be checked line by line.</li>
+</ul>

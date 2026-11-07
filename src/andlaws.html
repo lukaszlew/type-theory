@@ -1,0 +1,41 @@
+<section class="box thm">
+  <p class="tag">Lemma · Laws of ∩ on type sets<span class="st">here, reviewed</span></p>
+  <p>Let <code>T</code>, <code>U</code> and <code>V</code> be type sets, and let <code>F</code> give a type set <code>F(C)</code> for each type set <code>C</code>.</p>
+  <dl class="conds">
+    <dt>repeat</dt><dd><code>T ∩ T = T</code>. <span>In standard terms, <code>∩</code> is idempotent. This is true of any set, and it is listed because the remark at the end of this section is about systems that give it up.</span></dd>
+    <dt>same input</dt><dd><code>(T ⇒ U) ∩ (T ⇒ V)</code> <code>= T ⇒ (U ∩ V)</code>.</dd>
+    <dt>same result</dt><dd><code>(T ⇒ V) ∩ (U ⇒ V)</code> <code>= (T ∪ U) ⇒ V</code>. <span><code>T ∪ U</code> is a type set, by the union lemma of {{ops}}.</span></dd>
+    <dt>instances</dt><dd><code>⋂<sub>C</sub> F(C) ⊆ F(T) ∩ F(U)</code>. <span>The intersection of two instances contains the intersection of all of them.</span></dd>
+  </dl>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>Repeat</b> holds for any set.</p>
+    <p><b>Same input.</b> A term <code>t</code> is in the left side if and only if, for every <code>u ∈ T</code>, <code>t u ∈ U</code> and <code>t u ∈ V</code>. That is the right side.</p>
+    <p><b>Same result.</b> A term <code>t</code> is in the left side if and only if <code>t u ∈ V</code> for every <code>u ∈ T</code> and for every <code>u ∈ U</code>, that is, for every <code>u ∈ T ∪ U</code>.</p>
+    <p><b>Instances.</b> This is <i>instantiate</i>, used at <code>T</code> and at <code>U</code>. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="box ex">
+  <p class="tag">Example · ∧ records which input goes to which result</p>
+  <p><code>I ∈ (T<sub>I</sub> ⇒ T<sub>I</sub>) ∩ (T<sub>K</sub> ⇒ T<sub>K</sub>)</code>, with the two hand-built type sets of {{typeset}}. The term sends <code>T<sub>I</sub></code> into <code>T<sub>I</sub></code>, and <code>T<sub>K</sub></code> into <code>T<sub>K</sub></code>.</p>
+  <p>The arrow between the unions, <code>(T<sub>I</sub> ∪ T<sub>K</sub>) ⇒ (T<sub>I</sub> ∪ T<sub>K</sub>)</code>, says less. It also contains <code>λx.K</code>, which sends every input to <code>K</code>. And <code>λx.K</code> is not in <code>T<sub>I</sub> ⇒ T<sub>I</sub></code>: <code>(λx.K) I →<sub>h</sub> K</code>, and <code>K ∉ T<sub>I</sub></code>.</p>
+</section>
+
+<section class="box ex">
+  <p class="tag">Example · A law that is true and not derivable</p>
+  <p>By the law <i>same input</i>, the judgment <code>x : (X→Y) ∧ (X→Z) ⊨ x : X → (Y ∧ Z)</code> is true.</p>
+  <p>It is not derivable in System F with <code>∧</code>. The term is a variable, so a derivation can use only the variable rule, the two <code>∧</code> rules and the two <code>∀</code> rules. Starting from <code>(X→Y) ∧ (X→Z)</code>, these rules take it apart, put <code>∧</code> between the results, and add or remove a <code>∀</code> whose variable does not occur. An arrow into <code>Y ∧ Z</code> never appears.</p>
+  <p>The term <code>λy.x y</code> does get this type expression. With <code>y : X</code> added to the context, <code>x y : Y</code> and <code>x y : Z</code> are derivable, then “∧ in” gives <code>x y : Y ∧ Z</code>, and “→ in” gives <code>λy.x y : X → (Y ∧ Z)</code>.</p>
+  <p>For this reason presentations of intersection types often add inclusions between type expressions as rules. That is subtyping, which {{more}} adds.</p>
+</section>
+
+<section class="aside">
+  <p class="tag">Remark · Intersection types that count uses</p>
+  <p>By the law <i>repeat</i>, <code>A ∧ A</code> names the same set as <code>A</code>. Some systems keep <code>A ∧ A</code> and <code>A</code> apart: a variable with <code>A ∧ A</code> is then used exactly twice, once for each part. They are called non-idempotent intersection types.</p>
+  <p>Quoted from Bernadet and Graham-Lengrand: in such a system a derivation gets strictly smaller with every step of the term. So strong normalization follows by counting, “without requiring reducibility techniques”, which are the techniques of this page. The size of a derivation also bounds the length of the longest run.</p>
+  <p>The semantics of this page cannot express this. A set does not record how many times a member is used.</p>
+</section>

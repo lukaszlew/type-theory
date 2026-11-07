@@ -1,0 +1,33 @@
+<p>The claim that new typing rules are cheap to add can now be made exact, as one lemma. Three things make additions cheap.</p>
+
+<ol class="list">
+  <li><b>The collection of all type sets never changes.</b> It was fixed in {{typeset}}. A new form of type expression names more members of that collection and does not enlarge it. So <code>⋂</code> over all type sets, and with it <code>∀</code>, means exactly what it meant before. No earlier lemma mentions the new construction.</li>
+  <li><b>The theorem has one case per rule.</b> A new rule is a new case. The old cases are untouched.</li>
+  <li><b>The price is fixed.</b> One lemma that the new set is a type set. One membership fact per rule. The addition lemma does the rest.</li>
+</ol>
+
+<section class="box def">
+  <p class="tag">Definition · Addition</p>
+  <p>An <b>addition</b> is a new form of type expression, with a clause that says what it names, and zero or more new rules. The clause computes the set that the new form names under <code>ρ</code> from the sets that its parts name under <code>ρ</code>, by a fixed operation on sets, and from nothing else. A part under a bound variable <code>X</code>, as <code>A</code> in <code>∀X.A</code>, contributes the function <code>C ↦ ⟦A⟧<sub>ρ[X↦C]</sub></code> in the place of a set.</p>
+  <p class="note">The clause for <code>∀X.A</code> is of this form: its operation sends the function <code>C ↦ ⟦A⟧<sub>ρ[X↦C]</sub></code> to the intersection of its values. So is the clause for <code>A → B</code>, with the arrow as the operation. A clause that looked at the type expression itself, and not only at what its parts name, would not be an addition.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Addition lemma · One lemma per addition<span class="st">here, reviewed</span></p>
+  <p>Let an addition be given.</p>
+  <dl class="conds">
+    <dt>names</dt><dd>If the operation of the clause gives a type set for all inputs that are type sets, or functions from type sets to type sets, then Lemma N holds for the language with the new form.</dd>
+    <dt>rules</dt><dd>If, further, each new rule is true, then the soundness theorem, C1 (strong normalization) and C2 (consistency) hold for the system with the new rules.</dd>
+  </dl>
+  <p class="note">So an addition costs one lemma, that the operation gives type sets, and one membership fact per rule, which is what makes the rule true. {{and}} pays the price in full for <code>∧</code>, and the additions after it pay it in a few lines each. {{dep}} and {{fomega}} extend the lemma to clauses whose parts are terms, and to parts of higher kind.</p>
+</section>
+
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>Names.</b> Lemma N is proved by induction on type expressions, and the new form is one more case. N1 (type set): the parts name type sets, or functions from type sets to type sets, by the induction, so the operation gives a type set. N0 (free variables): what the parts name depends only on their free variables, by the induction, and the clause computes from that alone. N2 (substitution): <code>A[B/X]</code> replaces <code>X</code> inside the parts, and by the induction each part of <code>A[B/X]</code> names under <code>ρ</code> what the part of <code>A</code> names under <code>ρ[X↦⟦B⟧ρ]</code>; for a part under a bound variable <code>Y</code>, taken different from <code>X</code> and not free in <code>B</code>, N0 (free variables) keeps <code>⟦B⟧</code> the same under <code>ρ[Y↦C]</code>, as in the <code>∀</code> case. The clause then gives the same set on both sides.</p>
+    <p><b>Rules.</b> The soundness theorem is proved by induction on derivations, and each new rule is one more case, which holds because the rule is true. C1 (strong normalization) and C2 (consistency) use only the SN condition, the Base condition and M3 (smallest), which hold for every type set, so their proofs are unchanged; C2 also uses that a term derived in the empty context is closed, which holds as long as no new rule lets a free variable into the term except from the context, and none on this page does. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<p>The lemma that the operation gives type sets is where the weight lies. Narrow point 6 in {{true}} shows what goes wrong without it, and {{limits}} says where it stops being cheap.</p>
