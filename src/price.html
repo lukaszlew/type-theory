@@ -9,7 +9,7 @@
 <section class="box def">
   <p class="tag">Definition · Addition</p>
   <p>An <b>addition</b> is a new form of type expression, with a clause that says what it names, and zero or more new rules. The clause computes the set that the new form names under <code>ρ</code> from the sets that its parts name under <code>ρ</code>, by a fixed operation on sets, and from nothing else. A part under a bound variable <code>X</code>, as <code>A</code> in <code>∀X.A</code>, contributes the function <code>C ↦ ⟦A⟧<sub>ρ[X↦C]</sub></code> in the place of a set.</p>
-  <p class="note">The clause for <code>∀X.A</code> is of this form: its operation sends the function <code>C ↦ ⟦A⟧<sub>ρ[X↦C]</sub></code> to the intersection of its values. So is the clause for <code>A → B</code>, with the arrow as the operation. A clause that looked at the type expression itself, and not only at what its parts name, would not be an addition.</p>
+  <p class="note">The clause for <code>∀X.A</code> is of this form: its operation sends the function <code>C ↦ ⟦A⟧<sub>ρ[X↦C]</sub></code> to the intersection of its values. So is the clause for <code>A → B</code>, with the arrow as the operation. A clause that looked at the type expression itself, and not only at what its parts name, would not be an addition. The same line holds for terms. Quoted from Abel and Coquand, who cite Girard and a paper of Harper and Mitchell: a term that tests two type expressions for equality, with a step that fires if they are convertible, which is Girard’s operator J, destroys the normalization of System F.</p>
 </section>
 
 <section class="box thm">

@@ -1,0 +1,61 @@
+<p>Part V let type expressions mention terms, and paid for it: families of type sets, constant along steps ({{fam}}), a dependent arrow ({{darrow}}), and a lemma that running a term inside a type expression changes nothing ({{dep}}). This section asks which results needed that. The answer has two halves. The two corollaries did not: strong normalization and consistency for the rules of {{dep}}, {{self}}, {{dinter}} and {{implicit}} follow from System F with <code>∧</code> alone, by forgetting every term inside a type expression. The soundness theorem itself, that every derivable judgment is true of the sets with their families, is among the things that needed them, and so is everything that a type expression says <i>about</i> a term: an equation, the rules β and δ of {{equality}} together, induction as against iteration. The move is known: Geuvers proves strong normalization for the Calculus of Constructions with it, and the proof of Fu and Stump for System S, reported in {{self}}, makes it too. It is spelled out here for the rules of this page, and its limit is the one Geuvers names.</p>
+
+<section class="box def">
+  <p class="tag">Definition · The forgetful reading</p>
+  <p>The self type of {{self}} is written <code>ιx.B</code> in this section, for a type expression <code>B</code> in which the term variable <code>x</code> may be free. It names the set of the terms <code>t</code> that are in the set that <code>B</code> names with <code>x</code> sent to <code>t</code>. Its two rules are the two facts of {{self}}: from <code>Γ ⊢ t : B[t/x]</code> conclude <code>Γ ⊢ t : ιx.B</code>, and back.</p>
+  <p>For a type expression <code>A</code> built with the forms of {{rules}}, {{and}}, {{dep}}, {{self}}, {{dinter}} and {{implicit}}, the <b>forgetful reading</b> <code>A°</code> is the type expression of System F with <code>∧</code> that is obtained by these clauses:</p>
+  <div class="tw"><table>
+    <thead><tr><th>form</th><th>forgetful reading</th></tr></thead>
+    <tbody>
+      <tr><td><code>P t</code></td><td><code>P</code>, read as a variable of type expressions</td></tr>
+      <tr><td><code>Πx:A.B</code></td><td><code>A° → B°</code></td></tr>
+      <tr><td><code>∀P.A</code></td><td><code>∀P.A°</code></td></tr>
+      <tr><td><code>ιx.B</code></td><td><code>B°</code></td></tr>
+      <tr><td><code>ιx:A.B</code></td><td><code>A° ∧ B°</code></td></tr>
+      <tr><td><code>∀x:A.B</code></td><td><code>B°</code></td></tr>
+      <tr><td><code>X</code>, <code>A → B</code>, <code>∀X.A</code>, <code>A ∧ B</code></td><td>the same form, with the parts read forgetfully</td></tr>
+    </tbody>
+  </table></div>
+  <p>The forgetful reading <code>Γ°</code> of a context reads each of its type expressions forgetfully.</p>
+  <p class="note">Every term inside a type expression is dropped, and with it every bound term variable. The names of family variables and of variables of type expressions are taken to be different, so that no two variables fall together. As sets: a family variable stands for one type set, the dependent arrow is the arrow, the dependent intersection is the intersection, and the implicit product is its second part.</p>
+</section>
+
+<section class="box thm">
+  <p class="tag">Lemma · Strong normalization and consistency do not need the families<span class="st">here, reviewed</span></p>
+  <dl class="conds">
+    <dt>derivations</dt><dd>If <code>Γ ⊢ t : A</code> is derivable by the rules of {{rules}}, {{and}}, {{dep}}, {{dinter}} and {{implicit}} and the two rules for the self type, then <code>Γ° ⊢ t : A°</code> is derivable in System F with <code>∧</code>. The term is the same.</dd>
+    <dt>the corollaries</dt><dd>So C1 (strong normalization) and C2 (consistency) for those rules follow from the lemma on System F with <code>∧</code> in {{and}}, with no family, no dependent arrow and no step inside a type expression.</dd>
+    <dt>not the equality</dt><dd>No type set <code>T</code> makes both of the rules β and δ of {{equality}} true if every type expression <code>{t ≃ t′}</code> is read as <code>T</code>, whatever <code>t</code> and <code>t′</code> are.</dd>
+    <dt>what is forgotten</dt><dd>The type expression <code>I ≡ K</code> of {{dep}} has the forgetful reading <code>∀P. P → P</code>, the same as <code>I ≡ I</code>, and <code>⊢ I : ∀P. P → P</code> is derivable. That no closed term <code>t</code> has <code>⊢ t : I ≡ K</code> is a consequence of the soundness theorem of {{dep}} that the forgetful reading cannot show.</dd>
+  </dl>
+</section>
+<details class="proof">
+  <summary>Proof</summary>
+  <div class="pf">
+    <p><b>Derivations.</b> Four facts about the forgetful reading follow from its clauses by induction on the type expression: <code>(B[u/x])° = B°</code>, because terms are dropped; <code>(A[B/X])° = A°[B°/X]</code> for a variable <code>X</code> of type expressions; <code>(A[P:=x.B])° = A°[B°/P]</code>, because each <code>P t</code> becomes <code>B[t/x]</code>, which is read as <code>B°</code>; and <code>A° = A′°</code> if <code>A</code> and <code>A′</code> are joined by steps of the terms inside them. One fact about System F with <code>∧</code> is used, proved by a routine induction on the derivation: a variable that is not free in the term may be removed from the context.</p>
+    <p>Now by induction on the derivation, with one case per rule. The rules of {{rules}} and {{and}} are rules of System F with <code>∧</code>; “∀ out” uses the second of the four facts, and the side condition of “∀ in”, that a variable of type expressions is not free in <code>Γ</code>, holds for <code>Γ°</code> if it holds for <code>Γ</code>.</p>
+    <ul class="list">
+      <li><b>Π in, Π out.</b> They become “→ in” and “→ out”, because <code>(B[u/x])° = B°</code>.</li>
+      <li><b>∀ in and ∀ out, for families.</b> They become “∀ in” and “∀ out” for the variable <code>P</code>, the second at the type expression <code>B°</code>, by the third fact.</li>
+      <li><b>Term conversion.</b> The judgment above the rule and the judgment below it have the same forgetful reading.</li>
+      <li><b>ι in, ι out.</b> They become “∧ in” and “∧ out”, because <code>(B[t/x])° = B°</code>. For the self type both rules pass from <code>B°</code> to <code>B°</code>.</li>
+      <li><b>∀ in, for terms.</b> Above the rule is <code>Γ, x:A ⊢ t : B</code>, with <code>x</code> not free in <code>t</code>. By induction <code>Γ°, x:A° ⊢ t : B°</code> is derivable, and <code>x</code> may be removed from the context. That is the judgment below the rule, read forgetfully.</li>
+      <li><b>∀ out, for terms.</b> <code>(∀x:A.B)° = B° = (B[u/x])°</code>, so the first judgment above the rule is the judgment below it.</li>
+    </ul>
+    <p><b>The corollaries.</b> A typable term is typable in System F with <code>∧</code>, so it is strongly normalizing. And <code>(∀X.X)°</code> is <code>∀X.X</code>, so a closed term <code>t</code> with <code>⊢ t : ∀X.X</code> by those rules would have it in System F with <code>∧</code>.</p>
+    <p><b>Not the equality.</b> The rule β concludes <code>⊢ I : {I ≃ I}</code>, so <code>I ∈ T</code>. The rule δ leads from the true judgment <code>e : {K ≃ K′} ⊢ e : {K ≃ K′}</code> to <code>e : {K ≃ K′} ⊢ e : ∀X.X</code>, so <code>T ⊆ Min</code>. But <code>I ∉ Min</code>, by M3 (smallest).</p>
+    <p><b>What is forgotten.</b> <code>I ≡ K</code> is <code>∀P. P I → P K</code>, by the definition in {{dep}}. The derivation of <code>⊢ I : ∀P. P → P</code> is that of <code>⊢ I : ∀X.X→X</code> in {{rules}}. <span class="qed">∎</span></p>
+  </div>
+</details>
+
+<section class="aside">
+  <p class="tag">Remark · What the families are for</p>
+  <p>The lemma splits Part V in two. The two corollaries are on one side, and they are those of {{and}}. On the other side is everything in which a type expression says something about a term, and there the forgetful reading is silent or wrong:</p>
+  <ul class="list">
+    <li><b>Equations.</b> <code>EQ(u, v)</code> has a closed member if and only if <code>u</code> and <code>v</code> are convertible ({{darrow}}). Read forgetfully, every equation is <code>∀P. P → P</code>, and all of them have the closed member <code>I</code>. The forgetful reading is a model in which any two terms are equal.</li>
+    <li><b>The rules β and δ together.</b> The item <i>not the equality</i>. The type set of <code>{t ≃ t′}</code> has to contain <code>I</code> for a true equation and to be <code>Min</code> for the equation <code>K ≃ K′</code>, so it has to depend on the two terms.</li>
+    <li><b>Induction.</b> Write <code>N</code> for <code>∀X.(X→X)→X→X</code>. The set <code>Nat′</code> of {{implicit}} is named by <code>ιx:N. ∀P. (∀y:N. P y → P (S y)) → P 0 → P x</code>. Its forgetful reading is <code>N ∧ ∀P.(P→P)→P→P</code>, which names <code>cNat ∩ cNat</code>: induction has become iteration.</li>
+  </ul>
+  <p><i>Quoted from Geuvers’s paper of 1994.</i> His proof of strong normalization for the Calculus of Constructions interprets a type expression by a saturated set that does not depend on the terms in it: <code>P t</code> and <code>P q</code> name the same set, an abstraction over a term variable inside a type expression is ignored, and <code>Πx:A.B</code> names the arrow of two sets. He calls this “a kind of ‘proof-irrelevant’ interpretation”, and he names its limit. It does not reach inductive types that are type expressions, so that their members are terms, if those members can be used to compute a type expression: then <code>P 0</code> and <code>P 1</code> can be convertible with two different type expressions, and, in his words, “Type dependency can not anymore be ignored”; there <code>Πx:A.B</code> would have to be interpreted in another way, one of the two he names being “as a real dependent product of saturated sets”.</p>
+  <p><i>Measured against this page.</i> The dependent arrow of {{darrow}} is that product, and here it costs one line, because a family is defined on all untyped terms and nothing is asked of it along steps. So the page has paid, in {{fam}} to {{dep}}, for more than strong normalization asks, and the lemma says exactly how much more. The price of the families buys the soundness theorem for sets that depend on terms and the three items of the list, and it reaches the place where Geuvers’s method stops: a type set computed from a term, of which the two values of <code>E(u, v)</code> in {{equality}} are the simplest case.</p>
+</section>

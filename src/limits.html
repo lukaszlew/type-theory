@@ -23,7 +23,7 @@
   <dl class="rows">
     <dt>Try</dt><dd>Read <code>t ∈ T</code> as all that typing usually promises, including that <code>t</code> stays in <code>T</code> while it runs.</dd>
     <dt>Breaks</dt><dd>Take <code>T = Gen({I I})</code> from {{typeset}}. <code>I I ∈ T</code> and <code>I I → I</code>, but <code>I ∉ T</code>.</dd>
-    <dt>Lesson</dt><dd>Type sets are closed under undoing safe head steps. They are not closed under steps. The statement “if <code>t : A</code> and <code>t → t′</code> then <code>t′ : A</code>”, called subject reduction, is known to hold for plain System F, by a separate proof about derivations. It is known to fail for the rule that uses a member of an existential type, in {{more}}.</dd>
+    <dt>Lesson</dt><dd>Type sets are closed under undoing safe head steps. They are not closed under steps. The statement “if <code>t : A</code> and <code>t → t′</code> then <code>t′ : A</code>”, called subject reduction, is known to hold for plain System F, by a separate proof about derivations. It is known to fail for the rule that uses a member of an existential type, in {{more}}. Riba gives the example, which he takes from Tatsuta. In the context <code>x : Y → ∃X.(X → X)</code>, <code>y : Y</code>, <code>z : ∀X.(X→X)→(X→X)→Z</code>, the term <code>z (I x y) (I x y)</code> gets the type expression <code>Z</code> by that rule; it takes a step to <code>z (x y) (I x y)</code>, and that term does not get <code>Z</code>.</dd>
   </dl>
 </section>
 
@@ -32,7 +32,7 @@
   <dl class="rows">
     <dt>Try</dt><dd>Add pairs with projections, or built-in numbers with a recursor, as a few more rules.</dd>
     <dt>Breaks</dt><dd>The Base condition and the closure condition list forms of terms: a variable applied to arguments, an abstraction applied to arguments. With pairs, <code>fst x</code> is a new form with no head step, and <code>fst ⟨t,u⟩ → t</code> is a new head step that throws <code>u</code> away. Narrow point 3 comes back for it.</dd>
-    <dt>Lesson</dt><dd>Lemma R and the three conditions have to be restated for the new terms, and {{ops}} checked again. It is the same work as in {{typeset}} and {{ops}}, and no harder. But it is the definition again, and not one more lemma on top of it.</dd>
+    <dt>Lesson</dt><dd>Lemma R and the three conditions have to be restated for the new terms, and {{ops}} checked again. It is the same work as in {{typeset}} and {{ops}}, and no harder. But it is the definition again, and not one more lemma on top of it. Two sources show how little it is. Quoted from Geuvers, for pairs: the set that every saturated set contains gets one more clause, a projection of one of its members is a member; a head step may also be taken under a projection; and the set for a product is the set of terms whose two projections are in the two sets. Quoted from Riba, in general: say which contexts eliminate, for β an application to an argument and with pairs also a projection; call a term a value if such a context can act on it; then the conditions of a reducibility candidate speak only of values and of steps, and need no restating.</dd>
   </dl>
 </section>
 

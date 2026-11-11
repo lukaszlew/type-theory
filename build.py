@@ -70,7 +70,7 @@ POINTER_OK = {
     ('impred', 'fomega'): 'the table names ∀X:κ and the remark on power sets', ('impred', 'allkinds'): 'names narrow point 7', ('impred', 'cube'): 'names the strength table',
     ('pairs', 'structure'): 'the closing remark names the lemma that type sets tell terms apart', ('pairs', 'and'): 'the closing remark lists the additions',
     ('pairs', 'more'): 'the closing remark lists the additions', ('pairs', 'fam'): 'the closing remark names families', ('pairs', 'equalities'): 'the closing remark names what it turned away',
-    ('pairs', 'families'): 'the closing remark names the three collections', ('tests', 'cmpsets'): 'names Riba’s theorem', ('equalities', 'pairs'): 'the closing remark points to the relational reading', ('tests', 'kinds'): 'the word kind', ('cmpsem', 'tests'): 'the table points to the lemma on tests', ('tests', 'typeset'): 'names the closure condition',
+    ('pairs', 'families'): 'the closing remark names the three collections', ('tests', 'cmpsets'): 'names Riba’s theorem', ('equalities', 'pairs'): 'the closing remark points to the relational reading', ('tests', 'kinds'): 'the word kind', ('cmpsem', 'tests'): 'the table points to the lemma on tests', ('tests', 'typeset'): 'names the closure condition', ('tests', 'lookback'): 'the remark on Krivine’s realizability names the three demands', ('tests', 'equality'): 'the same remark names Stump’s semantics', ('forget', 'kinds'): 'the word kind, in a quotation', ('complete', 'kinds'): 'the word kind', ('complete', 'simpler'): 'names narrow point 2', ('erasure', 'allkinds'): 'the closing remark names the two readings of kinds',
 }
 report, forward = [], []
 for slug in NUM:

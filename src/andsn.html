@@ -70,7 +70,7 @@
 <p>Three things the theorem does not say.</p>
 
 <ul class="list">
-  <li><b>It is about typability, NOT about every true judgment.</b> It says that a strongly normalizing term has some type expression in some context. It does not say that every true judgment is derivable. The lemma “True and not derivable” of {{true}} still holds with <code>∧</code>, and so does the law that is true and not derivable, in {{andlaws}}.</li>
+  <li><b>It is about typability, NOT about every true judgment.</b> It says that a strongly normalizing term has some type expression in some context. It does not say that every true judgment is derivable. The lemma “True and not derivable” of {{true}} still holds with <code>∧</code>, and so does the law that is true and not derivable, in {{andlaws}}. And no rule of the kinds met so far closes the gap: {{complete}} gives a true judgment of System D that stays underivable if any true rules that keep the term, inclusions among them, are added.</li>
   <li><b>It does not make System F easier.</b> System D has no <code>∀</code>, so its soundness needs no intersection over all type sets, and the impredicative definition of narrow point 5 does not occur. To get the strong normalization of System F from System D, one would have to show that every term that is typable in System F is typable in System D. By the theorem, that is the same as showing that it is strongly normalizing.</li>
   <li><b>It gives no way to find a derivation.</b> No program decides whether a term is strongly normalizing. That is a standard fact, quoted here. So, by the theorem, no program decides whether a term is typable in System D. A derivation that is given can still be checked line by line.</li>
 </ul>

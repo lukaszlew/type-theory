@@ -41,14 +41,16 @@ SECTIONS = [
     ('allkinds',  'VI',  'New kinds, and the kind of all kinds',              'All kinds',   ['fomega', 'fam']),
     ('cmpsets',   'VII', 'Other collections of sets',                         'Other collections',   ['rules']),
     ('families',  'VII', 'The three collections',                             'Three collections',   ['cmpsets', 'structure']),
-    ('tests',     'VII', 'Type sets defined by tests',                        'Tests',               ['families']),
+    ('tests',     'VII', 'Type sets defined by tests',                        'Tests',               ['families', 'more']),
     ('pairs',     'VII', 'Pairs: parametricity',                              'Pairs, parametricity', ['rules']),
     ('equalities','VIII', 'Equality type sets',                               'Equality type sets', ['structure', 'equality', 'fomega']),
     ('hyp',       'VIII', 'What a hypothesis means',                          'Hypotheses',          ['equality']),
     ('impred',    'VIII', 'Impredicativity, paid once',                       'Impredicativity',     ['strength', 'limits', 'induct', 'fomega']),
     ('erasure',   'VIII', 'Erasure: terms with annotations',                  'Erasure',             ['rules', 'dep', 'implicit', 'equality', 'fomega']),
-    ('cube',      'VIII', 'The λ-cube',                                       'λ-cube',          ['dep', 'allkinds', 'erasure']),
-    ('cmpsem',    'VIII', 'Other semantics',                                  'Other semantics',     ['true', 'cmpsets', 'tests']),
+    ('forget',    'VIII', 'Forgetting the terms: what strong normalization needs of dependent types', 'Forgetting terms', ['and', 'implicit', 'equality']),
+    ('cube',      'VIII', 'The λ-cube',                                       'λ-cube',          ['dep', 'allkinds', 'erasure', 'forget']),
+    ('complete',  'VIII', 'Completeness, and why it fails here',              'Completeness',        ['true', 'andsn', 'more', 'equality', 'good']),
+    ('cmpsem',    'VIII', 'Other semantics',                                  'Other semantics',     ['true', 'cmpsets', 'tests', 'complete']),
     ('harper',    'VIII', 'Harper’s note',                                     'Harper’s note',       ['lookback']),
 ]
 NUM = {s[0]: i + 1 for i, s in enumerate(SECTIONS)}
@@ -70,6 +72,8 @@ GOALS = [
     ('Equality, in all its forms', ['equalities']),
     ('Hypotheses and impredicativity', ['hyp', 'impred']),
     ('Compared with other proofs', ['cmpsem', 'harper']),
+    ('What strong normalization needs of dependent types, and what families buy', ['forget']),
+    ('Completeness: is every true judgment derivable?', ['complete']),
 ]
 USES = {s[0]: s[4] for s in SECTIONS}
 def ancestors(slug, memo={}):

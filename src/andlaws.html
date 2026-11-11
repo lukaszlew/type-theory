@@ -30,7 +30,7 @@
   <p>By the law <i>same input</i>, the judgment <code>x : (X→Y) ∧ (X→Z) ⊨ x : X → (Y ∧ Z)</code> is true.</p>
   <p>It is not derivable in System F with <code>∧</code>. The term is a variable, so a derivation can use only the variable rule, the two <code>∧</code> rules and the two <code>∀</code> rules. Starting from <code>(X→Y) ∧ (X→Z)</code>, these rules take it apart, put <code>∧</code> between the results, and add or remove a <code>∀</code> whose variable does not occur. An arrow into <code>Y ∧ Z</code> never appears.</p>
   <p>The term <code>λy.x y</code> does get this type expression. With <code>y : X</code> added to the context, <code>x y : Y</code> and <code>x y : Z</code> are derivable, then “∧ in” gives <code>x y : Y ∧ Z</code>, and “→ in” gives <code>λy.x y : X → (Y ∧ Z)</code>.</p>
-  <p>For this reason presentations of intersection types often add inclusions between type expressions as rules. That is subtyping, which {{more}} adds.</p>
+  <p>For this reason presentations of intersection types often add inclusions between type expressions as rules. That is subtyping, which {{more}} adds. The example is known: Dezani, Honsell and Alessi use it to show that a system of rules that derives every true judgment has to have this inclusion, in the semantics that {{complete}} reports.</p>
 </section>
 
 <section class="aside">
