@@ -52,14 +52,14 @@
 </section>
 
 <section class="box thm">
-  <p class="tag">Lemma · Equality of type expressions, and the cast<span class="st">here, unreviewed</span></p>
+  <p class="tag">Lemma · Equality of type expressions, and the cast<span class="st">here, reviewed</span></p>
   <dl class="conds">
     <dt>closed member</dt><dd><code>⟦A ≐ B⟧<sub>ρ</sub></code> has a closed member if and only if <code>⟦A⟧<sub>ρ</sub> = ⟦B⟧<sub>ρ</sub></code>, and then <code>I</code> is a member.</dd>
     <dt>applying</dt><dd>If <code>e ∈ ⟦A ≐ B⟧<sub>ρ</sub></code> and <code>t ∈ ⟦A⟧<sub>ρ</sub></code>, then <code>e t ∈ ⟦B⟧<sub>ρ</sub></code>. So the rule that concludes <code>Γ ⊢ e t : B</code> from <code>Γ ⊢ e : A ≐ B</code> and <code>Γ ⊢ t : A</code> is true.</dd>
     <dt>cast</dt><dd>The rule of cast is not true.</dd>
-    <dt>cast and SN</dt><dd>Write <code>⊥</code> for <code>∀X:∗.X</code>. With the cast added to the rules of F<sub>ω</sub>, the judgment with the context <code>h : ∀X:∗.∀Y:∗. X ≐ Y</code>, the term <code>δ δ</code> and the type expression <code>⊥</code> is derivable, and <code>δ δ = Ω</code> is not in <code>SN</code>. So no semantics that proves C1 (strong normalization) can make the cast true.</dd>
+    <dt>cast and SN</dt><dd>Write <code>⊥</code> for <code>∀X:∗.X</code>. With the cast added to the rules of F<sub>ω</sub>, the judgment with the context <code>h : ∀X:∗.∀Y:∗. X ≐ Y</code>, the term <code>δ δ</code> and the type expression <code>⊥</code> is derivable, and <code>δ δ = Ω</code> is not in <code>SN</code>. So no semantics that proves C1 (strong normalization) can make the cast and the rules of F<sub>ω</sub> true together.</dd>
   </dl>
-  <p class="note">The derivation is the counterexample of Abel and Coquand, with the annotations erased. <i>Quoted from their paper.</i> Their cast is a constant with a step of its own, which removes it if the two type expressions are convertible and does not look at the proof; with it, normalization fails for a type theory with an impredicative universe of propositions and an equality whose proofs are not inspected, already under the hypothesis that all propositions are equal. They adapt Girard’s counterexample to normalization for System F with a test for equality of type expressions. They note: “Consistency and canonicity is not at stake”; and they compare the situation to type theories in which a proved equation may be used as a conversion. A second term of theirs has no hypothesis and needs only an axiom that any two true propositions are equal.</p>
+  <p class="note">The term is that of the counterexample of Abel and Coquand, with the annotations and the cast erased. The derivation in the proof is shorter than theirs, which casts <code>δ</code> to a variable, generalizes to <code>⊥</code> and applies <code>δ</code> to the result. <i>Quoted from their paper.</i> Their cast is a constant with a step of its own, which removes it if the two type expressions are convertible and does not look at the proof; with it, normalization fails for a type theory with an impredicative universe of propositions and an equality whose proofs are not inspected, already under the hypothesis that all propositions are equal. They adapt Girard’s counterexample to normalization for System F with a test for equality of type expressions. They note: “Consistency and canonicity is not at stake”; and they compare the situation to type theories in which a proved equation may be used as a conversion. A second term of theirs has no hypothesis and needs only an axiom that any two true propositions are equal.</p>
   <p class="note">Measured against this page, the cast is the rule φ of {{equality}} one level up: there an equation between terms retypes a term, here an equation between type expressions does, and in both the proof is used without being applied. Limit 1 of {{limits}} is the reason in both: the hypothesis has the variable <code>h</code> as an instance whatever the equation says. Their remark on consistency matches what {{equality}} reports of Stump’s semantics, which gives up strong normalization, makes such rules true and proves consistency.</p>
 </section>
 <details class="proof">
@@ -67,7 +67,7 @@
   <div class="pf">
     <p><b>Closed member.</b> If the two sets are one set <code>T</code>, then <code>I ∈ H(T) ⇒ H(T)</code> for every <code>H</code>, because <code>I ∈ C ⇒ C</code> for every type set <code>C</code>, by {{ops}}. If they differ, let <code>H</code> be the function that gives <code>SN</code> at <code>⟦A⟧<sub>ρ</sub></code> and <code>Min</code> at every other type set; it is a member of <code>∗ → ∗</code>, as every function is. A member <code>e</code> is then in <code>SN ⇒ Min</code>, and if it were closed, <code>e I</code> would be a closed member of <code>Min</code>, against M3 (smallest).</p>
     <p><b>Applying.</b> <i>Instantiate</i> at the function <code>H(C) = C</code>, and <i>apply</i>.</p>
-    <p><b>Cast.</b> Let <code>Γ</code> be <code>h : X ≐ Y, t : X</code>. The two judgments above the rule are derivable by the variable rule, so they are true. The judgment below it is <code>Γ ⊢ t : Y</code>. Take <code>ρ(X) = SN</code> and <code>ρ(Y) = Min</code>, replace <code>h</code> by a variable, which is a member of every type set, and replace <code>t</code> by <code>I</code>. Then <code>I ∈ SN</code> and <code>I ∉ Min</code>.</p>
+    <p><b>Cast.</b> Let <code>Γ</code> be <code>h : X ≐ Y, x : X</code>, and take the instance of the rule with <code>e = h</code> and <code>t = x</code>. The two judgments above the rule are derivable by the variable rule, so they are true. The judgment below it is <code>Γ ⊢ x : Y</code>. Take <code>ρ(X) = SN</code> and <code>ρ(Y) = Min</code>, replace <code>h</code> by a variable, which is a member of every type set, and replace <code>x</code> by <code>I</code>. Then <code>I ∈ SN</code> and <code>I ∉ Min</code>.</p>
     <p><b>Cast and SN.</b> Write <code>⊤</code> for <code>⊥ → ⊥</code> and <code>Γ</code> for <code>h : ∀X:∗.∀Y:∗. X ≐ Y</code>.</p>
     <div class="tw"><table class="w34">
       <thead><tr><th>line</th><th>judgment</th><th>rule</th></tr></thead>
@@ -75,7 +75,7 @@
         <tr><td>1</td><td><code>Γ, z : ⊥ ⊢ z : ⊥ → ⊥</code></td><td>variable, then ∀ out with <code>⊥ → ⊥</code></td></tr>
         <tr><td>2</td><td><code>Γ, z : ⊥ ⊢ z z : ⊥</code></td><td>→ out, from 1 and the variable rule</td></tr>
         <tr><td>3</td><td><code>Γ ⊢ δ : ⊤</code></td><td>→ in, from 2</td></tr>
-        <tr><td>4</td><td><code>Γ ⊢ h : ⊤ ≐ (⊤ → ⊥)</code></td><td>variable, then ∀ out twice</td></tr>
+        <tr><td>4</td><td><code>Γ ⊢ h : ⊤ ≐ (⊤ → ⊥)</code></td><td>variable, then ∀ out twice, with <code>⊤</code> for <code>X</code> and <code>⊤ → ⊥</code> for <code>Y</code></td></tr>
         <tr><td>5</td><td><code>Γ ⊢ δ : ⊤ → ⊥</code></td><td>cast, from 4 and 3</td></tr>
         <tr><td>6</td><td><code>Γ ⊢ δ δ : ⊥</code></td><td>→ out, from 5 and 3</td></tr>
       </tbody>

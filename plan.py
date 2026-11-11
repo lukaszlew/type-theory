@@ -49,7 +49,7 @@ SECTIONS = [
     ('erasure',   'VIII', 'Erasure: terms with annotations',                  'Erasure',             ['rules', 'dep', 'implicit', 'equality', 'fomega']),
     ('forget',    'VIII', 'Forgetting the terms: what strong normalization needs of dependent types', 'Forgetting terms', ['and', 'implicit', 'equality']),
     ('cube',      'VIII', 'The λ-cube',                                       'λ-cube',          ['dep', 'allkinds', 'erasure', 'forget']),
-    ('complete',  'VIII', 'Completeness, and why it fails here',              'Completeness',        ['true', 'andsn', 'more', 'equality', 'good']),
+    ('complete',  'VIII', 'Completeness, and why it fails here',              'Completeness',        ['true', 'andsn', 'more', 'equality', 'good', 'judg']),
     ('cmpsem',    'VIII', 'Other semantics',                                  'Other semantics',     ['true', 'cmpsets', 'tests', 'complete']),
     ('harper',    'VIII', 'Harper’s note',                                     'Harper’s note',       ['lookback']),
 ]
