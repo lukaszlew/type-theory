@@ -128,6 +128,12 @@
   </div>
 </details>
 
+<section class="aside">
+  <p class="tag">Remark · What a recursive type without positivity costs</p>
+  <p><i>Worked out for this page by a reader of the paper of Appel and McAllester.</i> No type sets <code>R</code> and <code>T</code> satisfy <code>R = R ⇒ T</code>. This is the argument of limit 2 of {{limits}}, with a second set. If <code>u ∈ R</code>, then <code>u ∈ R ⇒ T</code>, so <code>u u ∈ T</code>; so <code>δ u ∈ T</code> for every <code>u ∈ R</code>, by the closure condition, and <code>δ ∈ R ⇒ T = R</code>; so <code>δ δ ∈ T</code>, against the SN condition. So the function <code>F(C) = C ⇒ T</code> of the lemma “No predecessor into F(R)” has no fixed point among the type sets, and the two rules that fold and unfold a type expression for it cannot both be true here, whatever type set that type expression names; each alone can be.</p>
+  <p><i>Quoted from Appel and McAllester.</i> They give a semantics in which such rules are true for every <code>F</code> built from arrows and pairs, positive or not. What they call a type is a set of pairs of a number and a value, and a value belongs at the number <code>k</code> if it behaves as a member “in any computation running for no more than k steps”; the arrow and the pair at <code>k</code> look at smaller numbers only, and that makes every such <code>F</code> have a fixed point. By their two lemmas for the recursive type, taken for the function that sends a set <code>α</code> to <code>α → ⊥</code>, they derive that <code>δ δ</code>, which runs forever, belongs to the empty set of pairs, their <code>⊥</code>. Their theorem is that a typed program never gets stuck; it says nothing about normalization. <i>Measured against this page.</i> That is the price: whatever such a semantics shows of every typable term it shows of <code>δ δ</code>, so neither corollary of {{rules}} survives in its form there. The lemma on no predecessor is the same fact seen from inside <code>SN</code>.</p>
+</section>
+
 <section class="box ex">
   <p class="tag">Example · Mendler-style natural numbers</p>
   <p>Let <code>F(C) = ⋂<sub>D</sub> (D ⇒ ((C ⇒ D) ⇒ D))</code>, the function of the example “Least fixed points” in {{more}}: <code>F(C)</code> contains the zero <code>λz.λs.z</code> and, for each <code>n ∈ C</code>, the successor <code>λz.λs.s n</code>, which carries its predecessor. It is monotone. Then</p>

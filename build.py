@@ -33,6 +33,11 @@ LABELS = [
 # pointers: a section names another section without using a definition or a result of it in a statement or a proof
 POINTER_OK = {
     ('families', 'kinds'): 'unused',
+    ('cmpsem', 'classical'): 'the row on tests points to the section',
+    ('mu', 'structure'): 'the closing remark names lemmas that were not read again', ('mu', 'families'): 'the closing remark names lemmas that were not read again',
+    ('cmpsem', 'pairs'): 'one row of the table points to the equality relations',
+    ('mu', 'gen'): 'the closing remark names the lemma that was not read again',
+    ('classical', 'andsn'): 'the closing remark compares a quoted theorem with it',
     ('good', 'structure'): 'says which lemmas use more about SN',
     ('limits', 'simpler'): 'limit 4 says that narrow point 3 comes back',
     ('more', 'and'): 'says that the rules are read off as for ∧',

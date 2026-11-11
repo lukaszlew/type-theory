@@ -88,7 +88,7 @@
 <section class="aside">
   <p class="tag">Remark · Where the context is</p>
   <p>Type sets are not indexed by a context. A variable is an untyped term, and by the Base condition it belongs to every type set, whatever type expression a context might give it. That does no harm, because a variable does nothing: it has no step. The context appears in two places only. In a judgment it is the list of sets that the replacing terms are taken from. In a derivation it is the list of variables that the term may have free. C2 (consistency) uses that: a term derived in the empty context is closed.</p>
-  <p>This is what lets the sets come before the rules. A set that depended on the type expressions of its variables would need those first. Proofs that compute normal forms, and not only prove strong normalization, usually cannot avoid this, and they index every set by a context.</p>
+  <p>This is what lets the sets come before the rules. A set that depended on the type expressions of its variables would need those first. Proofs about typed terms cannot avoid this: a set of well-typed terms with free variables has to say which context types those variables, and to pass under a <code>λ</code> it has to survive the extension of that context. <i>Quoted from Abel, Öhman and Vezzosi</i>, whose proof decides equality of typed terms for a dependent type theory and computes no more of a term than the form its head steps lead to: “A logical relation on well-typed open terms is necessarily Kripke, i.e., closed under weakening”; “Otherwise, the Fundamental Theorem would fail for binders”.</p>
 </section>
 
 <section class="aside">
